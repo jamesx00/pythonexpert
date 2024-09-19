@@ -1,0 +1,93 @@
+<nav class="shadow font-fahkwang font-extralight" x-data="{open: false}">
+  <div class="default-container px-4">
+    <div class="flex justify-between items-center">
+      <div class="py-4">
+        <a href="/" class="uppercase font-bold text-primary-900 tracking-widest inline-block">
+          {% image eleventy.env.root + "/public/img/logo.png", "PythonExpert logo", "100px" %}
+        </a>
+      </div>
+      <div class="hidden sm:ml-6 sm:flex">
+        {% for item in collections.all | eleventyNavigation %}
+          <div class="relative flex px-4 py-10 group">
+            <a href="{{ item.url }}" class="text-sm after:duration-300 after:inset-0 overflow-x-hidden relative after:-translate-x-[105%] hover:after:translate-x-0 after:transition after:content-[''] after:absolute after:border-b-2 after:border-primary-900 inline-flex items-center px-1 font-medium {% if page.url == item.url %}text-primary-900 after:translate-x-0{% else %}text-neutral-400{% endif %} hover:text-primary-900 transition">{{ item.key | upper }}</a>
+            {% if item.children | length > 0 %}
+              <span class="text-primary-800 cursor-pointer pl-2">&#9660;</span>
+              <div class="z-10 bg-white shadow overflow-y-hidden max-h-0 group-hover:max-h-none opacity-0 group-hover:opacity-100 px-4
+                  absolute left-0 right-0 top-full transition-all">
+                {% for child in item.children %}
+                  <a href="{{ child.url }}" class="after:duration-300 after:inset-0 overflow-x-hidden relative after:-translate-x-[105%] hover:after:translate-x-0 after:transition after:content-[''] after:absolute after:border-b-2 after:border-primary-900 inline-block my-2 items-center px-1 font-medium {% if page.url == child.url %}text-primary-900{% else %}text-neutral-400{% endif %} hover:text-primary-900 transition">{{ child.key | upper }}</a>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+      <div
+        class="-mr-2 flex items-center sm:hidden">
+        <!-- Mobile menu button -->
+        <button
+          type="button"
+          class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 focus:outline-none focus:ring-2
+            focus:ring-inset focus:ring-gray-500"
+          aria-controls="mobile-menu"
+          aria-expanded="false"
+          @click="open = !open">
+          <span class="absolute -inset-0.5"></span>
+          <span class="sr-only">Open main menu</span>
+          <!-- Icon when menu is closed.
+          
+          Menu open: "hidden", Menu closed: "block" -->
+          <svg
+            x-show="!open"
+            x-cloak
+            class="block h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
+          </svg>
+          <!-- Icon when menu is open.
+          
+          Menu open: "block", Menu closed: "hidden" -->
+          <svg
+            x-show="open"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Mobile menu, show/hide based on menu state. -->
+  <div class="sm:hidden" id="mobile-menu" x-show="open" x-cloak x-transition>
+    <div class="space-y-1 pb-3 pt-2 px-4">
+      {% for item in collections.all | eleventyNavigation %}
+        <div x-data="{subMenuOpen: false}">
+          <div class="py-2 pl-3 pr-4 flex">
+            <a href="{{ item.url }}" class="flex-1 text-base font-medium {% if page.url == item.url %}text-primary-900{% else %}text-neutral-400{% endif %} hover:text-primary-900">
+              {{ item.key | upper }}
+            </a>
+            {% if item.children | length > 0 %}
+              <span class="text-red-800 px-2 cursor-pointer" @click="subMenuOpen = !subMenuOpen" :class="subMenuOpen && 'rotate-180'">
+                &#9660;</span>
+            {% endif %}
+          </div>
+          {% if item.children | length > 0 %}
+            <div class="pl-6 transition-all" x-show="subMenuOpen" x-cloak x-transition>
+              {% for child in item.children %}
+                <a href="{{ child.url }}" class="block my-3 items-center px-1 font-medium {% if page.url == child.url %}text-primary-900{% else %}text-neutral-400{% endif %} hover:text-primary-900 transition">{{ child.key | upper }}</a>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,36 @@
+<footer id="cs-footer-272">
+    <div class="default-container md:flex px-4">
+        <!-- Logo Group -->
+        <!-- <div class="flex-1">
+            <a href="/" class="uppercase font-bold text-primary-900 tracking-widest inline-block">
+                {% image eleventy.env.root + "/public/img/logo.png", "PythonExpert logo", "100px, 150px", "(max-width: 400px) 100vw, 150px" %}
+            </a>
+        </div> -->
+        <!-- Links -->
+            <div class="md:flex md:gap-8 lg:gap-16"> <ul class="mb-6">
+                <li class="cs-nav-li">
+                    <span class="cs-header">Quick links</span>
+                </li>
+                {% for item in collections.all | eleventyNavigation %}
+                    <li class="cs-nav-li">
+                        <a class="cs-nav-link" href="{{ item.url }}">{{ item.key }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+            <ul class="mb-6">
+                <li class="cs-nav-li">
+                    <span class="cs-header">Contact</span>
+                </li>
+                <li class="cs-contact-li pb-4">
+                    Data Advantage Co.,Ltd.
+                </li>
+                <li class="cs-contact-li">
+                    <a class="cs-contact-link" href="tel: {{ contacts.phone[0] }}">{{ contacts.phone[1] }}</a>
+                </li>
+                <li class="cs-contact-li">
+                    <a class="cs-contact-link" href="mailto:{{ contacts.email }}">{{ contacts.email }}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</footer>

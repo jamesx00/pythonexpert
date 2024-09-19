@@ -1,0 +1,38 @@
+{
+	"name": "avivstudio",
+	"version": "8.0.0",
+	"description": "A source code repository for a blog web site built with Eleventy.",
+	"scripts": {
+		"build": "NODE_ENV=production npx @11ty/eleventy && NODE_ENV=production tailwindcss -i public/css/tailwind.input.css -o public/css/tailwind.css",
+		"build-ghpages": "npx @11ty/eleventy --pathprefix=/eleventy-base-blog/",
+		"start": "npm-run-all --parallel serve tw:watch",
+		"serve": "npx @11ty/eleventy --serve --quiet",
+		"debug": "DEBUG=Eleventy* npx @11ty/eleventy",
+		"tw:watch": "tailwindcss -i public/css/tailwind.input.css -o public/css/tailwind.css --watch",
+		"debugstart": "DEBUG=Eleventy* npx @11ty/eleventy --serve --quiet",
+		"benchmark": "DEBUG=Eleventy:Benchmark* npx @11ty/eleventy"
+	},
+	"author": {
+		"name": "Data Advantage Co.,Ltd.",
+		"email": "dataadvantage.co@gmail.com"
+	},
+	"engines": {
+		"node": ">=14"
+	},
+	"devDependencies": {
+		"@11ty/eleventy": "^2.0.1",
+		"@11ty/eleventy-img": "^3.1.1",
+		"@11ty/eleventy-navigation": "^0.3.5",
+		"@11ty/eleventy-plugin-bundle": "^1.0.4",
+		"@11ty/eleventy-plugin-rss": "^1.2.0",
+		"@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
+		"@alpinejs/intersect": "^3.14.1",
+		"@tailwindcss/typography": "^0.5.13",
+		"alpinejs": "^3.14.1",
+		"cross-env": "^7.0.3",
+		"image-size": "^1.1.1",
+		"luxon": "^3.3.0",
+		"markdown-it-anchor": "^8.6.7",
+		"npm-run-all": "^4.1.5"
+	}
+}

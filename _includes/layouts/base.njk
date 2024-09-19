@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="{{ metadata.language }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ title or metadata.title }}</title>
+        <meta
+        name="description" content="{{ description or metadata.description }}"> {#- Atom and JSON feeds included by default #}
+        <meta property="og:title" content="{{ title or metadata.title }}"/>
+        <meta property="og:description" content="{{ description or metadata.description }}"/>
+        <meta property="og:image" content="{{ metadata.url }}{{ facebook_image or "/img/social-banner.png" }}"/>
+        <link rel="alternate" href="/feed/feed.xml" type="application/atom+xml" title="{{ metadata.title }}">
+        <link rel="alternate" href="/feed/feed.json" type="application/json" title="{{ metadata.title }}"> {#- Uncomment this if you’d like folks to know that you used Eleventy to build your site!  #}
+        {#- <meta name="generator" content="{{ eleventy.generator }}"> #}
+        {#-
+                		CSS bundles are provided via the `eleventy-plugin-bundle` plugin:
+                		1. You can add to them using `{% css %}`
+                		2. You can get from them using `{% getBundle "css" %}` or `{% getBundleFileUrl "css" %}`
+                		3. You can do the same for JS: {% js %}{% endjs %} and <script>{% getBundle "js" %}</script>
+                		4. Learn more: https://github.com/11ty/eleventy-plugin-bundle
+                		#}
+        {#- Add an arbitrary string to the bundle #}{%- css %}* { box-sizing: border-box; }
+        {% endcss %}{%- css %}[x-cloak] { display: none !important; }
+        {% endcss %}
+        {#- Add the contents of a file to the bundle #}{%- css %}{% include "public/css/tailwind.css" %}
+        {% endcss %}{%- css 'fontawesome' %}{% include "public/css/fontawesome.min.css" %}
+        {% endcss %}
+        {#- Or add from node_modules #}
+        {# {%- css %}{% include "node_modules/prismjs/themes/prism-okaidia.css" %}{% endcss %} #}<script defer src="/js/alpine.intersect.js"> </script>
+        <script defer src="/js/alpine.js"></script>
+        <script defer src="/js/index.js"></script>
+        {#- Render the CSS bundle using Inlined CSS (for the fastest site performance in production) #}
+        <style>{% getBundle "css" %}</style>
+        {#- Renders the CSS bundle using a separate file, if you can't set CSP directive style-src: 'unsafe-inline' #}
+        <link rel="preload" href="{% getBundleFileUrl "css", "fontawesome" %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/site.webmanifest">
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="theme-color" content="#ffffff">
+        <noscript><link rel="stylesheet" href="{% getBundleFileUrl "css", "fontawesome" %}"></noscript>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q31QHX2E1K"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', 'G-Q31QHX2E1K');
+        </script>
+    </head>
+    <body>
+        {% include 'navigation.njk' %}
+        <main id="skip">
+            {{ content | safe }}
+        </main>
+        {% include 'footer.njk' %}
+        <!-- This page `{{ page.url | htmlBaseUrl }}` was built on {% currentBuildDate %} -->
+    </body>
+</html>

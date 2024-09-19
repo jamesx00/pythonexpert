@@ -1,0 +1,28 @@
+---
+layout: layouts/base.njk
+title: Blogs - FIREWORK Web Design
+override:tags: false
+permalink: /blogs/index.html
+---
+
+<div class="bg-amber-50/25 shadow">
+    <div class="max-w-4xl mx-auto py-24 px-6 ">
+        <h1 class="mb-12">Blog posts</h1>
+        {% for blog in collections.blog %}
+            <div class="relative group py-6 flex gap-4 md:gap-8">
+                <div class="order-3 md:order-1">
+                    {% image eleventy.env.root + '/src' + blog.data.image, "", "400px" %}
+                </div>
+                <div class="order-2">
+                    <p class="mb-4 font-bold text-lg group-hover:underline">
+                        {{ blog.data.title }}
+                    </p>
+                    <p class="text-gray-600 group-hover:underline">
+                        {{ blog.data.description }}
+                    </p>
+                </div>
+                <a href="{{ blog.url }}" class="absolute inset-0"></a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
