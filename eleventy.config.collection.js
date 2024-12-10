@@ -1,3 +1,5 @@
+const path = require("path");
+
 module.exports = function (eleventyConfig) {
 	eleventyConfig.addFilter("field", (array, field) => {
 		const result = array.map((i) => {
@@ -14,6 +16,17 @@ module.exports = function (eleventyConfig) {
 
 	eleventyConfig.addFilter("unique", (array) => {
 		return [...new Set(array)];
+	});
+
+	eleventyConfig.addFilter("sortByDirectoryPrefix", (array) => {
+		const getNumberPrefix = (inputPath) => {
+			const dirName = path.basename(path.dirname(inputPath));
+			const prefix = dirName.split("-")[0];
+			return parseFloat(prefix);
+		};
+		return array.sort((a, b) => {
+			return getNumberPrefix(a.inputPath) - getNumberPrefix(b.inputPath);
+		});
 	});
 
 	eleventyConfig.addFilter("sort", (array, key, ascending = true) => {

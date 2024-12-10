@@ -1,0 +1,38 @@
+---
+layout: layouts/base.njk
+title: Live editor
+---
+
+<div class="flex">
+    <div class="sticky top-0 inline-block flex-1 h-screen">
+        <div class="mb-4 justify-end hidden">
+            <div>
+                <label for="file-group" class="block text-sm font-medium text-gray-700 dark:text-slate-400">Language</label>
+                <select
+                    id="file-group"
+                    name="file-group"
+                    class="hidden dark:bg-slate-600 dark:text-slate-200 mt-1 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none
+                        focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"></select>
+            </div>
+        </div>
+        <div id="file-buttons-container" class="text-[0px]"></div>
+        <div id="editor" class="w-full h-[95%]"></div>
+    </div>
+    <div class="flex-1 ml-auto inline-block p-4">
+        <div
+            id="output"
+            class="prose prose-slate max-w-none p-4 dark:prose-invert prose-pre:bg-transparent prose-pre:p-0 prose-img:mx-auto
+                prose-hr:my-4 lg:mx-auto"></div>
+    </div>
+</div>
+<script src="/js/marked.min.js"></script>
+<script src="/js/mermaid.js"></script>
+<script src="/js/monaco-editor/min/vs/loader.js"></script>
+<script>
+    require.config({
+        paths: {
+            vs: "/js/monaco-editor/min/vs"
+        }
+    });
+</script>
+<script src="/js/monaco.basic.js"></script>

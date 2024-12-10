@@ -1,7 +1,14 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-	content: ["src/**/*.{html,md,njk,js}", "_includes/**/*.{html,md,njk,js}"],
+	content: [
+		"src/**/*.{html,md,njk,js}",
+		"_includes/**/*.{html,md,njk,js}",
+		"public/js/**/*.js",
+	],
 	theme: {
+		hljs: {
+			theme: "monokai",
+		},
 		extend: {
 			colors: {
 				primary: {
@@ -44,7 +51,18 @@ module.exports = {
 				},
 			},
 		},
+		fontFamily: {
+			"victor-mono": ["Victor Mono", "sans-serif"],
+		},
 	},
 	darkMode: "class",
-	plugins: [require("@tailwindcss/typography")],
+	safelist: [
+		{
+			pattern: /hljs+/,
+		},
+	],
+	plugins: [
+		require("@tailwindcss/typography"),
+		require("tailwind-highlightjs"),
+	],
 };

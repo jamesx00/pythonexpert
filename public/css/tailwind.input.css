@@ -1,8 +1,14 @@
 @import "./core.css";
+/* @import "./prism.monokai.css"; */
+@import "./highlightjs.monokai.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+	@apply transition-colors;
+}
 
 .default-container {
 	@apply max-w-7xl mx-auto;
@@ -13,21 +19,126 @@
 	@apply z-10 absolute inset-0 bg-transparent pointer-events-auto;
 }
 
+.editor-tab {
+	@apply border-x text-gray-500 hover:bg-gray-100 dark:hover:bg-slate-700 border-t border-b border border-gray-300 px-3 py-1 font-victor-mono text-sm;
+}
+
+.prose code *:not(.far, .fal, .fas) {
+	@apply font-victor-mono;
+}
+
+span.token {
+	@apply font-victor-mono;
+}
+
+p.caption {
+	@apply text-center text-sm text-gray-500 dark:text-slate-400;
+}
+
+pre[class*="language-"] {
+	@apply relative;
+}
+
+pre[class*="language-"]:hover .copy-content {
+	@apply opacity-80;
+}
+
+code > .copy-content {
+	@apply absolute right-2 top-2 cursor-pointer rounded-md bg-gray-200 p-1 text-gray-800 opacity-80 lg:opacity-0 transition-all;
+}
+
+#lesson-content pre:hover code > .copy-content {
+	@apply opacity-80;
+}
+
+.prose p > code,
+.prose h1 > code,
+.prose h2 > code,
+.prose h3 > code,
+.prose h4 > code,
+.prose h5 > code,
+.prose li > code,
+.prose em > code,
+.prose strong > code,
+.prose table code,
+.alert-info code,
+.alert-warning code,
+.alert-danger code {
+	background-color: var(--tw-prose-pre-bg);
+	@apply inline-block rounded-none border font-normal not-italic text-white px-2;
+}
+
+/* Tilda before and after inline code block */
+.prose :where(code):not(:where([class~="not-prose"] *))::before {
+	content: "";
+	color: transparent;
+}
+.prose :where(code):not(:where([class~="not-prose"] *))::after {
+	content: "";
+	color: transparent;
+}
+
+#lesson-content {
+	@apply prose prose-slate max-w-none dark:prose-invert prose-pre:bg-transparent prose-pre:p-0;
+	@apply prose-img:mx-auto prose-hr:my-4 lg:mx-auto prose-headings:text-primary-800 prose-headings:font-bold;
+	@apply [&_pre:has(code)]:bg-slate-900 [&_pre:has(code)]:p-1 [&_pre:has(code)]:px-3 [&_pre:has(code)]:relative;
+}
+
+.mermaid:not([data-processed="true"]) {
+	@apply hidden;
+}
+
+.mermaid {
+	@apply flex justify-center bg-zinc-800 border border-zinc-900 mb-4;
+}
+
+pre:has(code[class*="language-"]) {
+	@apply relative;
+}
+
+code {
+	@apply font-victor-mono;
+}
+
+.alert-warning {
+	@apply mb-4 border-l-4 border-yellow-400 bg-yellow-50 p-4 dark:bg-slate-900 dark:text-slate-400;
+}
+
+.alert-info {
+	@apply mb-4 border-l-4 border-blue-400 bg-blue-50 p-4 dark:bg-slate-900 dark:text-slate-400;
+}
+
+.alert-danger {
+	@apply mb-4 border-l-4 border-red-400 bg-red-50 p-4 dark:bg-slate-900 dark:text-slate-400;
+}
+
+.alert-info .highlight,
+.alert-danger .highlight,
+.alert-warning .highlight {
+	@apply border border-white mb-2;
+}
+
+.alert-info .highlight code,
+.alert-warning .highlight code,
+.alert-danger .highlight code {
+	@apply block rounded-none border-none font-normal not-italic text-white bg-transparent;
+}
+
 @layer base {
 	h1 {
-		@apply text-4xl font-semibold;
-	}
-
-	h2 {
 		@apply text-3xl font-semibold;
 	}
 
-	h3 {
+	h2 {
 		@apply text-2xl font-semibold;
 	}
 
-	h4 {
+	h3 {
 		@apply text-xl font-semibold;
+	}
+
+	h4 {
+		@apply text-lg font-semibold;
 	}
 }
 
@@ -55,208 +166,6 @@
 	}
 	.btn-xl {
 		@apply px-8 py-5 text-xl font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-800 transition;
-	}
-}
-
-/* Home hero */
-/*-- -------------------------- -->
-<---            Hero            -->
-<--- -------------------------- -*/
-
-/* Mobile - 360px */
-@media only screen and (min-width: 0rem) {
-	#hero-1946 {
-		padding: var(--sectionPadding);
-		/* 160px - 200px */
-		padding-top: clamp(10rem, 20vw, 12.5rem);
-		overflow: hidden;
-		position: relative;
-		z-index: 1;
-	}
-	#hero-1946 .cs-container {
-		width: 100%;
-		max-width: 80rem;
-		margin: auto;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		position: relative;
-		z-index: 1;
-	}
-	#hero-1946 .cs-content {
-		/* set text align to left if content needs to be left aligned */
-		text-align: center;
-		width: 100%;
-		/* 40px - 52px */
-		margin-bottom: clamp(2.5rem, 5vw, 3.25rem);
-		display: flex;
-		flex-direction: column;
-		/* centers content horizontally, set to flex-start to left align */
-		align-items: center;
-		position: relative;
-		z-index: 1;
-	}
-	#hero-1946 .cs-flex {
-		/* prevents flexbox from squishing it */
-		flex: none;
-	}
-	#hero-1946 .cs-title {
-		/* 39px - 61px */
-		font-size: clamp(2.438rem, 5vw, 3.813rem);
-	}
-	#hero-1946 .cs-text {
-		margin-bottom: 1.25rem;
-	}
-	#hero-1946 .cs-button-solid {
-		font-size: 1rem;
-		font-weight: 700;
-		/* 46px - 56px */
-		line-height: clamp(2.875rem, 5.5vw, 3.5rem);
-		text-align: center;
-		text-decoration: none;
-		min-width: 9.375rem;
-		margin: 0;
-		/* prevents padding from adding to the width */
-		box-sizing: border-box;
-		/* 32px - 48px */
-		padding: 0 clamp(2rem, 4vw, 3rem);
-		background-color: var(--primary);
-		color: var(--bodyTextColorWhite);
-		display: inline-block;
-		position: relative;
-		z-index: 1;
-		transition: color 0.3s;
-		transition: background-color 0.3s;
-	}
-	#hero-1946 .cs-button-solid:hover {
-		background-color: #000;
-		color: #fff;
-	}
-	#hero-1946 .cs-picture {
-		width: 100%;
-		/* 280px - 510px */
-		height: clamp(17.5rem, 58.6vw, 31.875rem);
-		/* 16px - 20px */
-		margin-bottom: clamp(1rem, 2vw, 1.25rem);
-		display: block;
-		position: relative;
-	}
-	#hero-1946 .cs-picture img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		border-radius: 2.5rem;
-		position: absolute;
-	}
-	#hero-1946 .cs-card-group {
-		width: 100%;
-		margin: 0;
-		padding: 0;
-		display: grid;
-		justify-content: center;
-		grid-template-columns: repeat(12, 1fr);
-		/* 16px - 20px */
-		gap: clamp(1rem, 2vw, 1.25rem);
-	}
-	#hero-1946 .cs-item {
-		text-align: center;
-		list-style: none;
-		width: 100%;
-		margin: 0;
-		box-sizing: border-box;
-		/* 24px - 32px */
-		padding: clamp(1.5rem, 3vw, 2rem);
-		background-color: #f7f7f7;
-		border-radius: 1.25rem;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		grid-column: span 12;
-		position: relative;
-		z-index: 1;
-		transition: border-color 0.3s;
-	}
-	#hero-1946 .cs-item:hover {
-		border-color: var(--primary);
-	}
-	#hero-1946 .cs-item:hover .cs-h3 {
-		color: var(--primary);
-	}
-	#hero-1946 .cs-item:hover .cs-icon {
-		transform: rotateY(360deg);
-	}
-	#hero-1946 .cs-icon-picture {
-		margin-bottom: 1.25rem;
-		perspective: 700px;
-		transform-style: preserve-3d;
-	}
-	#hero-1946 .cs-icon {
-		width: 2.5rem;
-		height: auto;
-		display: block;
-		transition: transform 0.5s;
-	}
-	#hero-1946 .cs-h3 {
-		font-size: 1.25rem;
-		line-height: 1.5em;
-		text-align: inherit;
-		margin: 0;
-		margin-bottom: 0.75rem;
-		color: var(--headerColor);
-		transition: color 0.3s;
-	}
-	#hero-1946 .cs-item-text {
-		/* 14px - 16px */
-		font-size: clamp(0.875rem, 1.5vw, 1rem);
-		line-height: 1.5em;
-		text-align: inherit;
-		margin: 0;
-		color: var(--bodyTextColor);
-	}
-}
-/* Tablet - 768px */
-@media only screen and (min-width: 48rem) {
-	#hero-1946 .cs-text {
-		font-size: 1.25rem;
-	}
-	#hero-1946 .cs-item {
-		text-align: left;
-		margin: 0;
-		align-items: flex-start;
-		grid-column: span 6;
-	}
-}
-/* Small Desktop - 1024px */
-@media only screen and (min-width: 64rem) {
-	#hero-1946 .cs-content {
-		display: flex;
-		flex-direction: column;
-	}
-	#hero-1946 .cs-title {
-		max-width: 46.875rem;
-	}
-	#hero-1946 .cs-item {
-		grid-column: span 3;
-	}
-}
-/* Large Desktop 1300px */
-@media only screen and (min-width: 81.25rem) {
-	#hero-1946 .cs-title {
-		margin: 0;
-	}
-	#hero-1946 .cs-container {
-		flex-direction: column;
-	}
-	#hero-1946 .cs-content {
-		text-align: left;
-		max-width: 80rem;
-		gap: 1.25rem;
-		flex-direction: row;
-		align-items: flex-start;
-	}
-	#hero-1946 .cs-flex {
-		width: 50%;
-		max-width: 39.375rem;
 	}
 }
 

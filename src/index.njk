@@ -5,14 +5,20 @@ eleventyNavigation:
   order: 1
 ---
 
-<!-- This example requires updating your template:
-
-``` <html class="h-full"> <body class="h-full"> ``` -->
-<main class="grid min-h-full place-items-center shadow px-6 py-24 sm:py-32 lg:px-8">
-  <div class="text-center">
-    <p class="text-base font-semibold text-indigo-600">Sorry</p>
-    <h1 class="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">We are under construction</h1>
-    <p class="mt-6 text-base leading-7 text-gray-600">We're making some changes to PythonExpert. Please come back again
-      later.</p>
+<div class="border-b font-victor-mono px-6">
+  <div class="max-w-4xl mx-auto py-16">
+    <h1 class="text-primary-700 mb-6">Welcome to PythonExpert!</h1>
+    <p>
+      Learn how to program for free.
+    </p>
   </div>
-</main>
+  <div class="max-w-4xl mx-auto py-16">
+    {% for course in collections.course %}
+      <div class="relative group mb-12">
+        <h2 class="mb-4 font-victor-mono">{{ course.data.title }}</h2>
+        <p class="text-gray-600 mb-4 group-hover:underline font-victor-mono">{{ course.data.description }}</p>
+        <a href="{{ course.url }}" class="text-sm text-blue-600 hover:underline stretched-link">Start learning</a>
+      </div>
+    {% endfor %}
+  </div>
+</div>

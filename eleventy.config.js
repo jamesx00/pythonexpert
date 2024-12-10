@@ -1,6 +1,11 @@
 const { DateTime } = require("luxon");
+const fs = require("fs");
+const path = require("path");
 const yaml = require("js-yaml");
 const markdownItAnchor = require("markdown-it-anchor");
+// const pluginMermaid = require("@kevingimbel/eleventy-plugin-mermaid");
+// const markdownPrismJs = require("@11ty/eleventy-plugin-syntaxhighlight/src/markdownSyntaxHighlightOptions");
+const hljs = require("highlight.js");
 
 const pluginRss = require("@11ty/eleventy-plugin-rss");
 const pluginSyntaxHighlight = require("@11ty/eleventy-plugin-syntaxhighlight");
@@ -14,6 +19,25 @@ const customCollections = require("./eleventy.config.collection.js");
 
 /** @param {import('@11ty/eleventy').UserConfig} eleventyConfig */
 module.exports = function (eleventyConfig) {
+	// eleventyConfig.addPlugin(pluginSyntaxHighlight);
+	// const highlighter = eleventyConfig.markdownHighlighter;
+	eleventyConfig.addMarkdownHighlighter((str, language) => {
+		if (language === "mermaid") {
+			return `<pre class="mermaid">${str}</pre>`;
+		}
+		return hljs.highlight(str, { language }).value;
+		// return highlighter(str, language);
+	});
+	// eleventyConfig.addPlugin(pluginMermaid);
+	// eleventyConfig.addPlugin(eleventyPluginSyntaxHighlighter);
+	// const highlighter = eleventyConfig.markdownHighlighter;
+	// eleventyConfig.addMarkdownHighlighter((str, language) => {
+	// 	console.log(language);
+	// 	if (language === "mermaid") {
+	// 		return `<pre class="mermaid">${str}</pre>`;
+	// 	}
+	// 	// return highlighter(str, language);
+	// });
 	// To Support .yaml Extension in _data
 	// You may remove this if you can use JSON
 	eleventyConfig.addDataExtension("yaml", (contents) => yaml.load(contents));
@@ -26,6 +50,11 @@ module.exports = function (eleventyConfig) {
 		"./node_modules/alpinejs/dist/cdn.min.js": "/js/alpine.js",
 		"./node_modules/@alpinejs/intersect/dist/cdn.min.js":
 			"/js/alpine.intersect.js",
+		"./node_modules/hotkeys-js/dist/hotkeys.js": "/js/hotkeys.js",
+		"./node_modules/mermaid/dist/mermaid.js": "/js/mermaid.js",
+		"./node_modules/typed.js/dist/typed.umd.js": "/js/typed.umd.js",
+		"./node_modules/marked/marked.min.js": "/js/marked.min.js",
+		"./node_modules/monaco-editor/min": "/js/monaco-editor/min",
 		"./src/admin/config.yml": "./admin/config.yml",
 		"./src/static/img": "/static/img",
 	});
@@ -40,12 +69,14 @@ module.exports = function (eleventyConfig) {
 	eleventyConfig.addPlugin(pluginDrafts);
 	eleventyConfig.addPlugin(pluginImages);
 	eleventyConfig.addPlugin(customCollections);
+	// eleventyConfig.addPlugin(pluginMermaid);
+	// eleventyConfig.addPlugin(syntaxHighlight);
 
 	// Official plugins
 	eleventyConfig.addPlugin(pluginRss);
-	eleventyConfig.addPlugin(pluginSyntaxHighlight, {
-		preAttributes: { tabindex: 0 },
-	});
+	// eleventyConfig.addPlugin(pluginSyntaxHighlight, {
+	// 	preAttributes: { tabindex: 0 },
+	// });
 	eleventyConfig.addPlugin(pluginNavigation);
 	eleventyConfig.addPlugin(EleventyHtmlBasePlugin);
 	eleventyConfig.addPlugin(pluginBundle);
@@ -111,6 +142,12 @@ module.exports = function (eleventyConfig) {
 
 	eleventyConfig.addShortcode("currentBuildDate", () => {
 		return new Date().toISOString();
+	});
+
+	eleventyConfig.addShortcode("fileContent", (inputPath, fileName) => {
+		const directory = path.dirname(inputPath);
+		const fullPath = path.join(directory, "files", fileName);
+		return fs.readFileSync(fullPath);
 	});
 
 	// Features to make your build faster (when you need them)
