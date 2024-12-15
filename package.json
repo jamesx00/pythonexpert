@@ -1,7 +1,7 @@
 {
-	"name": "avivstudio",
+	"name": "pythonexpert",
 	"version": "8.0.0",
-	"description": "A source code repository for a blog web site built with Eleventy.",
+	"description": "A source code for www.pythonexpert.dev",
 	"scripts": {
 		"build": "NODE_ENV=production npx @11ty/eleventy && NODE_ENV=production tailwindcss -i public/css/tailwind.input.css -o public/css/tailwind.css",
 		"build-ghpages": "npx @11ty/eleventy --pathprefix=/eleventy-base-blog/",

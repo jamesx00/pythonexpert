@@ -2,7 +2,7 @@
 layout: layouts/base.njk
 ---
 
-{% set nextLesson = collections.lesson|filter("course_id", course_id)|getNextCollectionItem(page) %}
+{% set nextLesson = collections.lesson|filter("course_id", course_id)|sortByDirectoryPrefix|getNextCollectionItem(page) %}
 <div x-data="{ newFileOpen: false, sidebarOpen: false}">
     <button
         class="fixed right-0 top-[100px] border bg-gray-300 hover:bg-gray-400 px-2 py-1 shadow-lg"
