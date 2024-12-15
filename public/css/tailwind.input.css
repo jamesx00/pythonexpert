@@ -124,6 +124,14 @@ code {
 	@apply block rounded-none border-none font-normal not-italic text-white bg-transparent;
 }
 
+.list-image-checked {
+	@apply list-image-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxNCAxMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmaWxsPSIjMzhiZGY4Ij48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMy42ODUuMTUzYS43NTIuNzUyIDAgMCAxIC4xNDMgMS4wNTJsLTggMTAuNWEuNzUuNzUgMCAwIDEtMS4xMjcuMDc1bC00LjUtNC41YS43NS43NSAwIDAgMSAxLjA2LTEuMDZsMy44OTQgMy44OTMgNy40OC05LjgxN2EuNzUuNzUgMCAwIDEgMS4wNS0uMTQzWiIgLz48L3N2Zz4=')];
+}
+
+.list-image-crossed {
+	@apply list-image-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAxNCAxMiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iI2RjMjYyNiIgd2lkdGg9IjE0IiBoZWlnaHQ9IjEyIj4KICA8cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Ik0wIDEyTDE0IDBNMCAwbDE0IDEyIiAvPgo8L3N2Zz4=')];
+}
+
 @layer base {
 	h1 {
 		@apply text-3xl font-semibold;

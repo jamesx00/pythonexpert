@@ -10,7 +10,10 @@
 		"debug": "DEBUG=Eleventy* npx @11ty/eleventy",
 		"tw:watch": "tailwindcss -i public/css/tailwind.input.css -o public/css/tailwind.css --watch",
 		"debugstart": "DEBUG=Eleventy* npx @11ty/eleventy --serve --quiet",
-		"benchmark": "DEBUG=Eleventy:Benchmark* npx @11ty/eleventy"
+		"benchmark": "DEBUG=Eleventy:Benchmark* npx @11ty/eleventy",
+		"s3:sync": "aws s3 sync _site/ s3://pythonexpert-web/static --profile dataadvantage-admin",
+		"cloudfront:clearCache": "aws cloudfront create-invalidation --distribution-id E1WZICBZJ43601 --path \"/*\" --profile dataadvantage-admin",
+		"deploy": "npm run s3:sync && npm run cloudfront:clearCache"
 	},
 	"author": {
 		"name": "Data Advantage Co.,Ltd.",
