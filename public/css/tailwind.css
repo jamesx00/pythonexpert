@@ -2355,7 +2355,7 @@ h4 {
   font-family: Victor Mono, sans-serif;
 }
 
-span.token {
+pre code[class*="language-"] {
   font-family: Victor Mono, sans-serif;
 }
 
@@ -3072,6 +3072,7 @@ code > .copy-content {
   padding: 0.25rem;
   padding-left: 0.75rem;
   padding-right: 0.75rem;
+  font-family: Victor Mono, sans-serif;
 }
 
 .mermaid:not([data-processed="true"]) {
