@@ -13,7 +13,7 @@
 		"benchmark": "DEBUG=Eleventy:Benchmark* npx @11ty/eleventy",
 		"s3:sync": "aws s3 sync _site/ s3://pythonexpert-web/static",
 		"cloudfront:clearCache": "aws cloudfront create-invalidation --distribution-id E1WZICBZJ43601 --path \"/*\" --profile dataadvantage-admin",
-		"deploy": "npm run s3:sync && npm run cloudfront:clearCache"
+		"deploy": "rm -rf _site && npm run build && npm run s3:sync && npm run cloudfront:clearCache"
 	},
 	"author": {
 		"name": "Data Advantage Co.,Ltd.",
