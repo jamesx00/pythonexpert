@@ -9,9 +9,6 @@
       <div class="hidden sm:ml-6 sm:flex">
         {% for item in collections.all | eleventyNavigation %}
           <div class="relative flex px-4 py-10 group">
-            <a href="https://github.com/jamesx00/pythonexpert" target="_blank" class="text-sm inline-flex items-center px-1 font-medium hover:text-primary-900 transition">
-              <i class="fab fa-github mr-4 fa-2x"></i>
-            </a>
             <a href="{{ item.url }}" class="text-sm after:duration-300 after:inset-0 overflow-x-hidden relative after:-translate-x-[105%] hover:after:translate-x-0 after:transition after:content-[''] after:absolute after:border-b-2 after:border-primary-900 inline-flex items-center px-1 font-medium {% if page.url == item.url %}text-primary-900 after:translate-x-0{% else %}text-neutral-400{% endif %} hover:text-primary-900 transition">{{ item.key | upper }}</a>
             {% if item.children | length > 0 %}
               <span class="text-primary-800 cursor-pointer pl-2">&#9660;</span>
@@ -24,6 +21,9 @@
             {% endif %}
           </div>
         {% endfor %}
+        <a href="https://github.com/jamesx00/pythonexpert" target="_blank" class="text-sm inline-flex items-center px-1 font-medium hover:text-primary-900 transition">
+          <i class="fab fa-github mr-4 fa-2x"></i>
+        </a>
       </div>
       <div
         class="-mr-2 flex items-center sm:hidden">
