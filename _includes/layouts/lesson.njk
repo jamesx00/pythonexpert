@@ -140,6 +140,15 @@ layout: layouts/base.njk
                 </div>
             </div>
         </div>
+        <div class="mt-6 bg-white p-4" x-data="{open: false}">
+            <button @click="open = !open" class="text-gray-600 hover:underline">Custom settings</button>
+            <div x-cloak x-show="open" class="mt-4 text-gray-600">
+                <div x-data="{showHiddenFiles: $persist(false).as('editor.showHiddenFiles')}">
+                    <input class="mr-2" type="checkbox" id="show-hidden-files" x-model="showHiddenFiles"><label for="show-hidden-files">Show hidden files</label>
+                </div>
+                <a href="" class="block text-blue-700 hover:underline mt-4">Save settings</a>
+            </div>
+        </div>
         {% if code_editor %}
             <div
                 x-ref="nextModalContainer"

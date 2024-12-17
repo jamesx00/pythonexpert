@@ -30,6 +30,7 @@
 		"@11ty/eleventy-plugin-rss": "^1.2.0",
 		"@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
 		"@alpinejs/intersect": "^3.14.1",
+		"@alpinejs/persist": "^3.14.7",
 		"@kevingimbel/eleventy-plugin-mermaid": "^2.2.1",
 		"@tailwindcss/typography": "^0.5.13",
 		"alpinejs": "^3.14.1",

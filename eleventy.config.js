@@ -50,6 +50,8 @@ module.exports = function (eleventyConfig) {
 		"./node_modules/alpinejs/dist/cdn.min.js": "/js/alpine.js",
 		"./node_modules/@alpinejs/intersect/dist/cdn.min.js":
 			"/js/alpine.intersect.js",
+		"./node_modules/@alpinejs/persist/dist/cdn.min.js":
+			"/js/alpine.persist.js",
 		"./node_modules/hotkeys-js/dist/hotkeys.js": "/js/hotkeys.js",
 		"./node_modules/mermaid/dist/mermaid.js": "/js/mermaid.js",
 		"./node_modules/typed.js/dist/typed.umd.js": "/js/typed.umd.js",

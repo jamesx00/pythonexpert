@@ -55,10 +55,6 @@ require(["vs/editor/editor.main"], function () {
 		return fileGroup;
 	});
 
-	const userIsStaffElement = document.getElementById("user__is_staff");
-	const userIsStaff =
-		userIsStaffElement !== null && userIsStaffElement.textContent === "true";
-
 	const isAddingFileAllowedElement = document.getElementById(
 		"adding_file_allowed"
 	);
@@ -71,7 +67,7 @@ require(["vs/editor/editor.main"], function () {
 		fileGroupSelector: "#file-group",
 		userLanguage: getUserLanguage(),
 		allowAddFile: isAddingFilesAllowed,
-		showHiddenFiles: userIsStaff,
+		showHiddenFiles: localStorage.getItem('editor.showHiddenFiles') === 'true',
 		callbacks: {
 			onDidChangeFileGroup: (multipleFileGroupEditor) => {
 				const fileGroupHasTest =
