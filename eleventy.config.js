@@ -21,9 +21,13 @@ const customCollections = require("./eleventy.config.collection.js");
 module.exports = function (eleventyConfig) {
 	// eleventyConfig.addPlugin(pluginSyntaxHighlight);
 	// const highlighter = eleventyConfig.markdownHighlighter;
+	eleventyConfig.ignores.add("./src/courses/*/*/files/**/*");
 	eleventyConfig.addMarkdownHighlighter((str, language) => {
 		if (language === "mermaid") {
 			return `<pre class="mermaid">${str}</pre>`;
+		}
+		if (language === "") {
+			language = "plaintext";
 		}
 		return hljs.highlight(str, { language }).value;
 		// return highlighter(str, language);
@@ -50,8 +54,7 @@ module.exports = function (eleventyConfig) {
 		"./node_modules/alpinejs/dist/cdn.min.js": "/js/alpine.js",
 		"./node_modules/@alpinejs/intersect/dist/cdn.min.js":
 			"/js/alpine.intersect.js",
-		"./node_modules/@alpinejs/persist/dist/cdn.min.js":
-			"/js/alpine.persist.js",
+		"./node_modules/@alpinejs/persist/dist/cdn.min.js": "/js/alpine.persist.js",
 		"./node_modules/hotkeys-js/dist/hotkeys.js": "/js/hotkeys.js",
 		"./node_modules/mermaid/dist/mermaid.js": "/js/mermaid.js",
 		"./node_modules/typed.js/dist/typed.umd.js": "/js/typed.umd.js",
