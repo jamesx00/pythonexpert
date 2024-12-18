@@ -49,7 +49,7 @@ require(["vs/editor/editor.main"], function () {
 	const parsedFileGroups = beforeParsedFileGroups.map((fileGroup) => {
 		fileGroup.files = fileGroup.files.map((file) => {
 			const fileId = `${fileGroup.id}-${file.id}`;
-			file.content = document.getElementById(`file-${fileId}`).textContent;
+			file.content = document.getElementById(`file-${fileId}`).innerHTML;
 			return file;
 		});
 		return fileGroup;
