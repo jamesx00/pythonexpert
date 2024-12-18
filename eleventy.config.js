@@ -149,12 +149,6 @@ module.exports = function (eleventyConfig) {
 		return new Date().toISOString();
 	});
 
-	eleventyConfig.addShortcode("fileContent", (inputPath, fileName) => {
-		const directory = path.dirname(inputPath);
-		const fullPath = path.join(directory, "files", fileName);
-		return fs.readFileSync(fullPath);
-	});
-
 	// Features to make your build faster (when you need them)
 
 	// If your passthrough copy gets heavy and cumbersome, add this line

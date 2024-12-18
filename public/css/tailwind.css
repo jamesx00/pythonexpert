@@ -1664,10 +1664,6 @@ h4 {
   width: 100vw;
 }
 
-.min-w-full {
-  min-width: 100%;
-}
-
 .max-w-4xl {
   max-width: 56rem;
 }
@@ -3772,14 +3768,6 @@ code {
 
   .md\:w-80 {
     width: 20rem;
-  }
-
-  .md\:min-w-0 {
-    min-width: 0px;
-  }
-
-  .md\:max-w-prose {
-    max-width: 65ch;
   }
 
   .md\:flex-1 {
