@@ -164,6 +164,7 @@ layout: layouts/base.njk
                     <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
                         <div
                             @click.outside="$refs.nextModalContainer.classList.add('hidden')"
+                            @keyup.esc="$refs.nextModalContainer.classList.add('hidden')"
                             class="relative w-full overflow-hidden px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm
                                 sm:p-6 md:w-80 border border-pe_light_blue bg-slate-100 opacity-100 translate-y-0 sm:scale-100"
                             id="headlessui-dialog-panel-:r9:"
