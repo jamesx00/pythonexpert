@@ -1444,10 +1444,6 @@ h4 {
   z-index: 50;
 }
 
-.order-1 {
-  order: 1;
-}
-
 .order-2 {
   order: 2;
 }
@@ -3737,10 +3733,6 @@ code {
 @media (min-width: 768px) {
   .md\:order-1 {
     order: 1;
-  }
-
-  .md\:order-2 {
-    order: 2;
   }
 
   .md\:mb-0 {
