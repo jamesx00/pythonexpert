@@ -9,7 +9,12 @@ eleventyNavigation:
   <div class="max-w-4xl mx-auto py-16">
     <h2 class="text-xl md:text-2xl text-primary-700 mb-6">Welcome to PythonExpert! 🚀</h2>
     <p class="mb-4 text-gray-700">
-      PythonExpert is a <strong>free</strong> and <strong>open-source</strong> web application designed to help anyone learn how to program, step by step. Whether you're a beginner or looking to sharpen your skills, you'll find courses tailored to guide you through your programming journey.
+      PythonExpert is a
+      <strong>free</strong>
+      and
+      <strong>open-source</strong>
+      web application designed to help anyone learn how to program, step by step. Whether you're a beginner or looking to
+      sharpen your skills, you'll find courses tailored to guide you through your programming journey.
     </p>
     <p class="text-gray-700">
       👉 Check out the courses below and start learning for free today!
@@ -20,11 +25,15 @@ eleventyNavigation:
     <p class="mb-12 text-gray-700">
       All the courses on this website is free.
     </p>
-
     {% for course in collections.course %}
       <div class="relative group mb-12">
         <h4 class="mb-4 font-victor-mono">{{ course.data.title }}</h4>
         <p class="text-gray-600 mb-4 font-victor-mono">{{ course.data.description }}</p>
+        {% if course.data.is_under_development %}
+          <div class="mb-4">
+            <span class="text-sm text-red-600">Under development</span>
+          </div>
+        {% endif %}
         <a href="{{ course.url }}" class="text-sm text-blue-600 hover:underline stretched-link">Start learning</a>
       </div>
     {% endfor %}
