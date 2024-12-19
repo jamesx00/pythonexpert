@@ -3,7 +3,7 @@ layout: layouts/base.njk
 ---
 
 {% set nextLesson = collections.lesson|filter("course_id", course_id)|sortByDirectoryPrefix|getNextCollectionItem(page) %}
-<div x-data="{ newFileOpen: false, sidebarOpen: false}">
+<div x-data="{ newFileOpen: false, sidebarOpen: false, completedLesson: $persist(false).as('{{page.url}}')}">
     <button
         class="fixed right-0 top-[100px] border bg-gray-300 hover:bg-gray-400 px-2 py-1 shadow-lg z-50"
         @click="sidebarOpen = true">
@@ -28,7 +28,7 @@ layout: layouts/base.njk
                     id="next-container-below-content"
                     class="complete-and-next-form-container {% if code_editor %}hidden {% endif %}md:block">
                     <div class="{% if code_editor %}hidden{% endif %}">
-                        <a href="{% if nextLesson %}{{ nextLesson.url }}{% else %}/courses/{{ course_slug }}{% endif %}" class="mb-4 mt-6 flex w-full items-center justify-center bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-800 focus:outline-none md:mb-0">
+                        <a @click="completedLesson = true" href="{% if nextLesson %}{{ nextLesson.url }}{% else %}/courses/{{ course_slug }}{% endif %}" class="mb-4 mt-6 flex w-full items-center justify-center bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-800 focus:outline-none md:mb-0">
                             {% if nextLesson %}Next{% else %}Complete the course{% endif %}
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -117,7 +117,7 @@ layout: layouts/base.njk
                         {% endif %}
                         <div id="next-container-below-editor" class="complete-and-next-form-container block md:hidden">
                             <div class="hidden">
-                                <a href="{% if nextLesson %}{{ nextLesson.url }}{% else %}/courses/{{ course_slug }}{% endif %}" class="mb-4 mt-6 flex w-full items-center justify-center bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-800 focus:outline-none md:mb-0">
+                                <a @click="completedLesson = true" href="{% if nextLesson %}{{ nextLesson.url }}{% else %}/courses/{{ course_slug }}{% endif %}" class="mb-4 mt-6 flex w-full items-center justify-center bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-800 focus:outline-none md:mb-0">
                                     {% if nextLesson %}Next{% else %}Complete the course{% endif %}
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -192,7 +192,7 @@ layout: layouts/base.njk
                                 </div>
                             </div>
                             <div class="mt-5 sm:mt-6">
-                                <a href="{% if nextLesson %}{{ nextLesson.url }}{% else %}/courses/{{ course_slug }}{% endif %}" type="submit" class="mb-4 mt-6 flex w-full items-center justify-center bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-800 focus:outline-none md:mb-0">
+                                <a @click="completedLesson = true" href="{% if nextLesson %}{{ nextLesson.url }}{% else %}/courses/{{ course_slug }}{% endif %}" type="submit" class="mb-4 mt-6 flex w-full items-center justify-center bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-800 focus:outline-none md:mb-0">
                                     {% if nextLesson %}Next{% else %}Complete the course{% endif %}
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -243,7 +243,7 @@ layout: layouts/base.njk
                             <div class="bg-indigo-700 px-4 py-6 sm:px-6">
                                 <div class="flex items-center justify-between">
                                     <h2 class="text-base font-semibold font-victor-mono leading-6 text-white" id="slide-over-title">
-                                        <a href="/courses/{{ course_slug }}" class="hover:underline">{{ course_name }}</a>
+                                        <a href="/courses/{{ course_slug }}/" class="hover:underline">{{ course_name }}</a>
                                     </h2>
                                     <div class="ml-3 flex h-7 items-center">
                                         <button
@@ -279,8 +279,16 @@ layout: layouts/base.njk
                                             </p>
                                             {% set past_first_section = true %}
                                         {% endif %}
-                                        <div class="text-gray-500 dark:text-slate-200 text-sm mb-1" x-show="open">
-                                            <i class="far fa-fw mr-1 fa-circle"></i>
+                                        <div 
+                                            x-data="{completed: $persist(false).as('{{ lesson.url }}')}"
+                                            class="text-gray-500 dark:text-slate-200 text-sm mb-1" x-show="open"
+                                            >
+                                            <i x-cloak x-show="completed" @click="completed=false" class="mr-1 fal fa-fw fa-check-circle hover:cursor-pointer text-green-700"></i>
+                                            <i
+                                                x-cloak
+                                                x-show="!completed"
+                                                @click="completed=true"
+                                                class="mr-1 fal fa-fw fa-circle hover:cursor-pointer"></i>
                                             <a href="{{ lesson.url }}" class="{% if page.url == lesson.url %}text-primary-700 font-medium currentLesson{% endif %}">
                                                 {{ lesson.data.lesson_name }}
                                             </a>

@@ -23,10 +23,17 @@ layout: layouts/base.njk
                         {% if lesson.data.section %}
                             <p class="text-xl font-victor-mono font-bold mt-4 text-primary-700 mb-4">{{ lesson.data.section }}</p>
                         {% endif %}
-                        <a href="{{ lesson.url }}" class="hover:underline mb-2 font-light text-lg flex items-center">
-                            <i class="fal fa-fw mr-1 fa-circle"></i>
-                            {{ lesson.data.lesson_name }}
-                        </a>
+                        <div class="flex items-center mb-2" x-data="{completed: $persist(false).as('{{ lesson.url }}')}">
+                            <i
+                                x-cloak
+                                x-show="completed"
+                                @click="completed=false"
+                                class="mr-2 fal fa-fw fa-check-circle text-lg hover:cursor-pointer text-green-700"></i>
+                            <i x-cloak x-show="!completed" @click="completed=true" class="mr-2 fal fa-fw fa-circle text-lg hover:cursor-pointer"></i>
+                            <a href="{{ lesson.url }}" class="hover:underline font-light text-lg">
+                                {{ lesson.data.lesson_name }}
+                            </a>
+                        </div>
                     </li>
                 {% endfor %}
             </ul>

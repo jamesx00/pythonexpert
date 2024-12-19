@@ -1,5 +1,5 @@
 module.exports = {
-	course_id: "basic-sql",
+	course_id: "essential-sql",
 	course_name: "Basic SQL for Beginners",
-	course_slug: "basic-sql",
+	course_slug: "essential-sql",
 };
