@@ -11,7 +11,6 @@
 /**
  * @type {MonacoFile}
  */
-
 // Monaco editor and code execution
 require(["vs/editor/editor.main"], function () {
 	const completeAndNextModalContainer = document.getElementById(
@@ -67,7 +66,7 @@ require(["vs/editor/editor.main"], function () {
 		fileGroupSelector: "#file-group",
 		userLanguage: getUserLanguage(),
 		allowAddFile: isAddingFilesAllowed,
-		showHiddenFiles: localStorage.getItem('editor.showHiddenFiles') === 'true',
+		showHiddenFiles: localStorage.getItem("editor.showHiddenFiles") === "true",
 		callbacks: {
 			onDidChangeFileGroup: (multipleFileGroupEditor) => {
 				const fileGroupHasTest =
