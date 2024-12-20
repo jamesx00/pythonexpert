@@ -1,6 +1,7 @@
 @import "./core.css";
 /* @import "./prism.monokai.css"; */
-@import "./highlightjs.monokai.css";
+/* @import "./highlightjs.monokai.css"; */
+@import "./highlightjs.monokai-sublime.css";
 
 @tailwind base;
 @tailwind components;
@@ -81,7 +82,7 @@ code > .copy-content {
 #lesson-content {
 	@apply prose prose-slate max-w-none dark:prose-invert prose-pre:bg-transparent prose-pre:p-0;
 	@apply prose-img:mx-auto prose-hr:my-4 lg:mx-auto prose-headings:text-primary-800 prose-headings:font-bold;
-	@apply [&_pre:has(code)]:bg-slate-900 [&_pre:has(code)]:p-1 [&_pre:has(code)]:px-3 [&_pre:has(code)]:relative [&_pre:has(code)]:font-victor-mono;
+	@apply [&_pre:has(code)]:bg-[#23241f] [&_pre:has(code)]:p-1 [&_pre:has(code)]:px-3 [&_pre:has(code)]:relative [&_pre:has(code)]:font-victor-mono;
 }
 
 .mermaid:not([data-processed="true"]) {

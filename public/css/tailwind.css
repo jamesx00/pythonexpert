@@ -51,76 +51,87 @@
 
 /* @import "./prism.monokai.css"; */
 
+/* @import "./highlightjs.monokai.css"; */
+
 /*
-Monokai style - ported by Luigi Maselli - http://grigio.org
+
+Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-license.org/
+
 */
 
 .hljs {
-  display: block;
-  overflow-x: auto;
-  padding: 0.5em;
-  background: #272822;
-  color: #ddd;
+  background: #23241f;
+  color: #f8f8f2;
 }
 
 .hljs-tag,
+.hljs-subst {
+  color: #f8f8f2;
+}
+
+.hljs-strong,
+.hljs-emphasis {
+  color: #a8a8a2;
+}
+
+.hljs-bullet,
+.hljs-quote,
+.hljs-number,
+.hljs-regexp,
+.hljs-literal,
+.hljs-link {
+  color: #ae81ff;
+}
+
+.hljs-code,
+.hljs-title,
+.hljs-section,
+.hljs-selector-class {
+  color: #a6e22e;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
 .hljs-keyword,
 .hljs-selector-tag,
-.hljs-literal,
-.hljs-strong,
-.hljs-name {
+.hljs-name,
+.hljs-attr {
   color: #f92672;
 }
 
-.hljs-code {
+.hljs-symbol,
+.hljs-attribute {
   color: #66d9ef;
 }
 
+.hljs-params,
+.hljs-title.class_,
 .hljs-class .hljs-title {
-  color: white;
-}
-
-.hljs-attribute,
-.hljs-symbol,
-.hljs-regexp,
-.hljs-link {
-  color: #bf79db;
+  color: #f8f8f2;
 }
 
 .hljs-string,
-.hljs-bullet,
-.hljs-subst,
-.hljs-title,
-.hljs-section,
-.hljs-emphasis,
 .hljs-type,
 .hljs-built_in,
-.hljs-builtin-name,
+.hljs-selector-id,
 .hljs-selector-attr,
 .hljs-selector-pseudo,
 .hljs-addition,
 .hljs-variable,
-.hljs-template-tag,
 .hljs-template-variable {
-  color: #a6e22e;
+  color: #e6db74;
 }
 
 .hljs-comment,
-.hljs-quote,
 .hljs-deletion,
 .hljs-meta {
   color: #75715e;
-}
-
-.hljs-keyword,
-.hljs-selector-tag,
-.hljs-literal,
-.hljs-doctag,
-.hljs-title,
-.hljs-section,
-.hljs-type,
-.hljs-selector-id {
-  font-weight: bold;
 }
 
 /* ! tailwindcss v3.4.10 | MIT License | https://tailwindcss.com */
@@ -1277,74 +1288,6 @@ h4 {
   --tw-prose-invert-pre-bg: rgb(0 0 0 / 50%);
   --tw-prose-invert-th-borders: #475569;
   --tw-prose-invert-td-borders: #334155;
-}
-
-.hljs {
-  display: block;
-  overflow-x: auto;
-  padding: 0.5em;
-  background: #272822;
-  color: #ddd;
-}
-
-.hljs-tag,
-.hljs-keyword,
-.hljs-selector-tag,
-.hljs-literal,
-.hljs-strong,
-.hljs-name {
-  color: #f92672;
-}
-
-.hljs-code {
-  color: #66d9ef;
-}
-
-.hljs-class .hljs-title {
-  color: white;
-}
-
-.hljs-attribute,
-.hljs-symbol,
-.hljs-regexp,
-.hljs-link {
-  color: #bf79db;
-}
-
-.hljs-string,
-.hljs-bullet,
-.hljs-subst,
-.hljs-title,
-.hljs-section,
-.hljs-emphasis,
-.hljs-type,
-.hljs-built_in,
-.hljs-builtin-name,
-.hljs-selector-attr,
-.hljs-selector-pseudo,
-.hljs-addition,
-.hljs-variable,
-.hljs-template-tag,
-.hljs-template-variable {
-  color: #a6e22e;
-}
-
-.hljs-comment,
-.hljs-quote,
-.hljs-deletion,
-.hljs-meta {
-  color: #75715e;
-}
-
-.hljs-keyword,
-.hljs-selector-tag,
-.hljs-literal,
-.hljs-doctag,
-.hljs-title,
-.hljs-section,
-.hljs-type,
-.hljs-selector-id {
-  font-weight: bold;
 }
 
 .sr-only {
@@ -3116,7 +3059,7 @@ code > .copy-content {
 #lesson-content pre:has(code) {
   position: relative;
   --tw-bg-opacity: 1;
-  background-color: rgb(15 23 42 / var(--tw-bg-opacity));
+  background-color: rgb(35 36 31 / var(--tw-bg-opacity));
   padding: 0.25rem;
   padding-left: 0.75rem;
   padding-right: 0.75rem;

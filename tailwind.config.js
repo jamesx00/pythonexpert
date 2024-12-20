@@ -6,9 +6,6 @@ module.exports = {
 		"public/js/**/*.js",
 	],
 	theme: {
-		hljs: {
-			theme: "monokai",
-		},
 		extend: {
 			colors: {
 				primary: {
@@ -56,13 +53,5 @@ module.exports = {
 		},
 	},
 	darkMode: "class",
-	safelist: [
-		{
-			pattern: /hljs+/,
-		},
-	],
-	plugins: [
-		require("@tailwindcss/typography"),
-		require("tailwind-highlightjs"),
-	],
+	plugins: [require("@tailwindcss/typography")],
 };
