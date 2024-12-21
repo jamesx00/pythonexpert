@@ -25,7 +25,7 @@ file_groups:
         is_hidden: true
         is_main: true
         is_test_file: false
-        source: main.py
+        source: setup_data.py
       - file_name: tests.py
         file_type: python
         id: 476

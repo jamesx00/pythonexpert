@@ -8,7 +8,6 @@ const markdownItAnchor = require("markdown-it-anchor");
 const hljs = require("highlight.js");
 
 const pluginRss = require("@11ty/eleventy-plugin-rss");
-const pluginSyntaxHighlight = require("@11ty/eleventy-plugin-syntaxhighlight");
 const pluginBundle = require("@11ty/eleventy-plugin-bundle");
 const pluginNavigation = require("@11ty/eleventy-navigation");
 const { EleventyHtmlBasePlugin } = require("@11ty/eleventy");
@@ -19,8 +18,6 @@ const customCollections = require("./eleventy.config.collection.js");
 
 /** @param {import('@11ty/eleventy').UserConfig} eleventyConfig */
 module.exports = function (eleventyConfig) {
-	// eleventyConfig.addPlugin(pluginSyntaxHighlight);
-	// const highlighter = eleventyConfig.markdownHighlighter;
 	eleventyConfig.ignores.add("./src/courses/*/*/files/**/*");
 	eleventyConfig.addMarkdownHighlighter((str, language) => {
 		if (language === "mermaid") {
@@ -30,18 +27,7 @@ module.exports = function (eleventyConfig) {
 			language = "plaintext";
 		}
 		return hljs.highlight(str, { language }).value;
-		// return highlighter(str, language);
 	});
-	// eleventyConfig.addPlugin(pluginMermaid);
-	// eleventyConfig.addPlugin(eleventyPluginSyntaxHighlighter);
-	// const highlighter = eleventyConfig.markdownHighlighter;
-	// eleventyConfig.addMarkdownHighlighter((str, language) => {
-	// 	console.log(language);
-	// 	if (language === "mermaid") {
-	// 		return `<pre class="mermaid">${str}</pre>`;
-	// 	}
-	// 	// return highlighter(str, language);
-	// });
 	// To Support .yaml Extension in _data
 	// You may remove this if you can use JSON
 	eleventyConfig.addDataExtension("yaml", (contents) => yaml.load(contents));
@@ -68,20 +54,15 @@ module.exports = function (eleventyConfig) {
 	// https://www.11ty.dev/docs/watch-serve/#add-your-own-watch-targets
 
 	// Watch content images for the image pipeline.
-	eleventyConfig.addWatchTarget("src/**/*.{svg,webp,png,jpeg}");
+	eleventyConfig.addWatchTarget("src/**/*.{svg,webp,png,jpeg,py}");
 
 	// App plugins
 	eleventyConfig.addPlugin(pluginDrafts);
 	eleventyConfig.addPlugin(pluginImages);
 	eleventyConfig.addPlugin(customCollections);
-	// eleventyConfig.addPlugin(pluginMermaid);
-	// eleventyConfig.addPlugin(syntaxHighlight);
 
 	// Official plugins
 	eleventyConfig.addPlugin(pluginRss);
-	// eleventyConfig.addPlugin(pluginSyntaxHighlight, {
-	// 	preAttributes: { tabindex: 0 },
-	// });
 	eleventyConfig.addPlugin(pluginNavigation);
 	eleventyConfig.addPlugin(EleventyHtmlBasePlugin);
 	eleventyConfig.addPlugin(pluginBundle);
@@ -152,7 +133,14 @@ module.exports = function (eleventyConfig) {
 	eleventyConfig.addShortcode("fileContent", (inputPath, fileName) => {
 		const directory = path.dirname(inputPath);
 		const fullPath = path.join(directory, "files", fileName);
-		return fs.readFileSync(fullPath);
+		try {
+			return fs.readFileSync(fullPath);
+		} catch (e) {
+			// read from one directory up to common course files
+			const directory = path.dirname(path.dirname(inputPath));
+			const fullPath = path.join(directory, "files", fileName);
+			return fs.readFileSync(fullPath);
+		}
 	});
 
 	// Features to make your build faster (when you need them)
