@@ -11,6 +11,7 @@ layout: layouts/base.njk
     </button>
     <div class="py-6 px-4 bg-gray-50 dark:bg-zinc-900 min-h-screen">
         <div class="grid md:flex gap-4 md:justify-center">
+            {% if not hide_content %}
             <div class="md:flex-1 max-w-prose overflow-y-hidden">
                 <div class="mb-6 mx-auto bg-white dark:bg-zinc-950 p-4 {% if not code_editor %}max-w-prose{% endif %}">
                     <p class="text-gray-500 dark:text-slate-300 text-xs font-light mb-2">
@@ -48,6 +49,7 @@ layout: layouts/base.njk
                     </div>
                 </div>
             </div>
+            {% endif %}
             {% if code_editor %}
                 <div class="relative flex-1">
                     <div class="sticky top-4">
