@@ -51,9 +51,9 @@ layout: layouts/base.njk
             {% if code_editor %}
                 <div class="relative flex-1">
                     <div class="sticky top-4">
-                        <div class="mb-4 flex justify-end {% if not file_group_selector %}hidden{% endif %}">
+                        <div class="mb-4 flex">
                             <div>
-                                <label for="file-group" class="block text-sm font-medium text-gray-700 dark:text-slate-400">Language</label>
+                                <label for="file-group" class="block text-sm font-medium text-primary-700">Language</label>
                                 <select
                                     id="file-group"
                                     name="file-group"
