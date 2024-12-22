@@ -42,6 +42,7 @@
 		"markdown-it-anchor": "^8.6.7",
 		"mermaid": "^11.4.1",
 		"monaco-editor": "^0.52.2",
+		"monaco-vim": "^0.4.2",
 		"npm-run-all": "^4.1.5",
 		"tailwind-highlightjs": "^2.0.1",
 		"typed.js": "^2.1.0"

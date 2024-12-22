@@ -12,7 +12,7 @@
  * @type {MonacoFile}
  */
 // Monaco editor and code execution
-require(["vs/editor/editor.main"], function () {
+require(["vs/editor/editor.main", "monaco-vim"], function (a, MonacoVim) {
 	const completeAndNextModalContainer = document.getElementById(
 		"complete-and-next-modal-container"
 	);
@@ -81,6 +81,7 @@ require(["vs/editor/editor.main"], function () {
 	});
 
 	const editor = multipleFileGroupEditor.editor;
+	MonacoVim.initVimMode(editor);
 	editor.focus();
 	editor.addAction({
 		id: "execute-code",

@@ -45,7 +45,9 @@ module.exports = function (eleventyConfig) {
 		"./node_modules/mermaid/dist/mermaid.js": "/js/mermaid.js",
 		"./node_modules/typed.js/dist/typed.umd.js": "/js/typed.umd.js",
 		"./node_modules/marked/marked.min.js": "/js/marked.min.js",
-		"./node_modules/monaco-editor/min": "/js/monaco-editor/min",
+		"./node_modules/monaco-editor": "/js/monaco-editor",
+		"./node_modules/monaco-vim/dist/monaco-vim.js":
+			"/js/monaco-vim/monaco-vim.js",
 		"./src/admin/config.yml": "./admin/config.yml",
 		"./src/static/img": "/static/img",
 	});
