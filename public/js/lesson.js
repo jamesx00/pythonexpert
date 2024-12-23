@@ -274,6 +274,9 @@ require(["vs/editor/editor.main"], function () {
 		let outputText = "";
 		if (output.run.signal === "SIGKILL") {
 			outputText = "Code execution failed";
+			if (output.run.stdout !== "") {
+				outputText += ` with output: \n\n${output.run.stdout}`;
+			}
 		} else {
 			outputText = output.run.stdout + output.run.stderr;
 		}
