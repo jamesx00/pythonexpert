@@ -2,8 +2,9 @@
   <div class="default-container px-4">
     <div class="flex justify-between items-center">
       <div class="py-4">
-        <a href="/" class="uppercase font-bold text-primary-900 tracking-widest inline-block">
-          {% image eleventy.env.root + "/public/img/logo.png", "PythonExpert logo", "100px" %}
+        <a href="/" class="font-light text-slate-900 tracking-widest flex font-victor-mono">
+          <p class="leading-none">
+            <span class="">+=</span><br/> PythonExpert</p>
         </a>
       </div>
       <div class="hidden sm:ml-6 sm:flex">
@@ -21,12 +22,14 @@
             {% endif %}
           </div>
         {% endfor %}
-        <a href="https://github.com/jamesx00/pythonexpert" target="_blank" class="text-sm inline-flex items-center px-1 font-medium hover:text-primary-900 transition">
+        <a
+          href="https://github.com/jamesx00/pythonexpert"
+          target="_blank"
+          class="text-sm inline-flex items-center px-1 font-medium hover:text-primary-900 transition">
           <i class="fab fa-github mr-4 fa-2x"></i>
         </a>
       </div>
-      <div
-        class="-mr-2 flex items-center sm:hidden">
+      <div class="-mr-2 flex items-center sm:hidden">
         <a href="https://github.com/jamesx00/pythonexpert" target="_blank">
           <i class="fab fa-github mr-4 fa-2x"></i>
         </a>
