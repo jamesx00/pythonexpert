@@ -48,7 +48,7 @@ require(["vs/editor/editor.main"], function () {
 	const parsedFileGroups = beforeParsedFileGroups.map((fileGroup) => {
 		fileGroup.files = fileGroup.files.map((file) => {
 			const fileId = `${fileGroup.id}-${file.id}`;
-			file.content = document.getElementById(`file-${fileId}`).innerHTML;
+			file.content = document.getElementById(`file-${fileId}`).innerText;
 			return file;
 		});
 		return fileGroup;
