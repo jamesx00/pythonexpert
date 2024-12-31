@@ -62,7 +62,9 @@
         {% endif %}
     </head>
     <body>
-        {% include 'navigation.njk' %}
+        {% if not hide_navbar %}
+            {% include 'navigation.njk' %}
+        {% endif %}
         <main id="skip">
             {{ content | safe }}
         </main>

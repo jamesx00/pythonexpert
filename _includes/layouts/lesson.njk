@@ -52,21 +52,23 @@ layout: layouts/base.njk
             {% endif %}
             {% if code_editor %}
                 <div class="relative flex-1">
-                    <div class="sticky top-4">
-                        <div class="mb-4 flex">
-                            <div>
-                                <label for="file-group" class="block text-sm font-medium text-primary-700">Language</label>
-                                <select
-                                    id="file-group"
-                                    name="file-group"
-                                    class="hidden dark:bg-slate-600 dark:text-slate-200 mt-1 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none
-                                        focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"></select>
+                    <div class="sticky top-4 {% if editor_by_output %}grid md:grid-cols-2 gap-6{% endif %}">
+                        <div>
+                            <div class="mb-4 flex">
+                                <div>
+                                    <label for="file-group" class="block text-sm font-medium text-primary-700">Language</label>
+                                    <select
+                                        id="file-group"
+                                        name="file-group"
+                                        class="hidden dark:bg-slate-600 dark:text-slate-200 mt-1 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none
+                                            focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"></select>
+                                </div>
                             </div>
+                            <div id="file-buttons-container" class="text-[0px]"></div>
+                            <div id="editor" class="{% if editor_by_output %}h-[700px]{% else %}h-[400px]{% endif %} w-full border mb-4"></div>
                         </div>
-                        <div id="file-buttons-container" class="text-[0px]"></div>
-                        <div id="editor" class="h-[400px] w-full border mb-4"></div>
                         {% if code_execution %}
-                            <div id="output-container">
+                            <div id="output-container" class="mb-6">
                                 <div>
                                     <div id="executing-output" class="bg-slate-800 hidden hljs p-2 font-victor-mono text-sm">
                                         <span></span>
@@ -83,7 +85,7 @@ layout: layouts/base.njk
                                     </div>
                                 </div>
                             </div>
-                            <div class="my-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 <button
                                     id="button-run-code"
                                     type="button"
