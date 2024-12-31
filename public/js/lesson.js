@@ -53,13 +53,6 @@ require(["vs/editor/editor.main"], function () {
 				`files.${location.pathname}.${fileGroup.id}.${file.id}`
 			);
 
-			console.log(
-				file.file_name,
-				fileGroup.id,
-				file.id,
-				fileContentFromLocalStorage
-			);
-
 			if (
 				fileContentFromLocalStorage !== null &&
 				fileContentFromLocalStorage !== ""
