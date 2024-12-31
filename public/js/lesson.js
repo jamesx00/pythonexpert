@@ -53,6 +53,13 @@ require(["vs/editor/editor.main"], function () {
 				`files.${location.pathname}.${fileGroup.id}.${file.id}`
 			);
 
+			console.log(
+				file.file_name,
+				fileGroup.id,
+				file.id,
+				fileContentFromLocalStorage
+			);
+
 			if (
 				fileContentFromLocalStorage !== null &&
 				fileContentFromLocalStorage !== ""
@@ -93,9 +100,10 @@ require(["vs/editor/editor.main"], function () {
 			onDidCreateEditor(editor, multipleFileGroupEditor) {
 				editor.onDidChangeModelContent((e, args) => {
 					const fileId = multipleFileGroupEditor.currentFileId || 0;
+					const fileGroupId =
+						multipleFileGroupEditor.getFileGroupIdFromFileId(fileId);
 					const model = editor.getModel();
 					const fileContent = model.getValue();
-					const fileGroupId = multipleFileGroupEditor.currentFileGroupId;
 					const key = `files.${location.pathname}.${fileGroupId}.${fileId}`;
 					localStorage.setItem(key, fileContent);
 				});
