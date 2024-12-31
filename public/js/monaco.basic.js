@@ -22,7 +22,7 @@ require(["vs/editor/editor.main"], function () {
 					content: "### This is going to be amazing!",
 					file_name: "file1.md",
 					file_type: "markdown",
-					editable: true,
+					is_editable: true,
 					is_closable: true,
 					is_hidden: false,
 					is_edit_focus: true,

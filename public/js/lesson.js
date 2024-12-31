@@ -48,7 +48,20 @@ require(["vs/editor/editor.main"], function () {
 	const parsedFileGroups = beforeParsedFileGroups.map((fileGroup) => {
 		fileGroup.files = fileGroup.files.map((file) => {
 			const fileId = `${fileGroup.id}-${file.id}`;
-			file.content = document.getElementById(`file-${fileId}`).innerText;
+
+			const fileContentFromLocalStorage = localStorage.getItem(
+				`files.${location.pathname}.${fileGroup.id}.${file.id}`
+			);
+
+			if (
+				fileContentFromLocalStorage !== null &&
+				fileContentFromLocalStorage !== ""
+			) {
+				file.content = fileContentFromLocalStorage;
+			} else {
+				file.content = document.getElementById(`file-${fileId}`).innerText;
+			}
+
 			return file;
 		});
 		return fileGroup;
@@ -76,6 +89,16 @@ require(["vs/editor/editor.main"], function () {
 				} else {
 					showCompleteAndNextForm();
 				}
+			},
+			onDidCreateEditor(editor, multipleFileGroupEditor) {
+				editor.onDidChangeModelContent((e, args) => {
+					const fileId = multipleFileGroupEditor.currentFileId || 0;
+					const model = editor.getModel();
+					const fileContent = model.getValue();
+					const fileGroupId = multipleFileGroupEditor.currentFileGroupId;
+					const key = `files.${location.pathname}.${fileGroupId}.${fileId}`;
+					localStorage.setItem(key, fileContent);
+				});
 			},
 		},
 	});

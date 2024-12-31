@@ -1410,11 +1410,6 @@ h4 {
   margin-bottom: 0.75rem;
 }
 
-.my-8 {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-}
-
 .-mr-2 {
   margin-right: -0.5rem;
 }
@@ -1495,10 +1490,6 @@ h4 {
   margin-top: 1.5rem;
 }
 
-.mb-8 {
-  margin-bottom: 2rem;
-}
-
 .block {
   display: block;
 }
@@ -1559,6 +1550,10 @@ h4 {
   height: 400px;
 }
 
+.h-\[700px\] {
+  height: 700px;
+}
+
 .h-\[95\%\] {
   height: 95%;
 }
@@ -1569,10 +1564,6 @@ h4 {
 
 .h-screen {
   height: 100vh;
-}
-
-.h-\[700px\] {
-  height: 700px;
 }
 
 .max-h-0 {
@@ -1709,10 +1700,6 @@ h4 {
 
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
-}
-
-.grid-cols-2 {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .flex-col {
