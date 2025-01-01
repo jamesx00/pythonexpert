@@ -65,7 +65,8 @@ layout: layouts/base.njk
                                 </div>
                             </div>
                             <div id="file-buttons-container" class="text-[0px]"></div>
-                            <div id="editor" class="{% if editor_by_output %}h-[700px]{% else %}h-[400px]{% endif %} w-full border mb-4"></div>
+                            <div id="editor" class="{% if editor_by_output %}h-[400px] md:h-[700px]{% else %}h-[400px]{% endif %} w-full border"></div>
+                            <div id="vim-status" class="bg-white text-xs border border-t-0 text-gray-500 mb-4"></div>
                         </div>
                         {% if code_execution %}
                             <div id="output-container" class="mb-6">

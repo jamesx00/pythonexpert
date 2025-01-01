@@ -142,7 +142,8 @@ export class MultipleFileGroupEditor {
 		);
 
 		if (options.vimMode) {
-			initVimMode(this.editor);
+			const statusNode = document.getElementById("vim-status");
+			initVimMode(this.editor, statusNode);
 		}
 
 		this.options.callbacks?.onDidCreateEditor?.(this.editor, this);

@@ -1621,10 +1621,6 @@ h4 {
   height: 400px;
 }
 
-.h-\[700px\] {
-  height: 700px;
-}
-
 .h-\[95\%\] {
   height: 95%;
 }
@@ -1872,6 +1868,10 @@ h4 {
 
 .border-b {
   border-bottom-width: 1px;
+}
+
+.border-t-0 {
+  border-top-width: 0px;
 }
 
 .border-gray-300 {
@@ -3644,6 +3644,10 @@ code {
 
   .md\:hidden {
     display: none;
+  }
+
+  .md\:h-\[700px\] {
+    height: 700px;
   }
 
   .md\:w-80 {
