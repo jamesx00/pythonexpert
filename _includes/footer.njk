@@ -1,31 +1,31 @@
-<footer id="cs-footer-272" class="font-victor-mono">
-    <div class="default-container md:flex px-4">
+<footer>
+    <div class="default-container md:flex px-4 py-12 text-gray-600">
         <div class="md:flex md:gap-8 lg:gap-16">
             <ul class="mb-6">
-                <li class="cs-nav-li">
-                    <span class="cs-header">Quick links</span>
+                <li class="mb-2">
+                    <span class="text-primary-800">Quick links</span>
                 </li>
                 {% for item in collections.all | eleventyNavigation %}
-                    <li class="cs-nav-li">
-                        <a class="cs-nav-link" href="{{ item.url }}">{{ item.key }}</a>
+                    <li class="text-sm hover:underline mb-2">
+                        <a class="" href="{{ item.url }}">{{ item.key }}</a>
                     </li>
                 {% endfor %}
-                <li class="cs-nav-li">
-                    <a class="cs-nav-link" href="/markdown-editor/">Live editor</a>
+                <li class="text-sm hover:underline mb-2">
+                    <a class="" href="/markdown-editor/">Live editor</a>
                 </li>
-                <li class="cs-nav-li">
-                    <a class="cs-nav-link" href="/diff-editor/">Diff editor</a>
+                <li class="text-sm hover:underline mb-2">
+                    <a class="" href="/diff-editor/">Diff editor</a>
                 </li>
-                <li class="cs-nav-li">
-                    <a class="cs-nav-link" href="/code-execution/">Run your code</a>
+                <li class="text-sm hover:underline mb-2">
+                    <a class="" href="/code-execution/">Run your code</a>
                 </li>
             </ul>
             <ul class="mb-6">
-                <li class="cs-nav-li">
-                    <span class="cs-header">Contact</span>
+                <li class="mb-2">
+                    <span class="text-primary-800">Contact</span>
                 </li>
-                <li class="cs-contact-li">
-                    <a class="cs-contact-link" href="mailto:{{ metadata.author.email }}">{{ metadata.author.email }}</a>
+                <li class="">
+                    <a class="text-sm hover:underline" href="mailto:{{ metadata.author.email }}">✉️ send me an email</a>
                 </li>
             </ul>
         </div>
