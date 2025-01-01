@@ -3168,7 +3168,7 @@
 @font-face {
   font-family: "codicon";
   font-display: block;
-  src: url("./codicon-37A3DWZT.ttf") format("truetype");
+  src: url("/js/codicon-37A3DWZT.ttf") format("truetype");
 }
 .codicon[class*=codicon-] {
   font: normal normal normal 16px/1 codicon;

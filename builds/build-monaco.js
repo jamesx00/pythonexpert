@@ -37,6 +37,7 @@ build({
 	loader: {
 		".ttf": "file",
 	},
+	publicPath: "/js/",
 });
 
 /**
