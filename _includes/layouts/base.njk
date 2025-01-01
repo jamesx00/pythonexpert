@@ -62,7 +62,7 @@
         </script>
         {% endif %}
     </head>
-    <body>
+    <body x-data="{fullScreen: $persist(false).as('fullScreen')}">
         {% if not hide_navbar %}
             {% include 'navigation.njk' %}
         {% endif %}

@@ -1,0 +1,29 @@
+<div class="mb-6 bg-white p-4" x-data="{open: false}">
+    <div class="flex justify-end gap-4">
+        <button @click="open = !open" class="text-gray-600 hover:underline hover:text-primary-800">
+            <i class="far fa-cogs"></i>
+        </button>
+        <button x-show="!fullScreen" @click="fullScreen = true" class="text-gray-600 hover:underline hover:text-primary-800">
+            <i class="far fa-expand-wide"></i>
+        </button>
+        <button
+            x-cloak="x-cloak"
+            x-show="fullScreen"
+            @click="fullScreen = false"
+            class="text-gray-600 hover:underline hover:text-primary-800">
+            <i class="far fa-compress-wide"></i>
+        </button>
+    </div>
+    <div x-cloak="x-cloak" x-show="open" class="mt-4 text-gray-600">
+        <p>Editor settings</p>
+        <div x-data="{showHiddenFiles: $persist(false).as('editor.showHiddenFiles')}">
+            <input class="mr-2" type="checkbox" id="show-hidden-files" x-model="showHiddenFiles"/>
+            <label for="show-hidden-files">Show hidden files</label>
+        </div>
+        <div x-data="{vimMode: $persist(false).as('editor.vimMode')}">
+            <input class="mr-2" type="checkbox" id="enable-vim-mode" x-model="vimMode"/>
+            <label for="enable-vim-mode">Use vim keybindings</label>
+        </div>
+        <a href="" class="block text-blue-700 hover:underline mt-4">Save settings</a>
+    </div>
+</div>
