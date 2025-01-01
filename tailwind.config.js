@@ -4,6 +4,7 @@ module.exports = {
 		"src/**/*.{html,md,njk,js}",
 		"_includes/**/*.{html,md,njk,js}",
 		"!public/js/monaco-editor/**/*.js",
+		"!public/js/lesson.js",
 		"public/js/**/*.js",
 	],
 	theme: {
