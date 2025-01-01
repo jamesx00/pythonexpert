@@ -150,6 +150,9 @@ layout: layouts/base.njk
                 <div x-data="{showHiddenFiles: $persist(false).as('editor.showHiddenFiles')}">
                     <input class="mr-2" type="checkbox" id="show-hidden-files" x-model="showHiddenFiles"><label for="show-hidden-files">Show hidden files</label>
                 </div>
+                <div x-data="{vimMode: $persist(false).as('editor.vimMode')}">
+                    <input class="mr-2" type="checkbox" id="enable-vim-mode" x-model="vimMode"><label for="enable-vim-mode">Use vim keybindings</label>
+                </div>
                 <a href="" class="block text-blue-700 hover:underline mt-4">Save settings</a>
             </div>
         </div>
@@ -332,13 +335,5 @@ layout: layouts/base.njk
     mermaid.initialize({startOnLoad: true, fontFamily: 'Victor Mono', securityLevel: 'antiscript'});
 </script>
 {% if code_editor %}
-    <script src="/js/monaco-editor/min/vs/loader.js"></script>
-    <script>
-        require.config({
-            paths: {
-                vs: "{{env.base_url}}/js/monaco-editor/min/vs"
-            }
-        });
-    </script>
     <script src="/js/lesson.js"></script>
 {% endif %}
