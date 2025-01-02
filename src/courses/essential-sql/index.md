@@ -1,5 +1,5 @@
 ---
-title: Essential SQL
+title: SQL for beginners
 layout: layouts/course.njk
 override:tags: true
 tags: ["course"]

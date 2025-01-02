@@ -1,5 +1,5 @@
 ---
-title: Basic Python for beginners
+title: Learn to program with Python
 layout: layouts/course.njk
 override:tags: true
 tags: ["course"]
