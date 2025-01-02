@@ -5,7 +5,6 @@ code_editor: true
 code_execution: true
 adding_file_allowed: true
 hide_content: true
-hide_navbar: true
 editor_by_output: true
 file_groups:
   - common: true
