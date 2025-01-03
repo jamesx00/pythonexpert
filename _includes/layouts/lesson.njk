@@ -325,5 +325,6 @@ layout: layouts/base.njk
     mermaid.initialize({startOnLoad: true, fontFamily: 'Victor Mono', securityLevel: 'antiscript'});
 </script>
 {% if code_editor %}
+    <script src="/js/pe-monaco-editor.js"></script>
     <script src="/js/lesson.js"></script>
 {% endif %}

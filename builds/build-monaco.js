@@ -30,13 +30,14 @@ build({
 });
 
 build({
-	entryPoints: ["builds/lesson.js"],
+	entryPoints: ["builds/monaco.js"],
 	bundle: true,
 	format: "iife",
-	outfile: path.join(__dirname, "../public/js/lesson.js"),
+	outfile: path.join(__dirname, "../public/js/pe-monaco-editor.js"),
 	loader: {
 		".ttf": "file",
 	},
+	globalName: "pe",
 	publicPath: "/js/",
 });
 

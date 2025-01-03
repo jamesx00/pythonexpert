@@ -4,6 +4,7 @@ title: Live editor
 hide_navbar: true
 ---
 
+{% include 'settings.njk' %}
 <div class="flex">
     <div class="sticky top-0 inline-block flex-1 h-screen">
         <div class="mb-4 justify-end hidden">
@@ -28,12 +29,5 @@ hide_navbar: true
 </div>
 <script src="/js/marked.min.js"></script>
 <script src="/js/mermaid.js"></script>
-<script src="/js/monaco-editor/min/vs/loader.js"></script>
-<script>
-    require.config({
-        paths: {
-            vs: "{{ env.base_url }}/js/monaco-editor/min/vs"
-        }
-    });
-</script>
+<script src="/js/pe-monaco-editor.js"></script>
 <script src="/js/monaco.basic.js"></script>

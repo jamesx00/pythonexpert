@@ -66,7 +66,7 @@ self.MonacoEnvironment = {
  * @property {MultipleFileGroupEditorCallbacks=} callbacks
  */
 
-export class MultipleFileGroupEditor {
+class MultipleFileGroupEditor {
 	/**
 	 *
 	 * @param {string} selector
@@ -726,3 +726,8 @@ export class MultipleFileGroupEditor {
 		return button;
 	}
 }
+
+module.exports = {
+	MultipleFileGroupEditor,
+	monaco,
+};
