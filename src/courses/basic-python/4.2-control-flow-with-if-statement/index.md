@@ -1,5 +1,6 @@
 ---
 lesson_name: Control Flow with If Statement
+section: Statements in Python
 code_editor: True
 code_execution: True
 adding_file_allowed: False

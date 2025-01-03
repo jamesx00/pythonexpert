@@ -22,10 +22,16 @@ module.exports = function (eleventyConfig) {
 		const getNumberPrefix = (inputPath) => {
 			const dirName = path.basename(path.dirname(inputPath));
 			const prefix = dirName.split("-")[0];
-			return parseFloat(prefix);
+			const [beforeDecimal, afterDecimal] = prefix.split(".").map(Number);
+			return [beforeDecimal, afterDecimal || 0];
 		};
 		return array.sort((a, b) => {
-			return getNumberPrefix(a.inputPath) - getNumberPrefix(b.inputPath);
+			const [aBefore, aAfter] = getNumberPrefix(a.inputPath);
+			const [bBefore, bAfter] = getNumberPrefix(b.inputPath);
+			if (aBefore === bBefore) {
+				return aAfter - bAfter;
+			}
+			return aBefore - bBefore;
 		});
 	});
 
