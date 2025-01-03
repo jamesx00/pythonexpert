@@ -134,12 +134,12 @@ module.exports = function (eleventyConfig) {
 		const directory = path.dirname(inputPath);
 		const fullPath = path.join(directory, "files", fileName);
 		try {
-			return fs.readFileSync(fullPath);
+			return btoa(fs.readFileSync(fullPath, "utf-8"));
 		} catch (e) {
 			// read from one directory up to common course files
 			const directory = path.dirname(path.dirname(inputPath));
 			const fullPath = path.join(directory, "files", fileName);
-			return fs.readFileSync(fullPath);
+			return btoa(fs.readFileSync(fullPath, "utf-8"));
 		}
 	});
 

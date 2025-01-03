@@ -47,7 +47,9 @@ const parsedFileGroups = beforeParsedFileGroups.map((fileGroup) => {
 		) {
 			file.content = fileContentFromLocalStorage;
 		} else {
-			file.content = document.getElementById(`file-${fileId}`).innerText;
+			const contentInBase64 =
+				document.getElementById(`file-${fileId}`)?.textContent || "";
+			file.content = atob(contentInBase64);
 		}
 
 		return file;
