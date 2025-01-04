@@ -49,7 +49,7 @@ self.MonacoEnvironment = {
 /**
  * @typedef {Object} MultipleFileGroupEditorCallbacks
  * @property {function(MonacoFile): void=} beforeCreateNewFile
- * @property {function(IStandaloneCodeEditor, MultipleFileGroupEditor): void=} onDidCreateEditor
+ * @property {function(monaco.editor.IStandaloneCodeEditor, MultipleFileGroupEditor): void=} onDidCreateEditor
  * @property {function(MultipleFileGroupEditor): void=} onDidChangeFileGroup
  * @property {function(MonacoFile): void=} onDidCloseFile
  */
@@ -88,6 +88,10 @@ class MultipleFileGroupEditor {
 		this.currentFileId = null;
 
 		this.options = options;
+		/**
+		 * @type {HTMLElement}
+		 */
+		// @ts-ignore
 		this.editorContainer = document.querySelector(selector);
 		if (this.editorContainer === null) {
 			throw new Error("Selector not found");
@@ -101,6 +105,10 @@ class MultipleFileGroupEditor {
 		this.fileGroupDropDownContainer = document.querySelector(fileGroupSelector);
 		if (this.fileGroupDropDownContainer === null) {
 			throw new Error("Tabs container selector not found");
+		}
+
+		if (this.fileGroupDropDownContainer.tagName !== "SELECT") {
+			throw new Error("File group selector must be a select element");
 		}
 
 		this.selector = selector;
@@ -137,7 +145,7 @@ class MultipleFileGroupEditor {
 		this.initializeModels();
 
 		this.editor = monaco.editor.create(
-			document.querySelector(selector),
+			this.editorContainer,
 			this.editorOptions
 		);
 
