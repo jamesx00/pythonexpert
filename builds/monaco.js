@@ -102,6 +102,10 @@ class MultipleFileGroupEditor {
 			throw new Error("Tabs container selector not found");
 		}
 
+		/**
+		 * @type {HTMLSelectElement}
+		 */
+		// @ts-ignore
 		this.fileGroupDropDownContainer = document.querySelector(fileGroupSelector);
 		if (this.fileGroupDropDownContainer === null) {
 			throw new Error("Tabs container selector not found");

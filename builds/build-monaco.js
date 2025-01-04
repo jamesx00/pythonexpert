@@ -39,6 +39,7 @@ build({
 	},
 	globalName: "pe",
 	publicPath: "/js/",
+	minify: true,
 });
 
 /**
