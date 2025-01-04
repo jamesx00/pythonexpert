@@ -5,10 +5,11 @@
 	"scripts": {
 		"build": "NODE_ENV=production npx @11ty/eleventy && NODE_ENV=production tailwindcss -i public/css/tailwind.input.css -o public/css/tailwind.css",
 		"build-ghpages": "npx @11ty/eleventy --pathprefix=/eleventy-base-blog/",
-		"start": "npm-run-all --parallel serve tw:watch",
+		"start": "npm-run-all --parallel serve tw:watch build-monaco",
 		"serve": "npx @11ty/eleventy --serve --quiet",
 		"debug": "DEBUG=Eleventy* npx @11ty/eleventy",
 		"tw:watch": "tailwindcss -i public/css/tailwind.input.css -o public/css/tailwind.css --watch",
+		"build-monaco": "node builds/build-monaco.js",
 		"debugstart": "DEBUG=Eleventy* npx @11ty/eleventy --serve --quiet",
 		"benchmark": "DEBUG=Eleventy:Benchmark* npx @11ty/eleventy",
 		"s3:sync": "aws s3 sync _site/ s3://pythonexpert-web/static --delete",

@@ -44,15 +44,18 @@ build({
 /**
  * @param {import ('esbuild').BuildOptions} opts
  */
-function build(opts) {
-	esbuild.build(opts).then((result) => {
-		if (result.errors.length > 0) {
-			console.error(result.errors);
-		}
-		if (result.warnings.length > 0) {
-			console.error(result.warnings);
-		}
-	});
+async function build(opts) {
+	const context = esbuild.context(opts);
+	(await context).watch();
+
+	// esbuild.build(opts).then((result) => {
+	// 	if (result.errors.length > 0) {
+	// 		console.error(result.errors);
+	// 	}
+	// 	if (result.warnings.length > 0) {
+	// 		console.error(result.warnings);
+	// 	}
+	// });
 }
 
 /**
