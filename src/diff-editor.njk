@@ -5,19 +5,21 @@ hide_navbar: true
 ---
 
 <div id="container" class="h-screen"></div>
-<script src="/js/monaco-editor/min/vs/loader.js"></script>
+<script src="/js/pe-monaco-editor.js"></script>
 <script>
-    require.config({
-        paths: {
-            vs: "{{ env.base_url }}/js/monaco-editor/min/vs"
-        }
-    });
-</script>
-<script>
-    require(['vs/editor/editor.main'], function () {
-        var diffEditor = monaco.editor.createDiffEditor(document.getElementById('container'), {originalEditable: true});
-        var originalTxt = "";
-        var modifiedTxt = "";
-        diffEditor.setModel({original: monaco.editor.createModel(originalTxt), modified: monaco.editor.createModel(modifiedTxt)});
-    });
+    var diffEditor = pe
+        .monaco
+        .editor
+        .createDiffEditor(document.getElementById('container'), {originalEditable: true});
+    var originalTxt = "";
+    var modifiedTxt = "";
+    diffEditor.setModel(
+        {original: pe
+            .monaco
+            .editor
+            .createModel(originalTxt), modified: pe
+            .monaco
+            .editor
+            .createModel(modifiedTxt)}
+    );
 </script>

@@ -1,5 +1,5 @@
 ---
-lesson_name: Reassign a Value to Existing Variables
+lesson_name: Reassign a value to existing variables
 code_editor: True
 code_execution: True
 adding_file_allowed: False
@@ -29,8 +29,6 @@ file_groups:
     id: 1
     name: Python
 ---
-
-### Reassign a value to an existing variable
 
 You can reassign a value to a variable simply by using the assignment operator `=` followed by the new value that you want to assign. This will overwrite the previous value of the variable with the new value.
 

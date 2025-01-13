@@ -1,12 +1,10 @@
 ---
-lesson_name: Course Overview
+lesson_name: Course overview
 code_editor: False
 code_execution: False
 adding_file_allowed: False
-section: Getting Started with Python
+section: Getting started with Python
 ---
-
-## Course Summary &#x1F4D7;
 
 Welcome to the Python Beginners Course! This course is designed for individuals with little to no prior programming experience who want to learn Python, one of the most popular and versatile programming languages in the world. Throughout this course, you will gain a solid foundation in Python and develop the skills necessary to build simple programs and perform data manipulation.
 

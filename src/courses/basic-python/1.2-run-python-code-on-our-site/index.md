@@ -1,5 +1,5 @@
 ---
-lesson_name: Run Python Code on Our Site
+lesson_name: Run Python code on our site
 code_editor: True
 code_execution: True
 adding_file_allowed: True
@@ -29,8 +29,6 @@ file_groups:
     id: 1
     name: Python
 ---
-
-## How to run Python code on our site
 
 In the early part of the course, everyone can run Python code on the website without having to install Python on their own computer.
 

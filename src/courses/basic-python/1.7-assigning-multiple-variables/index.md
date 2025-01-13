@@ -1,5 +1,5 @@
 ---
-lesson_name: Assigning Multiple Variables
+lesson_name: Assigning multiple variables
 code_editor: True
 code_execution: True
 adding_file_allowed: False
@@ -29,8 +29,6 @@ file_groups:
     id: 1
     name: Python
 ---
-
-### Assigning Multiple Variables
 
 In addition to assigning a single value to a variable, you can also assign multiple values to multiple variables using tuple unpacking. For example, to assign the values 1, 2, and 3 to variables "a", "b", and "c", respectively, you can use the following code:
 

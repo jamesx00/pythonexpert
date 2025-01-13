@@ -1,5 +1,5 @@
 ---
-lesson_name: Write Comments
+lesson_name: Comments in Python
 code_editor: True
 code_execution: True
 adding_file_allowed: False
@@ -29,8 +29,6 @@ file_groups:
     id: 1
     name: Python
 ---
-
-## Comments in Python
 
 In Python, comments are used to add explanatory notes or remarks to the code, without affecting the actual execution of the program. The interpreter ignores comments while executing the program. Comments are a useful tool for documenting code, providing context, and making it easier for others to understand your code.
 

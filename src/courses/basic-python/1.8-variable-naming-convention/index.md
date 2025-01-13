@@ -1,5 +1,5 @@
 ---
-lesson_name: Variable Naming Convention
+lesson_name: Variable naming convention
 code_editor: True
 code_execution: True
 adding_file_allowed: False
@@ -29,8 +29,6 @@ file_groups:
     id: 1
     name: Python
 ---
-
-### Naming Convention for Variables
 
 The naming convention for variables may differ in each programming language. In Python, variables can have English letters, both lowercase and uppercase `a-z` `A-Z`, numbers `0-9`, and underscores `_`. However, variable names cannot start with a number. Examples of valid variable names are:
 

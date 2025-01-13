@@ -18,6 +18,7 @@ layout: layouts/base.njk
                     <p class="text-gray-500 dark:text-slate-300 text-xs font-light mb-2">
                         <a href="/courses/{{ course_slug }}/" class="hover:underline">{{ course_name }}</a>
                     </p>
+                    <h1 class="text-2xl mb-4 font-bold text-primary-800">{{ lesson_name }}</h1>
                     <div id="lesson-content" class="prose">
                         {{ content|safe }}
                     </div>

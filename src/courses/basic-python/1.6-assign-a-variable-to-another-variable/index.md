@@ -1,5 +1,5 @@
 ---
-lesson_name: Assign a Variable to another Variable
+lesson_name: Assign a variable to another variable
 code_editor: True
 code_execution: True
 adding_file_allowed: False
@@ -29,8 +29,6 @@ file_groups:
     id: 1
     name: Python
 ---
-
-## Assigning a Variable with another Variable
 
 In Python, we can assign the value of one variable to another variable using the assignment operator `=`. The value on the right side of the operator is assigned to the variable on the left side. For example, if we have a variable `x` with the value 10, we can assign it to another variable `y` like this:
 

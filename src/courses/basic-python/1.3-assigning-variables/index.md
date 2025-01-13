@@ -1,5 +1,5 @@
 ---
-lesson_name: Assigning Variables
+lesson_name: Variable declaration
 code_editor: True
 code_execution: True
 adding_file_allowed: False
@@ -29,8 +29,6 @@ file_groups:
     id: 1
     name: Python
 ---
-
-## Variable Declaration
 
 In programming, declaring a variable is a way of storing data in a variable so that we can use it later. Imagine a variable as a box that can store something inside. In the Python language, we can declare a variable using the equal sign `=`. For example:
 
