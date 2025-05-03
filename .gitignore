@@ -4,3 +4,4 @@ package-lock.json
 .cache
 .DS_Store
 .env
+docker-stack.yml
