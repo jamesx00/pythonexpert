@@ -24,6 +24,14 @@
             <input class="mr-2" type="checkbox" id="enable-vim-mode" x-model="vimMode"/>
             <label for="enable-vim-mode">Use vim keybindings</label>
         </div>
+        <p class="mt-4">General settings</p>
+        <div
+            x-data="{endpoint: $persist('https://execute.pythonexpert.dev/api/v2/execute').as('execution_endpoint')}"
+            class="flex gap-2">
+            <label for="execution_endpoint">Code execution endpoint:
+            </label>
+            <input class="mr-2 border border-black px-1 flex-1" type="text" id="execution_endpoint" x-model="endpoint"/>
+        </div>
         <a href="" class="block text-blue-700 hover:underline mt-4">Save settings</a>
     </div>
 </div>

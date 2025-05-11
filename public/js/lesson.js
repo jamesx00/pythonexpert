@@ -321,11 +321,12 @@ function executeCode(language, files) {
 		files: filesForExecution,
 	};
 
-	const executionUrl = "https://execute.pythonexpert.dev/api/v2/execute";
-	// const executionUrl = 'http://localhost:2000/api/v2/execute'
+	const executionUrl =
+		localStorage.getItem("execution_endpoint") ||
+		"https://execute.pythonexpert.dev/api/v2/execute";
 	// const executionUrl = "https://emkc.org/api/v2/piston/execute";
 
-	return fetch(executionUrl, {
+	return fetch(executionUrl.replaceAll('"', ""), {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
