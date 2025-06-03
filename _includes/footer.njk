@@ -1,33 +1,34 @@
-<footer x-show="!fullScreen" class="border-t">
-    <div class="default-container md:flex px-4 py-12 text-gray-600">
+<footer class="border-t">
+    <div class="default-container md:flex px-4 py-4 text-gray-600">
         <div class="md:flex md:gap-8 lg:gap-16">
-            <ul class="mb-6">
-                <li class="mb-2">
+            <ul
+                class="flex gap-4">
+                {# <li class="">
                     <span class="text-primary-800">Quick links</span>
-                </li>
+                </li> #}
                 {% for item in collections.all | eleventyNavigation %}
-                    <li class="text-sm hover:underline mb-2">
+                    <li class="text-sm hover:underline ">
                         <a class="" href="{{ item.url }}">{{ item.key }}</a>
                     </li>
                 {% endfor %}
-                <li class="text-sm hover:underline mb-2">
+                <li class="text-sm hover:underline ">
                     <a class="" href="/markdown-editor/">Live editor</a>
                 </li>
-                <li class="text-sm hover:underline mb-2">
+                <li class="text-sm hover:underline ">
                     <a class="" href="/diff-editor/">Diff editor</a>
                 </li>
-                <li class="text-sm hover:underline mb-2">
+                <li class="text-sm hover:underline ">
                     <a class="" href="/code-execution/">Run your code</a>
                 </li>
             </ul>
-            <ul class="mb-6">
+            {# <ul class="mb-6">
                 <li class="mb-2">
                     <span class="text-primary-800">Contact</span>
                 </li>
                 <li class="">
                     <a class="text-sm hover:underline" href="mailto:{{ metadata.author.email }}">✉️ send me an email</a>
                 </li>
-            </ul>
+            </ul> #}
         </div>
     </div>
 </footer>

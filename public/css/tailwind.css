@@ -1524,6 +1524,11 @@ h4 {
   display: none;
 }
 
+.size-6 {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
 .h-12 {
   height: 3rem;
 }
@@ -1546,6 +1551,10 @@ h4 {
 
 .h-\[400px\] {
   height: 400px;
+}
+
+.h-\[90vh\] {
+  height: 90vh;
 }
 
 .h-\[95\%\] {
@@ -1716,16 +1725,16 @@ h4 {
   justify-content: space-between;
 }
 
+.gap-2 {
+  gap: 0.5rem;
+}
+
 .gap-4 {
   gap: 1rem;
 }
 
 .gap-6 {
   gap: 1.5rem;
-}
-
-.gap-2 {
-  gap: 0.5rem;
 }
 
 .space-y-1 > :not([hidden]) ~ :not([hidden]) {
@@ -1797,6 +1806,11 @@ h4 {
   border-top-width: 0px;
 }
 
+.border-black {
+  --tw-border-opacity: 1;
+  border-color: rgb(0 0 0 / var(--tw-border-opacity));
+}
+
 .border-gray-300 {
   --tw-border-opacity: 1;
   border-color: rgb(209 213 219 / var(--tw-border-opacity));
@@ -1809,11 +1823,6 @@ h4 {
 
 .border-transparent {
   border-color: transparent;
-}
-
-.border-black {
-  --tw-border-opacity: 1;
-  border-color: rgb(0 0 0 / var(--tw-border-opacity));
 }
 
 .bg-amber-50\/25 {
@@ -1944,11 +1953,6 @@ h4 {
 .py-10 {
   padding-top: 2.5rem;
   padding-bottom: 2.5rem;
-}
-
-.py-12 {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
 }
 
 .py-16 {
