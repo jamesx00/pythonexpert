@@ -326,6 +326,12 @@ function executeCode(language, files) {
 		"https://execute.pythonexpert.dev/api/v2/execute";
 	// const executionUrl = "https://emkc.org/api/v2/piston/execute";
 
+	if (window.rybbit !== undefined) {
+		window.rybbit.event("execute_code", {
+			page: location.pathname,
+		});
+	}
+
 	return fetch(executionUrl.replaceAll('"', ""), {
 		method: "POST",
 		headers: {
