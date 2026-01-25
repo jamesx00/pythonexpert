@@ -329,6 +329,8 @@ function executeCode(language, files) {
 	if (window.rybbit !== undefined) {
 		window.rybbit.event("execute_code", {
 			page: location.pathname,
+			language: language,
+			version: runTimes[language],
 		});
 	}
 
