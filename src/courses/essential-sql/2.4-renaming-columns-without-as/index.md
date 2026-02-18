@@ -66,12 +66,11 @@ FROM table_name;
 
 Write a command that retrieves the data from `customers` table and rename two columns.
 
-- Rename column `first_name` to `name`
-  {: #test-1}
-- Rename column `last_name` to `lastName`
-  {: #test-2}
-- Must not use keyword `AS`
-  {: #test-3}
+<ul>
+<li id="test-1">Rename column <code>first_name</code> to <code>name</code>.</li>
+<li id="test-2">Rename column <code>last_name</code> to <code>lastName</code>.</li>
+<li id="test-3">Must not use keyword <code>AS</code></li>
+</ul>
 
 Expected result
 
