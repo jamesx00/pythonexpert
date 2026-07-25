@@ -5,14 +5,7 @@ override:tags: true
 tags: ["course"]
 order: 2
 description: Learn the fundamentals of SQL programming language, one of the most widely used languages for managing and manipulating data in databases.
-is_under_development: true
 ---
-
-<!---
-<div class="alert-warning">
-This course is currently under development and will be released soon!
-</div>
--->
 
 ## **Essential SQL Course** 😎
 
@@ -61,9 +54,3 @@ Welcome to the Essential SQL Course! 🚀 In this course, you will dive into the
 No prior SQL knowledge is required to take this course. As long as you have a curious mind and a desire to learn, you're welcome to join us on this exciting SQL learning journey!
 
 So, are you ready to unleash the power of SQL and take control of your data? Enroll now and start mastering Essential SQL! 💪🔥
-
-<!---
-<div class="alert-warning">
-This course is currently under development and will be released soon!
-</div>
--->
