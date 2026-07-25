@@ -3,6 +3,7 @@ title: Learn to program with Python
 layout: layouts/course.njk
 override:tags: true
 tags: ["course"]
+order: 1
 code_editor: false
 description: Learn basic programming with Python, a programming language that is easy to learn and widely used in various fields such as data science, web development, and artificial intelligence.
 ---

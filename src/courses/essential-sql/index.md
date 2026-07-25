@@ -3,6 +3,7 @@ title: SQL for beginners
 layout: layouts/course.njk
 override:tags: true
 tags: ["course"]
+order: 2
 description: Learn the fundamentals of SQL programming language, one of the most widely used languages for managing and manipulating data in databases.
 is_under_development: true
 ---
