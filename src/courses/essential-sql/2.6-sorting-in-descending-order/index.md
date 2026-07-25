@@ -1,5 +1,5 @@
 ---
-lesson_name: Select multiple columns
+lesson_name: Sorting in descending order
 code_editor: True
 code_execution: True
 adding_file_allowed: False
@@ -8,7 +8,7 @@ file_groups:
     files:
       - file_name: query.sql
         file_type: sql
-        id: 474
+        id: 503
         is_closable: false
         is_edit_focus: true
         is_editable: true
@@ -18,7 +18,7 @@ file_groups:
         source: query.sql
       - file_name: main.py
         file_type: python
-        id: 475
+        id: 504
         is_closable: false
         is_edit_focus: false
         is_editable: false
@@ -28,7 +28,7 @@ file_groups:
         source: setup_data.py
       - file_name: tests.py
         file_type: python
-        id: 476
+        id: 505
         is_closable: false
         is_edit_focus: false
         is_editable: false
@@ -40,34 +40,54 @@ file_groups:
     name: SQL
 ---
 
-## Select multiple columns
+## Sorting in descending order
 
-Now that we know how to select one column from a table, here's the syntax to select multiple columns:
+By default, `ORDER BY` sorts from smallest to largest. To reverse the order, add the `DESC` keyword after the column name:
 
 ```sql
 SELECT
-    column1,
-    column2
+    column_name
 FROM
-    table;
+    table
+ORDER BY
+    column_name DESC;
 ```
 
-- `column1, column2`: Specify the columns you want to retrieve, separated by a comma `,`, or use `*` to select all columns. Notice that there is no comma after the last column.
-- `table`: Specifies the table from which to retrieve the data.
+If you want to be explicit about the default ascending order, you can add `ASC` instead, although it is optional since it is the default:
+
+```sql
+SELECT
+    column_name
+FROM
+    table
+ORDER BY
+    column_name ASC;
+```
+
+You can even mix directions when sorting by multiple columns:
+
+```sql
+SELECT
+    first_name,
+    last_name
+FROM
+    customers
+ORDER BY
+    last_name DESC,
+    first_name ASC;
+```
 
 ---
 
 ### Exercise
 
-We have already created a table `customers` with the columns `first_name`, `last_name`, `age`, and `gender`. Write a command to retrieve data from `customers` table with all columns.
+Write a command that retrieves all columns from the `customers` table, sorted by `age` from oldest to youngest.
 
 #### Tests
 
 <ul>
-<li id="test-1">The result has <code>first_name</code> column.</li>
-<li id="test-2">The result has <code>last_name</code> column.</li>
-<li id="test-3">The result has <code>age</code> column.</li>
-<li id="test-4">The result has <code>gender</code> column.</li>
+<li id="test-1">The result has an <code>age</code> column.</li>
+<li id="test-2">The rows are sorted by <code>age</code> from largest to smallest.</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -77,17 +97,9 @@ We have already created a table `customers` with the columns `first_name`, `last
 SELECT
     *
 FROM
-    customers;
-```
-
-```sql
-SELECT
-    first_name,
-    last_name,
-    age,
-    gender
-FROM
-    customers;
+    customers
+ORDER BY
+    age DESC;
 ```
 
 </details>

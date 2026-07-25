@@ -54,7 +54,10 @@ The `SELECT` command in SQL is used to retrieve data from one or more tables in 
 The basic syntax of the `SELECT` statement is as follows:
 
 ```sql
-SELECT column_name FROM table;
+SELECT
+    column_name
+FROM
+    table;
 ```
 
 - `column_name`: Specify the column you want to retrieve.
@@ -87,7 +90,10 @@ We have already created a table `customers` with the columns `first_name`, `last
 <summary class="select-none">Solution</summary>
 
 ```sql
-SELECT first_name FROM customers;
+SELECT
+    first_name
+FROM
+    customers;
 ```
 
 </details>
