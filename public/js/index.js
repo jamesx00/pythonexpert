@@ -29,10 +29,18 @@ function addCopyBlock() {
 	const codeBlocks = document.querySelectorAll(".prose pre code");
 
 	for (const codeBlock of codeBlocks) {
-		const alreadyHasCopyIcon =
-			codeBlock.getElementsByClassName("copy-content").length > 0;
+		const preBlock = codeBlock.closest("pre");
+		const alreadyWrapped = preBlock.parentElement.classList.contains("code-block-wrapper");
 
-		if (alreadyHasCopyIcon) continue;
+		if (alreadyWrapped) continue;
+
+		// The copy button must live outside the horizontally-scrolling <pre>,
+		// otherwise it scrolls away with the code instead of staying pinned
+		// to the visible corner of the block.
+		const wrapper = document.createElement("div");
+		wrapper.classList.add("code-block-wrapper");
+		preBlock.parentElement.insertBefore(wrapper, preBlock);
+		wrapper.appendChild(preBlock);
 
 		const copyIcon = document.createElement("div");
 		copyIcon.classList.add("copy-content");
@@ -41,7 +49,7 @@ function addCopyBlock() {
 
 		copyIcon.addEventListener("click", async (e) => {
 			const target = e.currentTarget;
-			const textToCopy = target.closest("code").textContent.trim();
+			const textToCopy = target.closest(".code-block-wrapper").querySelector("code").textContent.trim();
 			await navigator.clipboard.writeText(textToCopy);
 			target.innerHTML = '<i class="fas fa-fw fa-check"></i>';
 			setTimeout(() => {
@@ -49,6 +57,6 @@ function addCopyBlock() {
 			}, 1000);
 		});
 
-		codeBlock.appendChild(copyIcon);
+		wrapper.appendChild(copyIcon);
 	}
 }

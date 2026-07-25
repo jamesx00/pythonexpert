@@ -9,21 +9,21 @@ hide_navbar: true
     <div class="sticky top-0 inline-block flex-1 h-screen">
         <div class="mb-4 justify-end hidden">
             <div>
-                <label for="file-group" class="block text-sm font-medium text-gray-700 dark:text-slate-400">Language</label>
+                <label for="file-group" class="block text-sm font-medium text-term-muted">Language</label>
                 <select
                     id="file-group"
                     name="file-group"
-                    class="hidden dark:bg-slate-600 dark:text-slate-200 mt-1 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none
-                        focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"></select>
+                    class="hidden bg-term-raised text-term-text mt-1 pl-3 pr-10 py-2 text-base border-term-border focus:outline-none
+                        focus:ring-term-accent focus:border-term-accent sm:text-sm"></select>
             </div>
         </div>
         <div id="file-buttons-container" class="text-[0px]"></div>
-        <div id="editor" class="w-full h-[95%]"></div>
+        <div id="editor" class="w-full h-[95%] border border-term-border"></div>
     </div>
-    <div class="flex-1 ml-auto inline-block p-4">
+    <div class="flex-1 ml-auto inline-block p-4 border-l border-term-border">
         <div
             id="output"
-            class="prose prose-slate max-w-none p-4 dark:prose-invert prose-pre:bg-transparent prose-pre:p-0 prose-img:mx-auto
+            class="prose prose-invert max-w-none p-4 prose-pre:bg-transparent prose-pre:p-0 prose-img:mx-auto
                 prose-hr:my-4 lg:mx-auto"></div>
     </div>
 </div>

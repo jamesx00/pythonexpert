@@ -1,22 +1,22 @@
-<nav class="shadow font-extralight" x-data="{open: false}">
+<nav class="border-b border-term-border bg-term-surface font-victor-mono font-light" x-data="{open: false}">
   <div class="default-container px-4">
     <div class="flex justify-between items-center">
       <div class="py-4">
-        <a href="/" class="font-light text-slate-900 tracking-widest flex">
-          <p class="leading-none">
-            <span class="">+=</span><br/> PythonExpert</p>
+        <a href="/" class="flex items-center text-term-text tracking-wide">
+          <span class="text-term-green mr-2">guest@pythonexpert</span><span class="text-term-muted mr-2">:~$</span>
+          <span class="text-term-accent">pythonexpert</span><span class="ml-1 inline-block h-4 w-2 animate-pulse bg-term-accent align-middle"></span>
         </a>
       </div>
       <div class="hidden sm:ml-6 sm:flex">
         {% for item in collections.all | eleventyNavigation %}
           <div class="relative flex px-4 py-10 group">
-            <a href="{{ item.url }}" class="text-sm after:duration-300 after:inset-0 overflow-x-hidden relative after:-translate-x-[105%] hover:after:translate-x-0 after:transition after:content-[''] after:absolute after:border-b-2 after:border-primary-900 inline-flex items-center px-1 font-medium {% if page.url == item.url %}text-primary-900 after:translate-x-0{% else %}text-neutral-400{% endif %} hover:text-primary-900 transition">{{ item.key | upper }}</a>
+            <a href="{{ item.url }}" class="text-sm after:duration-300 after:inset-0 overflow-x-hidden relative after:-translate-x-[105%] hover:after:translate-x-0 after:transition after:content-[''] after:absolute after:border-b-2 after:border-term-accent inline-flex items-center px-1 font-medium {% if page.url == item.url %}text-term-accent after:translate-x-0{% else %}text-term-muted{% endif %} hover:text-term-accent transition"><span class="text-term-muted mr-0.5">./</span>{{ item.key | lower }}</a>
             {% if item.children | length > 0 %}
-              <span class="text-primary-800 cursor-pointer pl-2">&#9660;</span>
-              <div class="z-10 bg-white shadow overflow-y-hidden max-h-0 group-hover:max-h-none opacity-0 group-hover:opacity-100 px-4
+              <span class="text-term-accent cursor-pointer pl-2">&#9660;</span>
+              <div class="z-10 border border-term-border bg-term-raised shadow-lg overflow-y-hidden max-h-0 group-hover:max-h-none opacity-0 group-hover:opacity-100 px-4
                   absolute left-0 right-0 top-full transition-all">
                 {% for child in item.children %}
-                  <a href="{{ child.url }}" class="after:duration-300 after:inset-0 overflow-x-hidden relative after:-translate-x-[105%] hover:after:translate-x-0 after:transition after:content-[''] after:absolute after:border-b-2 after:border-primary-900 inline-block my-2 items-center px-1 font-medium {% if page.url == child.url %}text-primary-900{% else %}text-neutral-400{% endif %} hover:text-primary-900 transition">{{ child.key | upper }}</a>
+                  <a href="{{ child.url }}" class="after:duration-300 after:inset-0 overflow-x-hidden relative after:-translate-x-[105%] hover:after:translate-x-0 after:transition after:content-[''] after:absolute after:border-b-2 after:border-term-accent inline-block my-2 items-center px-1 font-medium {% if page.url == child.url %}text-term-accent{% else %}text-term-muted{% endif %} hover:text-term-accent transition"><span class="text-term-muted mr-0.5">./</span>{{ child.key | lower }}</a>
                 {% endfor %}
               </div>
             {% endif %}
@@ -25,26 +25,26 @@
         <a
           href="https://github.com/jamesx00/pythonexpert"
           target="_blank"
-          class="text-sm inline-flex items-center px-1 font-medium hover:text-primary-900 transition">
+          class="text-sm inline-flex items-center px-1 font-medium text-term-muted hover:text-term-accent transition">
           <i class="fab fa-github mr-4 fa-2x"></i>
         </a>
       </div>
       <div class="-mr-2 flex items-center sm:hidden">
-        <a href="https://github.com/jamesx00/pythonexpert" target="_blank">
+        <a href="https://github.com/jamesx00/pythonexpert" target="_blank" class="text-term-muted hover:text-term-accent">
           <i class="fab fa-github mr-4 fa-2x"></i>
         </a>
         <!-- Mobile menu button -->
         <button
           type="button"
-          class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 focus:outline-none focus:ring-2
-            focus:ring-inset focus:ring-gray-500"
+          class="relative inline-flex items-center justify-center border border-term-border p-2 text-term-muted focus:outline-none focus:ring-2
+            focus:ring-inset focus:ring-term-accent"
           aria-controls="mobile-menu"
           aria-expanded="false"
           @click="open = !open">
           <span class="absolute -inset-0.5"></span>
           <span class="sr-only">Open main menu</span>
           <!-- Icon when menu is closed.
-          
+
           Menu open: "hidden", Menu closed: "block" -->
           <svg
             x-show="!open"
@@ -58,7 +58,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
           </svg>
           <!-- Icon when menu is open.
-          
+
           Menu open: "block", Menu closed: "hidden" -->
           <svg
             x-show="open"
@@ -75,23 +75,22 @@
     </div>
   </div>
   <!-- Mobile menu, show/hide based on menu state. -->
-  <div class="sm:hidden" id="mobile-menu" x-show="open" x-cloak x-transition>
+  <div class="sm:hidden border-t border-term-border" id="mobile-menu" x-show="open" x-cloak x-transition>
     <div class="space-y-1 pb-3 pt-2 px-4">
       {% for item in collections.all | eleventyNavigation %}
         <div x-data="{subMenuOpen: false}">
           <div class="py-2 pl-3 pr-4 flex">
-            <a href="{{ item.url }}" class="flex-1 text-base font-medium {% if page.url == item.url %}text-primary-900{% else %}text-neutral-400{% endif %} hover:text-primary-900">
-              {{ item.key | upper }}
+            <a href="{{ item.url }}" class="flex-1 text-base font-medium {% if page.url == item.url %}text-term-accent{% else %}text-term-muted{% endif %} hover:text-term-accent"><span class="text-term-muted mr-0.5">./</span>{{ item.key | lower }}
             </a>
             {% if item.children | length > 0 %}
-              <span class="text-red-800 px-2 cursor-pointer" @click="subMenuOpen = !subMenuOpen" :class="subMenuOpen && 'rotate-180'">
+              <span class="text-term-accent px-2 cursor-pointer" @click="subMenuOpen = !subMenuOpen" :class="subMenuOpen && 'rotate-180'">
                 &#9660;</span>
             {% endif %}
           </div>
           {% if item.children | length > 0 %}
             <div class="pl-6 transition-all" x-show="subMenuOpen" x-cloak x-transition>
               {% for child in item.children %}
-                <a href="{{ child.url }}" class="block my-3 items-center px-1 font-medium {% if page.url == child.url %}text-primary-900{% else %}text-neutral-400{% endif %} hover:text-primary-900 transition">{{ child.key | upper }}</a>
+                <a href="{{ child.url }}" class="block my-3 items-center px-1 font-medium {% if page.url == child.url %}text-term-accent{% else %}text-term-muted{% endif %} hover:text-term-accent transition"><span class="text-term-muted mr-0.5">./</span>{{ child.key | lower }}</a>
               {% endfor %}
             </div>
           {% endif %}

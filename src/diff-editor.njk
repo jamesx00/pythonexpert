@@ -15,7 +15,7 @@ hide_navbar: true
 </script>
 <script>
     require(['vs/editor/editor.main'], function () {
-        var diffEditor = monaco.editor.createDiffEditor(document.getElementById('container'), {originalEditable: true});
+        var diffEditor = monaco.editor.createDiffEditor(document.getElementById('container'), {originalEditable: true, theme: 'vs-dark'});
         var originalTxt = "";
         var modifiedTxt = "";
         diffEditor.setModel({original: monaco.editor.createModel(originalTxt), modified: monaco.editor.createModel(modifiedTxt)});

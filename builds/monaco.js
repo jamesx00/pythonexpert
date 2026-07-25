@@ -123,7 +123,7 @@ class MultipleFileGroupEditor {
 		this.fileGroups = JSON.parse(JSON.stringify(options.fileGroups));
 
 		this.editorOptions = {
-			// theme: "vs-dark",
+			theme: "vs-dark",
 			minimap: { enabled: false },
 			fontSize: 14,
 			padding: { top: 16 },
@@ -173,8 +173,8 @@ class MultipleFileGroupEditor {
 		button.id = "add-new-file-button";
 		button.classList.add(
 			"px-2",
-			"text-gray-300",
-			"hover:text-gray-400",
+			"text-term-muted",
+			"hover:text-term-accent",
 			"text-base"
 		);
 		button.innerHTML = "+";
@@ -210,27 +210,29 @@ class MultipleFileGroupEditor {
 				modal.classList.remove("flex");
 			}
 		});
-		div.classList.add("bg-white", "p-4", "rounded-lg", "w-96");
+		div.classList.add("bg-term-surface", "border", "border-term-border", "p-4", "w-96", "font-victor-mono");
 		const form = document.createElement("form");
 		form.id = "form-new-file";
 		form.classList.add("flex", "flex-col");
 
 		const label = document.createElement("label");
 		label.setAttribute("for", "file-name");
-		label.classList.add("text-sm", "text-gray-700");
+		label.classList.add("text-sm", "text-term-muted");
 		label.textContent = "File Name";
 		const input = document.createElement("input");
 		input.id = "file-name";
 		input.type = "text";
-		input.classList.add("border", "border-gray-300", "p-2", "rounded-lg");
+		input.classList.add("border", "border-term-border", "bg-term-raised", "text-term-text", "p-2");
 		input.required = true;
 		const button = document.createElement("button");
 		button.type = "submit";
 		button.classList.add(
-			"bg-blue-500",
-			"text-white",
+			"border",
+			"border-term-accent",
+			"text-term-accent",
+			"hover:bg-term-accent",
+			"hover:text-term-bg",
 			"p-2",
-			"rounded-lg",
 			"mt-4"
 		);
 		button.textContent = "+";
@@ -436,7 +438,7 @@ class MultipleFileGroupEditor {
 	resetTabButtons() {
 		const buttons = this.getAllTabButtons();
 		for (const button of buttons) {
-			button.classList.remove("border-x-2", "bg-gray-200", "text-gray-800");
+			button.classList.remove("border-x-2", "border-term-accent", "bg-term-raised", "text-term-accent");
 			const closeTabIcon = button.querySelector('svg[data-action="closeTab"]');
 			closeTabIcon && closeTabIcon.classList.add("hidden");
 		}
@@ -459,8 +461,9 @@ class MultipleFileGroupEditor {
 		if (selectedFileTabButton) {
 			selectedFileTabButton.classList.add(
 				"border-x-2",
-				"bg-gray-200",
-				"text-gray-800"
+				"border-term-accent",
+				"bg-term-raised",
+				"text-term-accent"
 			);
 			const closeTabIcon = selectedFileTabButton.querySelector(
 				'svg[data-action="closeTab"]'

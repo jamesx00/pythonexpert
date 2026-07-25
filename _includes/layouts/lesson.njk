@@ -5,18 +5,18 @@ layout: layouts/base.njk
 {% set nextLesson = collections.lesson|filter("course_id", course_id)|sortByDirectoryPrefix|getNextCollectionItem(page) %}
 <div x-data="{ newFileOpen: false, sidebarOpen: false, completedLesson: $persist(false).as('{{page.url}}')}">
     <button
-        class="fixed right-0 top-[100px] border bg-gray-300 hover:bg-gray-400 px-2 py-1 shadow-lg z-50"
+        class="fixed right-0 top-[100px] border border-term-border bg-term-raised hover:bg-term-border text-term-text px-2 py-1 z-50"
         @click="sidebarOpen = true">
         <i class="far fa-bars text-xl"></i>
     </button>
-    <div class="py-6 px-4 bg-gray-50 dark:bg-zinc-900">
+    <div class="py-6 px-4 bg-term-bg">
         {% include 'settings.njk' %}
         <div class="grid md:flex gap-4 md:justify-center">
             {% if not hide_content %}
             <div class="md:flex-1 max-w-prose overflow-y-hidden">
-                <div class="mb-6 mx-auto bg-white dark:bg-zinc-950 p-4 {% if not code_editor %}max-w-prose{% endif %}">
-                    <p class="text-gray-500 dark:text-slate-300 text-xs font-light mb-2">
-                        <a href="/courses/{{ course_slug }}/" class="hover:underline">{{ course_name }}</a>
+                <div class="mb-6 mx-auto border border-term-border bg-term-surface p-4 {% if not code_editor %}max-w-prose{% endif %}">
+                    <p class="text-term-muted text-xs font-light mb-2">
+                        <a href="/courses/{{ course_slug }}/" class="text-term-accent hover:underline">{{ course_name }}</a>
                     </p>
                     <div id="lesson-content" class="prose">
                         {{ content|safe }}
@@ -30,7 +30,7 @@ layout: layouts/base.njk
                     id="next-container-below-content"
                     class="complete-and-next-form-container {% if code_editor %}hidden {% endif %}md:block">
                     <div class="{% if code_editor %}hidden{% endif %}">
-                        <a @click="completedLesson = true" href="{% if nextLesson %}{{ nextLesson.url }}{% else %}/courses/{{ course_slug }}/{% endif %}" class="mb-4 mt-6 flex w-full items-center justify-center bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-800 focus:outline-none md:mb-0">
+                        <a @click="completedLesson = true" href="{% if nextLesson %}{{ nextLesson.url }}{% else %}/courses/{{ course_slug }}/{% endif %}" class="mb-4 mt-6 flex w-full items-center justify-center border border-term-accent bg-term-accent/10 px-4 py-2 text-sm font-medium text-term-accent hover:bg-term-accent hover:text-term-bg focus:outline-none md:mb-0">
                             {% if nextLesson %}Next{% else %}Complete the course{% endif %}
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -61,13 +61,13 @@ layout: layouts/base.njk
                                     <select
                                         id="file-group"
                                         name="file-group"
-                                        class="hidden dark:bg-slate-600 dark:text-slate-200 mt-1 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none
-                                            focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"></select>
+                                        class="hidden bg-term-raised text-term-text mt-1 pl-3 pr-10 py-2 text-base border-term-border focus:outline-none
+                                            focus:ring-term-accent focus:border-term-accent sm:text-sm"></select>
                                 </div>
                             </div>
                             <div id="file-buttons-container" class="text-[0px]"></div>
-                            <div id="editor" class="{% if editor_by_output %}h-[400px] md:h-[700px]{% else %}h-[400px]{% endif %} w-full border"></div>
-                            <div id="vim-status" class="bg-white text-xs border border-t-0 text-gray-500 mb-4"></div>
+                            <div id="editor" class="{% if editor_by_output %}h-[400px] md:h-[700px]{% else %}h-[400px]{% endif %} w-full border border-term-border"></div>
+                            <div id="vim-status" class="bg-term-raised text-xs border border-t-0 border-term-border text-term-muted mb-4"></div>
                         </div>
                         {% if code_execution %}
                             <div id="output-container" class="mb-6">
@@ -123,7 +123,7 @@ layout: layouts/base.njk
                         {% endif %}
                         <div id="next-container-below-editor" class="complete-and-next-form-container block md:hidden">
                             <div class="hidden">
-                                <a @click="completedLesson = true" href="{% if nextLesson %}{{ nextLesson.url }}{% else %}/courses/{{ course_slug }}/{% endif %}" class="mb-4 mt-6 flex w-full items-center justify-center bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-800 focus:outline-none md:mb-0">
+                                <a @click="completedLesson = true" href="{% if nextLesson %}{{ nextLesson.url }}{% else %}/courses/{{ course_slug }}/{% endif %}" class="mb-4 mt-6 flex w-full items-center justify-center border border-term-accent bg-term-accent/10 px-4 py-2 text-sm font-medium text-term-accent hover:bg-term-accent hover:text-term-bg focus:outline-none md:mb-0">
                                     {% if nextLesson %}Next{% else %}Complete the course{% endif %}
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -162,12 +162,12 @@ layout: layouts/base.njk
                         <div
                             @click.outside="$refs.nextModalContainer.classList.add('hidden')"
                             @keyup.esc="$refs.nextModalContainer.classList.add('hidden')"
-                            class="relative w-full overflow-hidden px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm
-                                sm:p-6 md:w-80 border border-pe_light_blue bg-slate-100 opacity-100 translate-y-0 sm:scale-100"
+                            class="relative w-full overflow-hidden px-4 pb-4 pt-5 text-left transition-all sm:my-8 sm:w-full sm:max-w-sm
+                                sm:p-6 md:w-80 border border-term-border bg-term-surface opacity-100 translate-y-0 sm:scale-100"
                             id="headlessui-dialog-panel-:r9:"
                             data-headlessui-state="open">
                             <div>
-                                <div class="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-green-100">
+                                <div class="mx-auto flex h-24 w-24 items-center justify-center border border-term-green">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         fill="none"
@@ -175,13 +175,13 @@ layout: layouts/base.njk
                                         stroke-width="1.5"
                                         stroke="currentColor"
                                         aria-hidden="true"
-                                        class="h-12 w-12 text-green-600">
+                                        class="h-12 w-12 text-term-green">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
                                     </svg>
                                 </div>
                                 <div class="mt-3 text-center sm:mt-5">
                                     <h3
-                                        class="text-base font-semibold leading-6 text-slate-800"
+                                        class="text-base font-semibold leading-6 text-term-text"
                                         id="headlessui-dialog-title-:ra:"
                                         data-headlessui-state="open">
                                         Exercise completed
@@ -189,7 +189,7 @@ layout: layouts/base.njk
                                 </div>
                             </div>
                             <div class="mt-5 sm:mt-6">
-                                <a @click="completedLesson = true" href="{% if nextLesson %}{{ nextLesson.url }}{% else %}/courses/{{ course_slug }}/{% endif %}" type="submit" class="mb-4 mt-6 flex w-full items-center justify-center bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-800 focus:outline-none md:mb-0">
+                                <a @click="completedLesson = true" href="{% if nextLesson %}{{ nextLesson.url }}{% else %}/courses/{{ course_slug }}/{% endif %}" type="submit" class="mb-4 mt-6 flex w-full items-center justify-center border border-term-accent bg-term-accent/10 px-4 py-2 text-sm font-medium text-term-accent hover:bg-term-accent hover:text-term-bg focus:outline-none md:mb-0">
                                     {% if nextLesson %}Next{% else %}Complete the course{% endif %}
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -236,18 +236,18 @@ layout: layouts/base.njk
                         x-transition:leave-start="translate-x-0"
                         x-transition:leave-end="translate-x-full"
                         @click.outside="sidebarOpen = false">
-                        <div class="flex h-full flex-col overflow-y-scroll bg-white dark:bg-slate-600 shadow-xl">
-                            <div class="bg-indigo-700 px-4 py-6 sm:px-6">
+                        <div class="flex h-full flex-col overflow-y-scroll bg-term-surface border-l border-term-border">
+                            <div class="bg-term-raised border-b border-term-border px-4 py-6 sm:px-6">
                                 <div class="flex items-center justify-between">
-                                    <h2 class="text-base font-semibold font-victor-mono leading-6 text-white" id="slide-over-title">
-                                        <a href="/courses/{{ course_slug }}/" class="hover:underline">{{ course_name }}</a>
+                                    <h2 class="text-base font-semibold font-victor-mono leading-6 text-term-text" id="slide-over-title">
+                                        <a href="/courses/{{ course_slug }}/" class="hover:text-term-accent hover:underline">{{ course_name }}</a>
                                     </h2>
                                     <div class="ml-3 flex h-7 items-center">
                                         <button
                                             @click="sidebarOpen = false"
                                             type="button"
-                                            class="relative rounded-md bg-indigo-700 text-indigo-200 hover:text-white focus:outline-none focus:ring-2
-                                                focus:ring-white">
+                                            class="relative text-term-muted hover:text-term-text focus:outline-none focus:ring-2
+                                                focus:ring-term-accent">
                                             <span class="absolute -inset-2.5"></span>
                                             <span class="sr-only">Close panel</span>
                                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
@@ -268,7 +268,7 @@ layout: layouts/base.njk
                                         <div x-data="{open: false}" class="group mt-4 ">
                                             <p
                                                 @click="open = !open"
-                                                class="text-sm text-gray-800 mb-3 cursor-pointer font-light select-none group-has-[a.currentLesson]:!text-primary-800
+                                                class="text-sm text-term-text mb-3 cursor-pointer font-light select-none group-has-[a.currentLesson]:!text-primary-800
                                                     group-has-[a.currentLesson]:font-medium">
                                                 <i class="fa-fw fal fa-folder-open mr-1" x-cloak x-show="open"></i>
                                                 <i class="fa-fw fal fa-folder mr-1" x-cloak x-show="!open"></i>
@@ -276,11 +276,11 @@ layout: layouts/base.njk
                                             </p>
                                             {% set past_first_section = true %}
                                         {% endif %}
-                                        <div 
+                                        <div
                                             x-data="{completed: $persist(false).as('{{ lesson.url }}')}"
-                                            class="text-gray-500 dark:text-slate-200 text-sm mb-1" x-show="open"
+                                            class="text-term-muted text-sm mb-1" x-show="open"
                                             >
-                                            <i x-cloak x-show="completed" @click="completed=false" class="mr-1 fal fa-fw fa-check-circle hover:cursor-pointer text-green-700"></i>
+                                            <i x-cloak x-show="completed" @click="completed=false" class="mr-1 fal fa-fw fa-check-circle hover:cursor-pointer text-term-green"></i>
                                             <i
                                                 x-cloak
                                                 x-show="!completed"

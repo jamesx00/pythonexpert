@@ -1,24 +1,22 @@
-<footer class="border-t">
-    <div class="default-container md:flex px-4 py-4 text-gray-600">
+<footer class="border-t border-term-border bg-term-surface font-victor-mono">
+    <div class="default-container md:flex px-4 py-4 text-term-muted">
         <div class="md:flex md:gap-8 lg:gap-16">
+            <p class="text-sm text-term-green mb-2 md:mb-0 md:mr-4 shrink-0">$ ls ~/site</p>
             <ul
-                class="flex gap-4">
-                {# <li class="">
-                    <span class="text-primary-800">Quick links</span>
-                </li> #}
+                class="flex flex-wrap gap-4">
                 {% for item in collections.all | eleventyNavigation %}
-                    <li class="text-sm hover:underline ">
-                        <a class="" href="{{ item.url }}">{{ item.key }}</a>
+                    <li class="text-sm hover:text-term-accent hover:underline">
+                        <a class="" href="{{ item.url }}">{{ item.key | lower }}</a>
                     </li>
                 {% endfor %}
-                <li class="text-sm hover:underline ">
-                    <a class="" href="/markdown-editor/">Live editor</a>
+                <li class="text-sm hover:text-term-accent hover:underline">
+                    <a class="" href="/markdown-editor/">live-editor</a>
                 </li>
-                <li class="text-sm hover:underline ">
-                    <a class="" href="/diff-editor/">Diff editor</a>
+                <li class="text-sm hover:text-term-accent hover:underline">
+                    <a class="" href="/diff-editor/">diff-editor</a>
                 </li>
-                <li class="text-sm hover:underline ">
-                    <a class="" href="/code-execution/">Run your code</a>
+                <li class="text-sm hover:text-term-accent hover:underline">
+                    <a class="" href="/code-execution/">run-your-code</a>
                 </li>
             </ul>
             {# <ul class="mb-6">

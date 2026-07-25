@@ -11,8 +11,54 @@
 	@apply transition-colors;
 }
 
+html {
+	color-scheme: dark;
+}
+
+body {
+	@apply bg-term-bg text-term-text font-victor-mono;
+}
+
+::selection {
+	@apply bg-term-accent/30 text-term-text;
+}
+
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+::-webkit-scrollbar-track {
+	@apply bg-term-bg;
+}
+
+::-webkit-scrollbar-thumb {
+	@apply bg-term-border;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	@apply bg-term-muted;
+}
+
 .default-container {
 	@apply max-w-7xl mx-auto;
+}
+
+.term-window {
+	@apply border border-term-border bg-term-surface;
+}
+
+.term-titlebar {
+	@apply flex items-center gap-1.5 border-b border-term-border bg-term-raised px-3 py-2;
+}
+
+.term-dot {
+	@apply h-2.5 w-2.5 rounded-full;
+}
+
+.term-prompt::before {
+	content: "$ ";
+	@apply text-term-green;
 }
 
 .stretched-link::after {
@@ -21,7 +67,7 @@
 }
 
 .editor-tab {
-	@apply border-x text-gray-500 hover:bg-gray-100 dark:hover:bg-slate-700 border-t border-b border border-gray-300 px-3 py-1 font-victor-mono text-sm;
+	@apply border text-term-muted hover:bg-term-raised hover:text-term-text border-term-border px-3 py-1 font-victor-mono text-sm;
 }
 
 .prose code *:not(.far, .fal, .fas) {
@@ -33,23 +79,23 @@ pre code[class*="language-"] {
 }
 
 p.caption {
-	@apply text-center text-sm text-gray-500 dark:text-slate-400;
+	@apply text-center text-sm text-term-muted;
 }
 
 pre[class*="language-"] {
 	@apply relative;
 }
 
-pre[class*="language-"]:hover .copy-content {
+.code-block-wrapper {
+	@apply relative;
+}
+
+.code-block-wrapper:hover .copy-content {
 	@apply opacity-80;
 }
 
-code > .copy-content {
-	@apply absolute right-2 top-2 cursor-pointer rounded-md bg-gray-200 p-1 text-gray-800 opacity-80 lg:opacity-0 transition-all;
-}
-
-#lesson-content pre:hover code > .copy-content {
-	@apply opacity-80;
+.code-block-wrapper > .copy-content {
+	@apply absolute right-2 top-2 cursor-pointer border border-term-border bg-term-raised p-1 text-term-muted opacity-80 lg:opacity-0 transition-all;
 }
 
 .prose p > code,
@@ -80,9 +126,10 @@ code > .copy-content {
 }
 
 #lesson-content {
-	@apply prose prose-slate max-w-none dark:prose-invert prose-pre:bg-transparent prose-pre:p-0;
-	@apply prose-img:mx-auto prose-hr:my-4 lg:mx-auto prose-headings:text-primary-800 prose-headings:font-bold;
-	@apply [&_pre:has(code)]:bg-[#23241f] [&_pre:has(code)]:p-1 [&_pre:has(code)]:px-3 [&_pre:has(code)]:relative [&_pre:has(code)]:font-victor-mono;
+	@apply prose prose-invert max-w-none prose-pre:bg-transparent prose-pre:p-0;
+	@apply prose-img:mx-auto prose-hr:my-4 prose-hr:border-term-border lg:mx-auto prose-headings:text-primary-800 prose-headings:font-bold;
+	@apply prose-a:text-term-accent prose-strong:text-term-text prose-blockquote:border-term-border prose-blockquote:text-term-muted;
+	@apply [&_pre:has(code)]:bg-term-raised [&_pre:has(code)]:border [&_pre:has(code)]:border-term-border [&_pre:has(code)]:p-1 [&_pre:has(code)]:px-3 [&_pre:has(code)]:relative [&_pre:has(code)]:font-victor-mono;
 }
 
 .mermaid:not([data-processed="true"]) {
@@ -90,7 +137,7 @@ code > .copy-content {
 }
 
 .mermaid {
-	@apply flex justify-center bg-zinc-800 border border-zinc-900 mb-4;
+	@apply flex justify-center bg-term-raised border border-term-border mb-4;
 }
 
 pre:has(code[class*="language-"]) {
@@ -102,27 +149,27 @@ code {
 }
 
 .alert-warning {
-	@apply mb-4 border-l-4 border-yellow-400 bg-yellow-50 p-4 dark:bg-slate-900 dark:text-slate-400;
+	@apply mb-4 border-l-4 border-term-yellow bg-term-surface p-4 text-term-muted;
 }
 
 .alert-info {
-	@apply mb-4 border-l-4 border-blue-400 bg-blue-50 p-4 dark:bg-slate-900 dark:text-slate-400;
+	@apply mb-4 border-l-4 border-term-accent bg-term-surface p-4 text-term-muted;
 }
 
 .alert-danger {
-	@apply mb-4 border-l-4 border-red-400 bg-red-50 p-4 dark:bg-slate-900 dark:text-slate-400;
+	@apply mb-4 border-l-4 border-term-red bg-term-surface p-4 text-term-muted;
 }
 
 .alert-info .highlight,
 .alert-danger .highlight,
 .alert-warning .highlight {
-	@apply border border-white mb-2;
+	@apply border border-term-border mb-2;
 }
 
 .alert-info .highlight code,
 .alert-warning .highlight code,
 .alert-danger .highlight code {
-	@apply block rounded-none border-none font-normal not-italic text-white bg-transparent;
+	@apply block rounded-none border-none font-normal not-italic text-term-text bg-transparent;
 }
 
 .list-image-checked {
@@ -135,45 +182,49 @@ code {
 
 @layer base {
 	h1 {
-		@apply text-3xl font-semibold;
+		@apply text-3xl font-semibold text-term-text;
 	}
 
 	h2 {
-		@apply text-2xl font-semibold;
+		@apply text-2xl font-semibold text-term-text;
 	}
 
 	h3 {
-		@apply text-xl font-semibold;
+		@apply text-xl font-semibold text-term-text;
 	}
 
 	h4 {
-		@apply text-lg font-semibold;
+		@apply text-lg font-semibold text-term-text;
+	}
+
+	a {
+		@apply decoration-term-accent/60;
 	}
 }
 
 @layer components {
 	.btn-primary-sm {
-		@apply bg-primary-800 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-800 transition;
+		@apply border border-term-accent bg-term-accent/10 px-3.5 py-2.5 text-sm font-semibold text-term-accent hover:bg-term-accent hover:text-term-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-term-accent transition;
 	}
 	.btn-primary {
-		@apply bg-primary-800 px-4 py-3 font-semibold text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-800 transition;
+		@apply border border-term-accent bg-term-accent/10 px-4 py-3 font-semibold text-term-accent hover:bg-term-accent hover:text-term-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-term-accent transition;
 	}
 	.btn-primary-lg {
-		@apply bg-primary-800 px-6 py-4 text-lg font-semibold text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-800 transition;
+		@apply border border-term-accent bg-term-accent/10 px-6 py-4 text-lg font-semibold text-term-accent hover:bg-term-accent hover:text-term-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-term-accent transition;
 	}
 	.btn-primary-xl {
-		@apply bg-primary-800 px-8 py-5 text-xl font-semibold text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-800 transition;
+		@apply border border-term-accent bg-term-accent/10 px-8 py-5 text-xl font-semibold text-term-accent hover:bg-term-accent hover:text-term-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-term-accent transition;
 	}
 	.btn-sm {
-		@apply px-3.5 py-2.5 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-800 transition;
+		@apply border border-term-border px-3.5 py-2.5 text-sm font-semibold hover:border-term-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-term-accent transition;
 	}
 	.btn {
-		@apply px-4 py-3 font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-800 transition;
+		@apply border border-term-border px-4 py-3 font-semibold hover:border-term-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-term-accent transition;
 	}
 	.btn-lg {
-		@apply px-6 py-4 text-lg font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-800 transition;
+		@apply border border-term-border px-6 py-4 text-lg font-semibold hover:border-term-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-term-accent transition;
 	}
 	.btn-xl {
-		@apply px-8 py-5 text-xl font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-800 transition;
+		@apply border border-term-border px-8 py-5 text-xl font-semibold hover:border-term-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-term-accent transition;
 	}
 }
