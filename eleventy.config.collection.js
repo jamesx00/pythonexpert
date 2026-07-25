@@ -18,13 +18,20 @@ module.exports = function (eleventyConfig) {
 		return [...new Set(array)];
 	});
 
+	const getNumberPrefix = (inputPath) => {
+		const dirName = path.basename(path.dirname(inputPath));
+		const prefix = dirName.split("-")[0];
+		const [beforeDecimal, afterDecimal] = prefix.split(".").map(Number);
+		return [beforeDecimal, afterDecimal || 0];
+	};
+
+	// The integer folder prefix (e.g. 1 for "1.3-what-is-a-database") used to
+	// group lessons into the same sidebar folder.
+	eleventyConfig.addFilter("directoryPrefix", (inputPath) => {
+		return getNumberPrefix(inputPath)[0];
+	});
+
 	eleventyConfig.addFilter("sortByDirectoryPrefix", (array) => {
-		const getNumberPrefix = (inputPath) => {
-			const dirName = path.basename(path.dirname(inputPath));
-			const prefix = dirName.split("-")[0];
-			const [beforeDecimal, afterDecimal] = prefix.split(".").map(Number);
-			return [beforeDecimal, afterDecimal || 0];
-		};
 		return array.sort((a, b) => {
 			const [aBefore, aAfter] = getNumberPrefix(a.inputPath);
 			const [bBefore, bAfter] = getNumberPrefix(b.inputPath);

@@ -260,12 +260,14 @@ layout: layouts/base.njk
                             <div class="relative flex-1 px-4 py-6 sm:px-6">
                                 <div class="pl-2">
                                     {% set past_first_section = false %}
+                                    {% set currentPrefix = page.inputPath | directoryPrefix %}
                                     {% for lesson in collections.lesson|filter("course_id", course_id)|sortByDirectoryPrefix %}
                                         {% if lesson.data.section %}
                                             {% if past_first_section %}
                                             </div>
                                         {% endif %}
-                                        <div x-data="{open: false}" class="group mt-4 ">
+                                        {% set sectionOpen = (lesson.inputPath | directoryPrefix) == currentPrefix %}
+                                        <div x-data="{open: {{ 'true' if sectionOpen else 'false' }}}" class="group mt-4 ">
                                             <p
                                                 @click="open = !open"
                                                 class="text-sm text-term-text mb-3 cursor-pointer font-light select-none group-has-[a.currentLesson]:!text-primary-800
