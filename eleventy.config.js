@@ -71,7 +71,7 @@ module.exports = function (eleventyConfig) {
 	eleventyConfig.addFilter("readableDate", (dateObj, format, zone) => {
 		// Formatting tokens for Luxon: https://moment.github.io/luxon/#/formatting?id=table-of-tokens
 		return DateTime.fromJSDate(dateObj, { zone: zone || "utc" }).toFormat(
-			format || "dd LLLL yyyy"
+			format || "dd LLLL yyyy",
 		);
 	});
 
@@ -108,7 +108,7 @@ module.exports = function (eleventyConfig) {
 
 	eleventyConfig.addFilter("filterTagList", function filterTagList(tags) {
 		return (tags || []).filter(
-			(tag) => ["all", "nav", "post", "posts"].indexOf(tag) === -1
+			(tag) => ["all", "nav", "post", "posts"].indexOf(tag) === -1,
 		);
 	});
 
@@ -135,7 +135,6 @@ module.exports = function (eleventyConfig) {
 		const items = [];
 
 		items.push({ category: "Pages", title: "Home", url: "/" });
-		items.push({ category: "Pages", title: "Blog", url: "/blogs/" });
 
 		for (const course of collections.course || []) {
 			if (course.data.hidden) continue;

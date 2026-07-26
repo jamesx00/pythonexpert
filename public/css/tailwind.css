@@ -1395,14 +1395,6 @@ a {
   z-index: 50;
 }
 
-.order-2 {
-  order: 2;
-}
-
-.order-3 {
-  order: 3;
-}
-
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -2161,11 +2153,6 @@ a {
 .text-base {
   font-size: 1rem;
   line-height: 1.5rem;
-}
-
-.text-lg {
-  font-size: 1.125rem;
-  line-height: 1.75rem;
 }
 
 .text-sm {
@@ -3340,10 +3327,6 @@ code {
   margin-bottom: 0px;
 }
 
-.last\:border-0:last-child {
-  border-width: 0px;
-}
-
 .hover\:cursor-pointer:hover {
   cursor: pointer;
 }
@@ -3440,15 +3423,6 @@ code {
 
 .group:hover .group-hover\:max-h-none {
   max-height: none;
-}
-
-.group:hover .group-hover\:text-term-accent {
-  --tw-text-opacity: 1;
-  color: rgb(137 180 250 / var(--tw-text-opacity));
-}
-
-.group:hover .group-hover\:underline {
-  text-decoration-line: underline;
 }
 
 .group:hover .group-hover\:opacity-100 {
@@ -3551,10 +3525,6 @@ code {
 }
 
 @media (min-width: 768px) {
-  .md\:order-1 {
-    order: 1;
-  }
-
   .md\:mb-0 {
     margin-bottom: 0px;
   }

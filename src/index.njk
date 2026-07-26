@@ -27,7 +27,8 @@ eleventyNavigation:
           web application built to help anyone learn how to program, step by step.
         </p>
         <p class="text-term-muted">
-          <span class="text-term-green">$</span> ls ./courses
+          <span class="text-term-green">$</span>
+          ls ./courses
         </p>
       </div>
     </div>
@@ -37,7 +38,8 @@ eleventyNavigation:
       {% for course in collections.course|filter("hidden", undefined)|sort("order") %}
         <div class="relative group mb-4 border border-term-border bg-term-surface p-4 hover:border-term-accent transition">
           <p class="text-xs text-term-muted mb-2">
-            <span class="text-term-green">&gt;</span> ./{{ course.data.title | lower | replace(" ", "-") }}
+            <span class="text-term-green">&gt;</span>
+            ./{{ course.data.title | lower | replace(" ", "-") }}
           </p>
           <h4 class="mb-2 text-term-text font-semibold">{{ course.data.title }}</h4>
           {% if course.data.is_under_development %}
