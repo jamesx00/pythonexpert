@@ -1,7 +1,7 @@
 const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
 
 if (isMac) {
-	for (const el of document.getElementsByClassName("run-code-shortcut-label")) {
+	for (const el of document.getElementsByClassName("mac-key-label")) {
 		el.textContent = el.dataset.macLabel;
 	}
 }
@@ -18,11 +18,30 @@ document.addEventListener("alpine:init", () => {
 			this.items = dataEl ? JSON.parse(dataEl.textContent || "[]") : [];
 		},
 
+		get contextualItems() {
+			const items = [];
+			const nav = document.getElementById("lesson-nav-data");
+			if (!nav) return items;
+			if (nav.dataset.nextUrl) {
+				items.push({ category: "Lesson", title: "Next lesson", subtitle: nav.dataset.nextTitle, url: nav.dataset.nextUrl });
+			}
+			if (nav.dataset.previousUrl) {
+				items.push({
+					category: "Lesson",
+					title: "Previous lesson",
+					subtitle: nav.dataset.previousTitle,
+					url: nav.dataset.previousUrl,
+				});
+			}
+			return items;
+		},
+
 		get filteredItems() {
 			const query = this.query.trim().toLowerCase();
+			const all = [...this.contextualItems, ...this.items];
 			const source = !query
-				? this.items.slice(0, 30)
-				: this.items
+				? all.slice(0, 30)
+				: all
 						.filter((item) =>
 							`${item.title} ${item.subtitle || ""} ${item.category}`
 								.toLowerCase()
@@ -87,16 +106,6 @@ function isTypingContext(target) {
 	return false;
 }
 
-function clickVisibleLessonNavLink(className) {
-	for (const link of document.getElementsByClassName(className)) {
-		if (link.offsetParent !== null) {
-			link.click();
-			return true;
-		}
-	}
-	return false;
-}
-
 document.getElementById("command-palette-trigger")?.addEventListener("click", () => {
 	window.dispatchEvent(new CustomEvent("toggle-command-palette"));
 });
@@ -108,9 +117,10 @@ document.getElementById("shortcuts-help-trigger")?.addEventListener("click", () 
 window.addEventListener(
 	"keydown",
 	(event) => {
+		const key = event.key.toLowerCase();
 		const cmdOrCtrl = isMac ? event.metaKey : event.ctrlKey;
 
-		if (cmdOrCtrl && event.key.toLowerCase() === "k") {
+		if (cmdOrCtrl && key === "k") {
 			event.preventDefault();
 			window.dispatchEvent(new CustomEvent("toggle-command-palette"));
 			return;
@@ -127,18 +137,6 @@ window.addEventListener(
 		if (event.key === "?") {
 			event.preventDefault();
 			window.dispatchEvent(new CustomEvent("toggle-shortcuts-help"));
-			return;
-		}
-
-		if (event.metaKey || event.ctrlKey || event.altKey) return;
-
-		if (event.key === "n") {
-			if (clickVisibleLessonNavLink("lesson-next-link")) event.preventDefault();
-			return;
-		}
-
-		if (event.key === "p") {
-			if (clickVisibleLessonNavLink("lesson-previous-link")) event.preventDefault();
 			return;
 		}
 	},

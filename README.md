@@ -58,14 +58,17 @@ The site is fully navigable without a mouse:
 | `/` | Also opens the command palette |
 | `↑` / `↓` | Move through command palette results |
 | `Enter` | Go to the highlighted result |
-| `n` | Go to the next lesson |
-| `p` | Go to the previous lesson |
 | `Ctrl+Enter` (`⌘+Enter` on Mac) | Run code in the exercise editor |
 | `?` | Show the keyboard shortcuts help dialog |
 | `Esc` | Close the command palette or any open dialog |
 
-Single-key shortcuts (`n`, `p`, `?`, `/`) are automatically disabled while
-typing in an input, textarea, or the Monaco code editor.
+On lesson pages, "Next lesson" and "Previous lesson" also show up as
+entries in the command palette itself, so moving between lessons never
+depends on a single-key shortcut that could collide with typing in the
+code editor.
+
+`?` and `/` are automatically disabled while typing in an input,
+textarea, or the Monaco code editor.
 
 ## License
 
