@@ -1,0 +1,60 @@
+<div
+    x-data="{open: false}"
+    @toggle-shortcuts-help.window="open = !open"
+    @keydown.escape.window="open = false"
+    x-cloak
+    x-show="open"
+    class="fixed inset-0 z-50"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Keyboard shortcuts">
+    <div class="fixed inset-0 bg-black/70" x-transition.opacity @click="open = false"></div>
+    <div class="fixed inset-0 z-10 flex items-center justify-center p-4">
+        <div
+            class="w-full max-w-md border border-term-border bg-term-surface p-6 font-victor-mono shadow-2xl"
+            x-transition:enter="ease-out duration-150"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+            @click.outside="open = false">
+            <div class="mb-4 flex items-center justify-between">
+                <p class="text-sm text-term-green">$ man keyboard-shortcuts</p>
+                <button @click="open = false" class="text-term-muted hover:text-term-text">
+                    <span class="sr-only">Close</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <dl class="space-y-3 text-sm">
+                <div class="flex items-center justify-between gap-4">
+                    <dt class="text-term-muted">Open command palette</dt>
+                    <dd class="flex gap-1">
+                        <kbd class="border border-term-border px-1.5 py-0.5 text-term-text">&#8984;K</kbd>
+                        <span class="text-term-muted">/</span>
+                        <kbd class="border border-term-border px-1.5 py-0.5 text-term-text">/</kbd>
+                    </dd>
+                </div>
+                <div class="flex items-center justify-between gap-4">
+                    <dt class="text-term-muted">Next lesson</dt>
+                    <dd><kbd class="border border-term-border px-1.5 py-0.5 text-term-text">n</kbd></dd>
+                </div>
+                <div class="flex items-center justify-between gap-4">
+                    <dt class="text-term-muted">Previous lesson</dt>
+                    <dd><kbd class="border border-term-border px-1.5 py-0.5 text-term-text">p</kbd></dd>
+                </div>
+                <div class="flex items-center justify-between gap-4">
+                    <dt class="text-term-muted">Run code</dt>
+                    <dd><kbd class="border border-term-border px-1.5 py-0.5 text-term-text run-code-shortcut-label" data-mac-label="&#8984;+Enter">Ctrl+Enter</kbd></dd>
+                </div>
+                <div class="flex items-center justify-between gap-4">
+                    <dt class="text-term-muted">Show this help</dt>
+                    <dd><kbd class="border border-term-border px-1.5 py-0.5 text-term-text">?</kbd></dd>
+                </div>
+                <div class="flex items-center justify-between gap-4">
+                    <dt class="text-term-muted">Close dialogs</dt>
+                    <dd><kbd class="border border-term-border px-1.5 py-0.5 text-term-text">esc</kbd></dd>
+                </div>
+            </dl>
+        </div>
+    </div>
+</div>

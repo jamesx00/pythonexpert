@@ -130,6 +130,42 @@ module.exports = function (eleventyConfig) {
 		return new Date().toISOString();
 	});
 
+	// Search index consumed by the command palette (Ctrl/Cmd+K).
+	eleventyConfig.addShortcode("commandPaletteData", (collections) => {
+		const items = [];
+
+		items.push({ category: "Pages", title: "Home", url: "/" });
+		items.push({ category: "Pages", title: "Blog", url: "/blogs/" });
+
+		for (const course of collections.course || []) {
+			if (course.data.hidden) continue;
+			items.push({
+				category: "Courses",
+				title: course.data.title,
+				url: course.url,
+			});
+		}
+
+		for (const lesson of collections.lesson || []) {
+			items.push({
+				category: "Lessons",
+				title: lesson.data.lesson_name,
+				subtitle: lesson.data.course_name,
+				url: lesson.url,
+			});
+		}
+
+		for (const post of collections.blog || []) {
+			items.push({
+				category: "Blog",
+				title: post.data.title,
+				url: post.url,
+			});
+		}
+
+		return JSON.stringify(items);
+	});
+
 	eleventyConfig.addShortcode("fileContent", (inputPath, fileName) => {
 		const directory = path.dirname(inputPath);
 		const fullPath = path.join(directory, "files", fileName);

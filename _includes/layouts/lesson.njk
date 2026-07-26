@@ -3,6 +3,7 @@ layout: layouts/base.njk
 ---
 
 {% set nextLesson = collections.lesson|filter("course_id", course_id)|sortByDirectoryPrefix|getNextCollectionItem(page) %}
+{% set previousLesson = collections.lesson|filter("course_id", course_id)|sortByDirectoryPrefix|getPreviousCollectionItem(page) %}
 <div x-data="{ newFileOpen: false, sidebarOpen: false, completedLesson: $persist(false).as('{{page.url}}')}">
     <button
         class="fixed right-0 top-[100px] border border-term-border bg-term-raised hover:bg-term-border text-term-text px-2 py-1 z-50"
@@ -15,8 +16,13 @@ layout: layouts/base.njk
             {% if not hide_content %}
             <div class="md:flex-1 max-w-prose overflow-y-hidden">
                 <div class="mb-6 mx-auto border border-term-border bg-term-surface p-4 {% if not code_editor %}max-w-prose{% endif %}">
-                    <p class="text-term-muted text-xs font-light mb-2">
+                    <p class="text-term-muted text-xs font-light mb-2 flex items-center justify-between">
                         <a href="/courses/{{ course_slug }}/" class="text-term-accent hover:underline">{{ course_name }}</a>
+                        {% if previousLesson %}
+                            <a href="{{ previousLesson.url }}" class="lesson-previous-link text-term-muted hover:text-term-accent hover:underline">
+                                <i class="far fa-arrow-left mr-1"></i>Previous
+                            </a>
+                        {% endif %}
                     </p>
                     <div id="lesson-content" class="prose">
                         {{ content|safe }}
@@ -30,7 +36,7 @@ layout: layouts/base.njk
                     id="next-container-below-content"
                     class="complete-and-next-form-container {% if code_editor %}hidden {% endif %}md:block">
                     <div class="{% if code_editor %}hidden{% endif %}">
-                        <a @click="completedLesson = true" href="{% if nextLesson %}{{ nextLesson.url }}{% else %}/courses/{{ course_slug }}/{% endif %}" class="mb-4 mt-6 flex w-full items-center justify-center border border-term-accent bg-term-accent/10 px-4 py-2 text-sm font-medium text-term-accent hover:bg-term-accent hover:text-term-bg focus:outline-none md:mb-0">
+                        <a @click="completedLesson = true" href="{% if nextLesson %}{{ nextLesson.url }}{% else %}/courses/{{ course_slug }}/{% endif %}" class="lesson-next-link mb-4 mt-6 flex w-full items-center justify-center border border-term-accent bg-term-accent/10 px-4 py-2 text-sm font-medium text-term-accent hover:bg-term-accent hover:text-term-bg focus:outline-none md:mb-0">
                             {% if nextLesson %}Next{% else %}Complete the course{% endif %}
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -109,7 +115,7 @@ layout: layouts/base.njk
                                                 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757
                                                 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path>
                                     </svg>
-                                    Run (Control + Enter)
+                                    Run (<span class="run-code-shortcut-label" data-mac-label="&#8984; + Enter">Control + Enter</span>)
                                 </button>
                                 <button
                                     id="button-run-code-running"
@@ -123,7 +129,7 @@ layout: layouts/base.njk
                         {% endif %}
                         <div id="next-container-below-editor" class="complete-and-next-form-container block md:hidden">
                             <div class="hidden">
-                                <a @click="completedLesson = true" href="{% if nextLesson %}{{ nextLesson.url }}{% else %}/courses/{{ course_slug }}/{% endif %}" class="mb-4 mt-6 flex w-full items-center justify-center border border-term-accent bg-term-accent/10 px-4 py-2 text-sm font-medium text-term-accent hover:bg-term-accent hover:text-term-bg focus:outline-none md:mb-0">
+                                <a @click="completedLesson = true" href="{% if nextLesson %}{{ nextLesson.url }}{% else %}/courses/{{ course_slug }}/{% endif %}" class="lesson-next-link mb-4 mt-6 flex w-full items-center justify-center border border-term-accent bg-term-accent/10 px-4 py-2 text-sm font-medium text-term-accent hover:bg-term-accent hover:text-term-bg focus:outline-none md:mb-0">
                                     {% if nextLesson %}Next{% else %}Complete the course{% endif %}
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -189,7 +195,7 @@ layout: layouts/base.njk
                                 </div>
                             </div>
                             <div class="mt-5 sm:mt-6">
-                                <a @click="completedLesson = true" href="{% if nextLesson %}{{ nextLesson.url }}{% else %}/courses/{{ course_slug }}/{% endif %}" type="submit" class="mb-4 mt-6 flex w-full items-center justify-center border border-term-accent bg-term-accent/10 px-4 py-2 text-sm font-medium text-term-accent hover:bg-term-accent hover:text-term-bg focus:outline-none md:mb-0">
+                                <a @click="completedLesson = true" href="{% if nextLesson %}{{ nextLesson.url }}{% else %}/courses/{{ course_slug }}/{% endif %}" type="submit" class="lesson-next-link mb-4 mt-6 flex w-full items-center justify-center border border-term-accent bg-term-accent/10 px-4 py-2 text-sm font-medium text-term-accent hover:bg-term-accent hover:text-term-bg focus:outline-none md:mb-0">
                                     {% if nextLesson %}Next{% else %}Complete the course{% endif %}
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
