@@ -304,12 +304,6 @@ function updateExecutionOutput(element, output) {
 }
 
 function executeCode(language, files) {
-	const runTimes = {
-		python: "3.10.0",
-		javascript: "16.3.0",
-		typescript: "4.2.3",
-	};
-
 	const filesForExecution = files.map((file) => ({
 		content: file.content,
 		name: file.name,
@@ -317,7 +311,7 @@ function executeCode(language, files) {
 
 	const executionPayload = {
 		language: language,
-		version: runTimes[language],
+		version: EXPECTED_RUNTIMES[language],
 		files: filesForExecution,
 	};
 
@@ -330,7 +324,7 @@ function executeCode(language, files) {
 		window.rybbit.event("execute_code", {
 			page: location.pathname,
 			language: language,
-			version: runTimes[language],
+			version: EXPECTED_RUNTIMES[language],
 		});
 	}
 

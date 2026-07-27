@@ -1,0 +1,98 @@
+---
+layout: layouts/base.njk
+title: Check runtimes
+hide_navbar: true
+---
+
+{% include 'settings.njk' %}
+<div class="default-container px-4 py-8 font-victor-mono">
+    <h1 class="text-term-green text-lg mb-2">$ runtimes --check</h1>
+    <p class="text-term-muted mb-4">
+        Queries the execution server's <code>/runtimes</code> endpoint and compares the
+        versions it reports against the versions this site's lesson editors are built for.
+    </p>
+    <div x-data="runtimeChecker()" x-init="check()">
+        <div class="flex items-center gap-4 mb-4">
+            <button
+                @click="check()"
+                :disabled="loading"
+                class="border border-term-border bg-term-surface px-3 py-1 text-term-accent hover:border-term-accent disabled:opacity-50">
+                <span x-show="!loading">$ recheck</span>
+                <span x-show="loading">checking...</span>
+            </button>
+            <span x-show="error" x-text="error" class="text-term-red"></span>
+        </div>
+        <table class="w-full text-left border border-term-border">
+            <thead>
+                <tr class="border-b border-term-border bg-term-surface text-term-muted">
+                    <th class="px-3 py-2">Language</th>
+                    <th class="px-3 py-2">Expected</th>
+                    <th class="px-3 py-2">Server reports</th>
+                    <th class="px-3 py-2">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template x-for="row in rows" :key="row.language">
+                    <tr class="border-b border-term-border">
+                        <td class="px-3 py-2" x-text="row.language"></td>
+                        <td class="px-3 py-2" x-text="row.expected"></td>
+                        <td class="px-3 py-2" x-text="row.available.join(', ') || '—'"></td>
+                        <td class="px-3 py-2" :class="row.ok ? 'text-term-green' : 'text-term-red'" x-text="row.ok ? 'OK' : (row.available.length ? 'version mismatch' : 'missing')"></td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="/js/expected-runtimes.js"></script>
+<script>
+    function runtimeChecker() {
+        return {
+            loading: false,
+            error: "",
+            rows: Object.entries(EXPECTED_RUNTIMES).map(([language, expected]) => ({
+                language,
+                expected,
+                available: [],
+                ok: false,
+            })),
+            check() {
+                this.loading = true;
+                this.error = "";
+
+                const executionEndpoint = (
+                    localStorage.getItem("execution_endpoint") ||
+                    "https://execute.pythonexpert.dev/api/v2/execute"
+                ).replaceAll('"', "");
+                const runtimesUrl = executionEndpoint.replace(/\/execute\/?$/, "/runtimes");
+
+                fetch(runtimesUrl)
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error(`Server responded with ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then((runtimes) => {
+                        this.rows = Object.entries(EXPECTED_RUNTIMES).map(([language, expected]) => {
+                            const available = runtimes
+                                .filter((runtime) => runtime.language === language)
+                                .map((runtime) => runtime.version);
+                            return {
+                                language,
+                                expected,
+                                available,
+                                ok: available.includes(expected),
+                            };
+                        });
+                    })
+                    .catch((err) => {
+                        this.error = `Could not reach runtimes endpoint: ${err.message}`;
+                    })
+                    .finally(() => {
+                        this.loading = false;
+                    });
+            },
+        };
+    }
+</script>

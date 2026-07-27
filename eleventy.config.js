@@ -135,6 +135,11 @@ module.exports = function (eleventyConfig) {
 		const items = [];
 
 		items.push({ category: "Pages", title: "Home", url: "/" });
+		items.push({
+			category: "Pages",
+			title: "Check runtimes",
+			url: "/runtimes/",
+		});
 
 		for (const course of collections.course || []) {
 			if (course.data.hidden) continue;
