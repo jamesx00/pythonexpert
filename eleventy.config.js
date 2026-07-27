@@ -45,6 +45,7 @@ module.exports = function (eleventyConfig) {
 		"./node_modules/mermaid/dist/mermaid.js": "/js/mermaid.js",
 		"./node_modules/typed.js/dist/typed.umd.js": "/js/typed.umd.js",
 		"./node_modules/marked/marked.min.js": "/js/marked.min.js",
+		"./node_modules/instant.page/instantpage.js": "/js/instantpage.js",
 		"./node_modules/monaco-editor/min": "/js/monaco-editor/min",
 		"./src/admin/config.yml": "./admin/config.yml",
 		"./src/static/img": "/static/img",
