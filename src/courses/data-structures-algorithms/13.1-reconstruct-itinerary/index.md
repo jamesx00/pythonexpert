@@ -25,7 +25,8 @@ file_groups:
         is_editable: false
         is_hidden: true
         is_main: false
-        is_test_file: test.py
+        is_test_file: true
+        source: tests.py
     id: 1
     name: Python
 ---
