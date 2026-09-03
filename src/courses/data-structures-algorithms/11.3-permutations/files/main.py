@@ -1,0 +1,2 @@
+def permute(nums):
+    return []

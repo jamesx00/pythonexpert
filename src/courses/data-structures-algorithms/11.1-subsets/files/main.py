@@ -1,0 +1,2 @@
+def subsets(nums):
+    return []
