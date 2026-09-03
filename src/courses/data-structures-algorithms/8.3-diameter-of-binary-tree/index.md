@@ -48,3 +48,24 @@ For example, in the tree built from `[1, 2, 3, 4, 5]`, the longest path runs `4 
 <li id="test-5"><code>diameter_of_binary_tree(build_tree([1, 2, None, 3, None, 4, None, 5]))</code> should return <code>4</code></li>
 <li id="test-6"><code>diameter_of_binary_tree(build_tree([1, None, 2, None, 3]))</code> should return <code>2</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def diameter_of_binary_tree(root):
+    best = [0]
+
+    def height(node):
+        if node is None:
+            return 0
+        left = height(node.left)
+        right = height(node.right)
+        best[0] = max(best[0], left + right)
+        return 1 + max(left, right)
+
+    height(root)
+    return best[0]
+```
+
+</details>

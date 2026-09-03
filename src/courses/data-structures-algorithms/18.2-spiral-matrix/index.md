@@ -54,3 +54,33 @@ the spiral visits `1, 2, 3` across the top, `6, 9` down the right side, `8, 7` b
 <li id="test-5"><code>spiral_order([[1], [2], [3]])</code> should return <code>[1, 2, 3]</code></li>
 <li id="test-6"><code>spiral_order([])</code> should return <code>[]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def spiral_order(matrix):
+    if not matrix or not matrix[0]:
+        return []
+    result = []
+    top, bottom = 0, len(matrix) - 1
+    left, right = 0, len(matrix[0]) - 1
+    while top <= bottom and left <= right:
+        for col in range(left, right + 1):
+            result.append(matrix[top][col])
+        top += 1
+        for row in range(top, bottom + 1):
+            result.append(matrix[row][right])
+        right -= 1
+        if top <= bottom:
+            for col in range(right, left - 1, -1):
+                result.append(matrix[bottom][col])
+            bottom -= 1
+        if left <= right:
+            for row in range(bottom, top - 1, -1):
+                result.append(matrix[row][left])
+            left += 1
+    return result
+```
+
+</details>

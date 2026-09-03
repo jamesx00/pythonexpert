@@ -58,3 +58,26 @@ searching for `13` returns `True`, and searching for `6` returns `False`.
 <li id="test-7"><code>search_matrix([], 3)</code> should return <code>False</code></li>
 <li id="test-8"><code>search_matrix([[]], 3)</code> should return <code>False</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def search_matrix(matrix, target):
+    if not matrix or not matrix[0]:
+        return False
+    rows, cols = len(matrix), len(matrix[0])
+    lo, hi = 0, rows * cols - 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        val = matrix[mid // cols][mid % cols]
+        if val == target:
+            return True
+        elif val < target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return False
+```
+
+</details>

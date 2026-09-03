@@ -48,3 +48,39 @@ You get to design the string format yourself — a common approach is a preorder
 <li id="test-5">for a tree built from <code>[5, 4, 7, 3, None, 2, None, -1, None, 9]</code>, <code>deserialize(serialize(root))</code> should rebuild to <code>[5, 4, 7, 3, None, 2, None, -1, None, 9]</code></li>
 <li id="test-6">for a tree built from <code>[1, None, 2, None, 3, None, 4]</code>, <code>deserialize(serialize(root))</code> should rebuild to <code>[1, None, 2, None, 3, None, 4]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def serialize(root):
+    values = []
+
+    def dfs(node):
+        if node is None:
+            values.append('#')
+            return
+        values.append(str(node.val))
+        dfs(node.left)
+        dfs(node.right)
+
+    dfs(root)
+    return ','.join(values)
+
+
+def deserialize(data):
+    values = iter(data.split(','))
+
+    def build():
+        val = next(values)
+        if val == '#':
+            return None
+        node = TreeNode(int(val))
+        node.left = build()
+        node.right = build()
+        return node
+
+    return build()
+```
+
+</details>

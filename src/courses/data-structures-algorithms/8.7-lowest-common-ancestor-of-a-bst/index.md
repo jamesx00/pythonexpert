@@ -48,3 +48,20 @@ For example, in the BST built from `[6, 2, 8, 0, 4, 7, 9, None, None, 3, 5]`, th
 <li id="test-5"><code>lowest_common_ancestor(build_tree([6, 2, 8, 0, 4, 7, 9, None, None, 3, 5]), node(7), node(9))</code> should return <code>8</code></li>
 <li id="test-6"><code>lowest_common_ancestor(build_tree([6, 2, 8, 0, 4, 7, 9, None, None, 3, 5]), node(0), node(5))</code> should return <code>2</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def lowest_common_ancestor(root, p, q):
+    node = root
+    while node:
+        if p.val < node.val and q.val < node.val:
+            node = node.left
+        elif p.val > node.val and q.val > node.val:
+            node = node.right
+        else:
+            return node
+```
+
+</details>

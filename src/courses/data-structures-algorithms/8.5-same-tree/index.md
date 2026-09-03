@@ -48,3 +48,17 @@ For example, `build_tree([1, 2, 3])` and `build_tree([1, 2, 3])` describe the sa
 <li id="test-5"><code>is_same_tree(build_tree([1]), build_tree([]))</code> should return <code>False</code></li>
 <li id="test-6"><code>is_same_tree(build_tree([5, 3, 8, 1, 4]), build_tree([5, 3, 8, 1, 4]))</code> should return <code>True</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def is_same_tree(p, q):
+    if p is None and q is None:
+        return True
+    if p is None or q is None:
+        return False
+    return p.val == q.val and is_same_tree(p.left, q.left) and is_same_tree(p.right, q.right)
+```
+
+</details>

@@ -48,3 +48,17 @@ For example, given `["bat", "tab", "eat", "tea", "owl"]`, the words `"bat"` and 
 <li id="test-5"><code>group_anagrams(["a", "a", "a"])</code> should return <code>[["a", "a", "a"]]</code></li>
 <li id="test-6"><code>group_anagrams(["cat", "dog"])</code> should return <code>[["cat"], ["dog"]]</code> (grouping may differ in order)</li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def group_anagrams(words):
+    groups = {}
+    for w in words:
+        key = "".join(sorted(w))
+        groups.setdefault(key, []).append(w)
+    return list(groups.values())
+```
+
+</details>

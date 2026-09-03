@@ -49,3 +49,17 @@ For example, starting from `19`: `1^2 + 9^2 = 82`, then `8^2 + 2^2 = 68`, then `
 <li id="test-6"><code>is_happy(100)</code> should return <code>True</code></li>
 <li id="test-7"><code>is_happy(89)</code> should return <code>False</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def is_happy(n):
+    seen = set()
+    while n != 1 and n not in seen:
+        seen.add(n)
+        n = sum(int(d) ** 2 for d in str(n))
+    return n == 1
+```
+
+</details>

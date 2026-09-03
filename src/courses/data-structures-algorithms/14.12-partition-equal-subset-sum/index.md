@@ -49,3 +49,20 @@ For example, given `nums = [1, 5, 11, 5]`, splitting into `[1, 5, 5]` and `[11]`
 <li id="test-6"><code>can_partition([3, 3, 3, 4, 5])</code> should return <code>True</code></li>
 <li id="test-7"><code>can_partition([2, 2, 2, 2, 3, 4, 5])</code> should return <code>True</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def can_partition(nums):
+    total = sum(nums)
+    if total % 2:
+        return False
+    target = total // 2
+    dp = {0}
+    for n in nums:
+        dp |= {n + x for x in dp if n + x <= target}
+    return target in dp
+```
+
+</details>

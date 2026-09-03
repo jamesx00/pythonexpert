@@ -48,3 +48,16 @@ For example, given `nums = [7, 2, 9, 4, 9]` and `k = 2`, sorting from largest to
 <li id="test-5"><code>find_kth_largest([-1, -5, -3, 0], 1)</code> should return <code>0</code></li>
 <li id="test-6"><code>find_kth_largest([10, 20, 30, 40, 50], 5)</code> should return <code>10</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+import heapq
+
+
+def find_kth_largest(nums, k):
+    return heapq.nlargest(k, nums)[-1]
+```
+
+</details>

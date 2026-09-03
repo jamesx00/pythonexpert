@@ -49,3 +49,13 @@ For example, `has_duplicate([4, 2, 7, 2, 9])` should return `True` because `2` s
 <li id="test-5"><code>has_duplicate([5])</code> should return <code>False</code></li>
 <li id="test-6"><code>has_duplicate([10, 20, 30, 40, 10])</code> should return <code>True</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def has_duplicate(nums):
+    return len(set(nums)) != len(nums)
+```
+
+</details>

@@ -48,3 +48,18 @@ For example, given `nums = [5, 5, 5, 1, 1, 9]` and `k = 2`, the value `5` appear
 <li id="test-5"><code>top_k_frequent([1, 1, 1, 2, 2, 3], 2)</code> should return <code>[1, 2]</code> (order does not matter)</li>
 <li id="test-6"><code>top_k_frequent([-1, -1, 2, 3, 3], 2)</code> should return <code>[-1, 3]</code> (order does not matter)</li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+from collections import Counter
+
+
+def top_k_frequent(nums, k):
+    counts = Counter(nums)
+    most_common = counts.most_common(k)
+    return [n for n, _ in most_common]
+```
+
+</details>

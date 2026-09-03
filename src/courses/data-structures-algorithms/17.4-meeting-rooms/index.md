@@ -49,3 +49,17 @@ For example, given `intervals = [[0, 30], [5, 10], [15, 20]]`, the meeting `[0, 
 <li id="test-6"><code>can_attend_all_meetings([[1, 5], [4, 8]])</code> should return <code>False</code></li>
 <li id="test-7"><code>can_attend_all_meetings([[3, 6], [9, 12], [1, 2]])</code> should return <code>True</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def can_attend_all_meetings(intervals):
+    ordered = sorted(intervals, key=lambda iv: iv[0])
+    for i in range(1, len(ordered)):
+        if ordered[i][0] < ordered[i - 1][1]:
+            return False
+    return True
+```
+
+</details>

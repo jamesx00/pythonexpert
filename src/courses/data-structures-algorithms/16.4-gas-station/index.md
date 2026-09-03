@@ -48,3 +48,23 @@ For example, `gas = [1, 2, 3, 4, 5]` and `cost = [3, 4, 5, 1, 2]` lets you start
 <li id="test-5"><code>can_complete_circuit([4, 5, 2, 6, 5, 3], [3, 2, 7, 3, 2, 9])</code> should return <code>-1</code></li>
 <li id="test-6"><code>can_complete_circuit([7], [6])</code> should return <code>0</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def can_complete_circuit(gas, cost):
+    total = 0
+    tank = 0
+    start = 0
+    for i in range(len(gas)):
+        diff = gas[i] - cost[i]
+        total += diff
+        tank += diff
+        if tank < 0:
+            start = i + 1
+            tank = 0
+    return start if total >= 0 else -1
+```
+
+</details>

@@ -48,3 +48,28 @@ For example, if a node holding `3` has its `random` pointer aimed at the node ho
 <li id="test-5">list <code>[5, 6, 7]</code> with randoms <code>[None, None, None]</code> - the copy should match <code>[(5, None), (6, None), (7, None)]</code></li>
 <li id="test-6">list <code>[1, 2, 3, 4]</code> with randoms <code>[3, 2, 1, 0]</code> - the copy should match <code>[(1, 3), (2, 2), (3, 1), (4, 0)]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def copy_random_list(head):
+    if not head:
+        return None
+
+    old_to_new = {}
+    curr = head
+    while curr:
+        old_to_new[curr] = Node(curr.val)
+        curr = curr.next
+
+    curr = head
+    while curr:
+        old_to_new[curr].next = old_to_new.get(curr.next)
+        old_to_new[curr].random = old_to_new.get(curr.random)
+        curr = curr.next
+
+    return old_to_new[head]
+```
+
+</details>

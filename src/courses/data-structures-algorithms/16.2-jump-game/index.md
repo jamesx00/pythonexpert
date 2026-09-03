@@ -49,3 +49,18 @@ For example, `nums = [2, 3, 1, 1, 4]` lets you jump `0 -> 1 -> 4`, reaching the 
 <li id="test-6"><code>can_jump([1, 1, 1, 1])</code> should return <code>True</code></li>
 <li id="test-7"><code>can_jump([5, 0, 0, 0, 0, 0])</code> should return <code>True</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def can_jump(nums):
+    reach = 0
+    for i, n in enumerate(nums):
+        if i > reach:
+            return False
+        reach = max(reach, i + n)
+    return True
+```
+
+</details>

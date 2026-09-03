@@ -48,3 +48,19 @@ For example, with `tasks = ['a', 'a', 'a', 'b', 'b']` and `n = 2`, one valid sch
 <li id="test-5"><code>least_interval(['a', 'b', 'c', 'd'], 2)</code> should return <code>4</code></li>
 <li id="test-6"><code>least_interval(['a', 'a', 'b', 'b', 'c', 'c'], 2)</code> should return <code>6</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+from collections import Counter
+
+
+def least_interval(tasks, n):
+    counts = Counter(tasks)
+    max_count = max(counts.values())
+    num_max = sum(1 for c in counts.values() if c == max_count)
+    return max(len(tasks), (max_count - 1) * (n + 1) + num_max)
+```
+
+</details>

@@ -49,3 +49,22 @@ For example, given `intervals = [[8, 10], [1, 3], [2, 6]]`, the intervals `[1, 3
 <li id="test-6"><code>merge_intervals([[5, 7]])</code> should return <code>[[5, 7]]</code></li>
 <li id="test-7"><code>merge_intervals([[1, 10], [2, 3], [4, 5], [6, 7]])</code> should return <code>[[1, 10]]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def merge_intervals(intervals):
+    if not intervals:
+        return []
+    ordered = sorted(intervals, key=lambda iv: iv[0])
+    result = [ordered[0][:]]
+    for start, end in ordered[1:]:
+        if start <= result[-1][1]:
+            result[-1][1] = max(result[-1][1], end)
+        else:
+            result.append([start, end])
+    return result
+```
+
+</details>

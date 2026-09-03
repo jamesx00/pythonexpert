@@ -47,3 +47,31 @@ For example, in the grid `[[5, 1, 6], [4, 2, 7], [3, 8, 9]]`, one path is `1 -> 
 <li id="test-4"><code>longest_increasing_path([[1, 2, 3], [8, 9, 4], [7, 6, 5]])</code> should return <code>9</code></li>
 <li id="test-5"><code>longest_increasing_path([[10, 20], [15, 25]])</code> should return <code>3</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+from functools import lru_cache
+
+
+def longest_increasing_path(matrix):
+    if not matrix or not matrix[0]:
+        return 0
+    rows, cols = len(matrix), len(matrix[0])
+
+    @lru_cache(maxsize=None)
+    def dfs(r, c):
+        best = 1
+        for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < rows and 0 <= nc < cols and matrix[nr][nc] > matrix[r][c]:
+                best = max(best, 1 + dfs(nr, nc))
+        return best
+
+    result = max(dfs(r, c) for r in range(rows) for c in range(cols))
+    dfs.cache_clear()
+    return result
+```
+
+</details>

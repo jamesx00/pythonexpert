@@ -48,3 +48,37 @@ For example, `digits = "23"` should produce every combination of one letter from
 <li id="test-5"><code>letter_combinations("9")</code> should return <code>["w", "x", "y", "z"]</code> (any order)</li>
 <li id="test-6"><code>letter_combinations("79")</code> should return 16 two-letter combinations from <code>"pqrs"</code> and <code>"wxyz"</code> (any order)</li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def letter_combinations(digits):
+    if not digits:
+        return []
+    digit_map = {
+        "2": "abc",
+        "3": "def",
+        "4": "ghi",
+        "5": "jkl",
+        "6": "mno",
+        "7": "pqrs",
+        "8": "tuv",
+        "9": "wxyz",
+    }
+    result = []
+
+    def backtrack(index, path):
+        if index == len(digits):
+            result.append("".join(path))
+            return
+        for letter in digit_map[digits[index]]:
+            path.append(letter)
+            backtrack(index + 1, path)
+            path.pop()
+
+    backtrack(0, [])
+    return result
+```
+
+</details>

@@ -50,3 +50,33 @@ For example, given `intervals = [[1, 3], [6, 9]]` and `new_interval = [2, 5]`, t
 <li id="test-6"><code>insert_interval([[3, 5]], [0, 1])</code> should return <code>[[0, 1], [3, 5]]</code></li>
 <li id="test-7"><code>insert_interval([[1, 3], [4, 6], [8, 10]], [0, 12])</code> should return <code>[[0, 12]]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def insert_interval(intervals, new_interval):
+    result = []
+    i = 0
+    n = len(intervals)
+    start, end = new_interval
+
+    while i < n and intervals[i][1] < start:
+        result.append(intervals[i])
+        i += 1
+
+    while i < n and intervals[i][0] <= end:
+        start = min(start, intervals[i][0])
+        end = max(end, intervals[i][1])
+        i += 1
+
+    result.append([start, end])
+
+    while i < n:
+        result.append(intervals[i])
+        i += 1
+
+    return result
+```
+
+</details>

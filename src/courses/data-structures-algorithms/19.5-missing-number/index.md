@@ -50,3 +50,17 @@ For example, given `nums = [3, 0, 1]`, the list has length `3`, so the full rang
 <li id="test-5"><code>missing_number([1])</code> should return <code>0</code></li>
 <li id="test-6"><code>missing_number([1, 2])</code> should return <code>0</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def missing_number(nums):
+    n = len(nums)
+    result = n
+    for i in range(n):
+        result ^= i ^ nums[i]
+    return result
+```
+
+</details>

@@ -48,3 +48,23 @@ For example, in the BST built from `[5, 3, 8, 2, 4, 7, 9]`, the values in sorted
 <li id="test-5"><code>kth_smallest(build_tree([3, 1, 4, None, 2]), 4)</code> should return <code>4</code></li>
 <li id="test-6"><code>kth_smallest(build_tree([1]), 1)</code> should return <code>1</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def kth_smallest(root, k):
+    order = []
+
+    def inorder(node):
+        if node is None:
+            return
+        inorder(node.left)
+        order.append(node.val)
+        inorder(node.right)
+
+    inorder(root)
+    return order[k - 1]
+```
+
+</details>

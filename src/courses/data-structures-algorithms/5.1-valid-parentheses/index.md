@@ -50,3 +50,21 @@ A string is balanced when each closing bracket matches the most recently opened 
 <li id="test-6"><code>is_valid("(")</code> should return <code>False</code></li>
 <li id="test-7"><code>is_valid("")</code> should return <code>True</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def is_valid(s):
+    pairs = {')': '(', ']': '[', '}': '{'}
+    stack = []
+    for ch in s:
+        if ch in pairs:
+            if not stack or stack.pop() != pairs[ch]:
+                return False
+        else:
+            stack.append(ch)
+    return not stack
+```
+
+</details>

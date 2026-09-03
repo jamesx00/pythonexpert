@@ -48,3 +48,20 @@ For example, given `[68, 70, 65, 72]`, day 0 (68) only has to wait 1 day to hit 
 <li id="test-5"><code>daily_temperatures([55])</code> should return <code>[0]</code></li>
 <li id="test-6"><code>daily_temperatures([50, 50, 50])</code> should return <code>[0, 0, 0]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def daily_temperatures(temps):
+    answer = [0] * len(temps)
+    stack = []
+    for i, t in enumerate(temps):
+        while stack and temps[stack[-1]] < t:
+            j = stack.pop()
+            answer[j] = i - j
+        stack.append(i)
+    return answer
+```
+
+</details>

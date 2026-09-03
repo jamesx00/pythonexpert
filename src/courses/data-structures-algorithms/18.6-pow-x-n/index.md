@@ -49,3 +49,23 @@ For example, `my_pow(2.0, 10)` is `1024.0`, and `my_pow(2.0, -2)` is `0.25` (tha
 <li id="test-6"><code>my_pow(-2.0, 3)</code> should return <code>-8.0</code></li>
 <li id="test-7"><code>my_pow(0.5, 4)</code> should return <code>0.0625</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def my_pow(x, n):
+    if n < 0:
+        x = 1 / x
+        n = -n
+    result = 1.0
+    base = x
+    while n > 0:
+        if n % 2 == 1:
+            result *= base
+        base *= base
+        n //= 2
+    return result
+```
+
+</details>

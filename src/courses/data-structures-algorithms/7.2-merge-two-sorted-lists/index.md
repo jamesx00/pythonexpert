@@ -48,3 +48,24 @@ For example, merging `1 -> 3 -> 5` with `2 -> 4 -> 6` should produce `1 -> 2 -> 
 <li id="test-5"><code>merge_two_lists([1, 1, 3], [1, 2])</code> should return <code>[1, 1, 1, 2, 3]</code></li>
 <li id="test-6"><code>merge_two_lists([2, 8, 9], [1, 3, 4, 10])</code> should return <code>[1, 2, 3, 4, 8, 9, 10]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def merge_two_lists(list1, list2):
+    dummy = ListNode()
+    curr = dummy
+    while list1 and list2:
+        if list1.val <= list2.val:
+            curr.next = list1
+            list1 = list1.next
+        else:
+            curr.next = list2
+            list2 = list2.next
+        curr = curr.next
+    curr.next = list1 if list1 else list2
+    return dummy.next
+```
+
+</details>

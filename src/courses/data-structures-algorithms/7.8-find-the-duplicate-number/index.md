@@ -48,3 +48,23 @@ For example, `find_duplicate([1, 3, 4, 2, 2])` should return `2`, since every ot
 <li id="test-5"><code>find_duplicate([5, 4, 3, 2, 1, 5])</code> should return <code>5</code></li>
 <li id="test-6"><code>find_duplicate([1, 2, 3, 4, 5, 3])</code> should return <code>3</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def find_duplicate(nums):
+    slow = fast = nums[0]
+    while True:
+        slow = nums[slow]
+        fast = nums[nums[fast]]
+        if slow == fast:
+            break
+    slow2 = nums[0]
+    while slow != slow2:
+        slow = nums[slow]
+        slow2 = nums[slow2]
+    return slow
+```
+
+</details>

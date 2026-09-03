@@ -50,3 +50,16 @@ For example, given `n = 5`, the binary forms of `0` through `5` are `0, 1, 10, 1
 <li id="test-5"><code>count_bits(8)</code> should return <code>[0, 1, 1, 2, 1, 2, 2, 3, 1]</code></li>
 <li id="test-6"><code>count_bits(15)</code> should return <code>[0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def count_bits(n):
+    result = [0] * (n + 1)
+    for i in range(1, n + 1):
+        result[i] = result[i >> 1] + (i & 1)
+    return result
+```
+
+</details>

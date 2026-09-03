@@ -48,3 +48,19 @@ For example, given `nums = [3, 5, -4, 8]` and `target = 4`, the values `-4` and 
 <li id="test-5"><code>two_sum([-3, 4, 3, 90], 0)</code> should return <code>[0, 2]</code></li>
 <li id="test-6"><code>two_sum([0, 4, 3, 0], 0)</code> should return <code>[0, 3]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def two_sum(nums, target):
+    seen = {}
+    for i, n in enumerate(nums):
+        complement = target - n
+        if complement in seen:
+            return [seen[complement], i]
+        seen[n] = i
+    return []
+```
+
+</details>

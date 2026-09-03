@@ -51,3 +51,18 @@ For example, `sum_of_two(3, 5)` should behave exactly like `3 + 5` and return `8
 <li id="test-6"><code>sum_of_two(100, 250)</code> should return <code>350</code></li>
 <li id="test-7"><code>sum_of_two(-1, 1)</code> should return <code>0</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def sum_of_two(a, b):
+    mask = 0xFFFFFFFF
+    while b != 0:
+        a, b = (a ^ b) & mask, ((a & b) << 1) & mask
+    if a > 0x7FFFFFFF:
+        a = ~(a ^ mask)
+    return a
+```
+
+</details>

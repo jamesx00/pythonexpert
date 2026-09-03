@@ -57,3 +57,26 @@ run already present in `s`.
 <li id="test-6"><code>longest_replacement("AABBCC", 2)</code> should return <code>4</code></li>
 <li id="test-7"><code>longest_replacement("BAAAB", 2)</code> should return <code>5</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+from collections import Counter
+
+def longest_replacement(s, k):
+    counts = Counter()
+    left = 0
+    max_freq = 0
+    best = 0
+    for right, ch in enumerate(s):
+        counts[ch] += 1
+        max_freq = max(max_freq, counts[ch])
+        while (right - left + 1) - max_freq > k:
+            counts[s[left]] -= 1
+            left += 1
+        best = max(best, right - left + 1)
+    return best
+```
+
+</details>

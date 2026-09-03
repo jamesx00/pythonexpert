@@ -49,3 +49,21 @@ For example, with `target = 10`, `positions = [0, 4]`, and `speeds = [2, 1]`: th
 <li id="test-4"><code>car_fleet(10, [3], [3])</code> should return <code>1</code></li>
 <li id="test-5"><code>car_fleet(20, [0, 5, 10, 15], [1, 1, 1, 1])</code> should return <code>4</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def car_fleet(target, positions, speeds):
+    cars = sorted(zip(positions, speeds), reverse=True)
+    fleets = 0
+    max_time = 0
+    for pos, speed in cars:
+        time = (target - pos) / speed
+        if time > max_time:
+            fleets += 1
+            max_time = time
+    return fleets
+```
+
+</details>

@@ -48,3 +48,27 @@ For example, the tree built from `[1, 2, 3, None, 5, None, 4]` looks like `1` on
 <li id="test-5"><code>right_side_view(build_tree([1, 2, 3, 4]))</code> should return <code>[1, 3, 4]</code></li>
 <li id="test-6"><code>right_side_view(build_tree([1, 2, 3, 4, None, None, 5]))</code> should return <code>[1, 3, 5]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def right_side_view(root):
+    if root is None:
+        return []
+    result = []
+    queue = [root]
+    while queue:
+        next_queue = []
+        for index, node in enumerate(queue):
+            if index == len(queue) - 1:
+                result.append(node.val)
+            if node.left:
+                next_queue.append(node.left)
+            if node.right:
+                next_queue.append(node.right)
+        queue = next_queue
+    return result
+```
+
+</details>

@@ -48,3 +48,17 @@ For example, given `cost = [10, 15, 20]`, the cheapest route is to start on inde
 <li id="test-5"><code>min_cost_climbing_stairs([5, 3, 4, 2, 6])</code> should return <code>5</code></li>
 <li id="test-6"><code>min_cost_climbing_stairs([2, 5])</code> should return <code>2</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def min_cost_climbing_stairs(cost):
+    n = len(cost)
+    dp = [0] * (n + 1)
+    for i in range(2, n + 1):
+        dp[i] = min(dp[i - 1] + cost[i - 1], dp[i - 2] + cost[i - 2])
+    return dp[n]
+```
+
+</details>

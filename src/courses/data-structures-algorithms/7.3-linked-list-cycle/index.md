@@ -48,3 +48,19 @@ For example, if the last node of a list points back to an earlier node instead o
 <li id="test-5">a list <code>1 -> 2 -> 3 -> 4 -> 5</code> with no cycle - <code>has_cycle(head)</code> should return <code>False</code></li>
 <li id="test-6">a list <code>7 -> 8 -> 9</code> whose tail points back to itself - <code>has_cycle(head)</code> should return <code>True</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def has_cycle(head):
+    slow = fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        if slow is fast:
+            return True
+    return False
+```
+
+</details>

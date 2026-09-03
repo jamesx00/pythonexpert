@@ -51,3 +51,17 @@ For example, `n = 11` is `1011` in binary, which has three `1` bits, so the func
 <li id="test-6"><code>count_set_bits(1023)</code> should return <code>10</code></li>
 <li id="test-7"><code>count_set_bits(4294967295)</code> should return <code>32</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def count_set_bits(n):
+    count = 0
+    while n:
+        n &= n - 1
+        count += 1
+    return count
+```
+
+</details>

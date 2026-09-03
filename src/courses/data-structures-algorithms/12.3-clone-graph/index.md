@@ -48,3 +48,29 @@ For example, given `[[1, 2], [0, 2], [0, 1]]` (three nodes forming a triangle, w
 <li id="test-5"><code>clone_graph([[1, 3], [0, 2], [1, 3], [0, 2]])</code> should return <code>[[1, 3], [0, 2], [1, 3], [0, 2]]</code></li>
 <li id="test-6"><code>clone_graph([[1], [0, 2], [1]])</code> should return <code>[[1], [0, 2], [1]]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def clone_graph(adj_list):
+    if not adj_list:
+        return []
+
+    clones = {}
+
+    def dfs(node):
+        if node in clones:
+            return clones[node]
+        clones[node] = []
+        for neighbor in adj_list[node]:
+            clones[node].append(neighbor)
+        for neighbor in adj_list[node]:
+            dfs(neighbor)
+        return clones[node]
+
+    dfs(0)
+    return [clones[i] for i in range(len(adj_list))]
+```
+
+</details>

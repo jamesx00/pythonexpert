@@ -49,3 +49,24 @@ For example, with `piles = [3, 6, 7, 11]` and `h = 8`, the smallest working spee
 <li id="test-6"><code>min_eating_speed([5], 1)</code> should return <code>5</code></li>
 <li id="test-7"><code>min_eating_speed([2, 4, 8], 6)</code> should return <code>3</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+import math
+
+
+def min_eating_speed(piles, h):
+    lo, hi = 1, max(piles)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        hours = sum(math.ceil(p / mid) for p in piles)
+        if hours <= h:
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo
+```
+
+</details>

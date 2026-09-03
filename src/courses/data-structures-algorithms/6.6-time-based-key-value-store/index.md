@@ -54,3 +54,25 @@ For example, after calling `set("temp", "72F", 1)` and `set("temp", "75F", 4)`, 
 <li id="test-6"><code>get("missing", 5)</code> on a store with no calls for <code>"missing"</code> should return <code>""</code></li>
 <li id="test-7">after <code>set("a", "1", 1)</code>, <code>set("a", "2", 2)</code>, <code>set("a", "3", 3)</code>, <code>get("a", 3)</code> should return <code>"3"</code>, then <code>get("a", 2)</code> should return <code>"2"</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+import bisect
+
+
+class TimeMap:
+    def __init__(self):
+        self.store = {}
+
+    def set(self, key, value, timestamp):
+        self.store.setdefault(key, []).append((timestamp, value))
+
+    def get(self, key, timestamp):
+        entries = self.store.get(key, [])
+        i = bisect.bisect_right(entries, (timestamp, chr(0x10FFFF)))
+        return entries[i - 1][1] if i > 0 else ""
+```
+
+</details>

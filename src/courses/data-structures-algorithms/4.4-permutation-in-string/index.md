@@ -55,3 +55,31 @@ so the function should return `True`. With `pattern = "abc"` and
 <li id="test-6"><code>contains_permutation("a", "a")</code> should return <code>True</code></li>
 <li id="test-7"><code>contains_permutation("hello", "ooolleoooleh")</code> should return <code>False</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+from collections import Counter
+
+def contains_permutation(pattern, text):
+    need = Counter(pattern)
+    have = Counter()
+    L = len(pattern)
+    if L > len(text):
+        return False
+    for i in range(L):
+        have[text[i]] += 1
+    if have == need:
+        return True
+    for i in range(L, len(text)):
+        have[text[i]] += 1
+        have[text[i - L]] -= 1
+        if have[text[i - L]] == 0:
+            del have[text[i - L]]
+        if have == need:
+            return True
+    return False
+```
+
+</details>

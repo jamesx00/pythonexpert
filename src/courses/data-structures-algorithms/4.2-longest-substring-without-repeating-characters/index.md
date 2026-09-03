@@ -54,3 +54,21 @@ has a longest run of `0`.
 <li id="test-6"><code>longest_unique_substring("abcdefg")</code> should return <code>7</code></li>
 <li id="test-7"><code>longest_unique_substring("bbtablud")</code> should return <code>6</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def longest_unique_substring(s):
+    seen = {}
+    left = 0
+    best = 0
+    for right, ch in enumerate(s):
+        if ch in seen and seen[ch] >= left:
+            left = seen[ch] + 1
+        seen[ch] = right
+        best = max(best, right - left + 1)
+    return best
+```
+
+</details>

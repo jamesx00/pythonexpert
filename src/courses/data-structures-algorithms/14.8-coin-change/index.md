@@ -49,3 +49,18 @@ For example, given `coins = [1, 3, 4]` and `amount = 6`, the fewest coins needed
 <li id="test-6"><code>coin_change([1, 5, 10, 25], 30)</code> should return <code>2</code></li>
 <li id="test-7"><code>coin_change([5, 7], 3)</code> should return <code>-1</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def coin_change(coins, amount):
+    dp = [0] + [float('inf')] * amount
+    for a in range(1, amount + 1):
+        for c in coins:
+            if c <= a:
+                dp[a] = min(dp[a], dp[a - c] + 1)
+    return dp[amount] if dp[amount] != float('inf') else -1
+```
+
+</details>

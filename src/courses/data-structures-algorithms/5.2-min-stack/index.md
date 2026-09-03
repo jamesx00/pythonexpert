@@ -54,3 +54,32 @@ For example, after pushing `5`, `3`, `7` in that order, `get_min()` should retur
 <li id="test-5">push 1, push 1, push 1 &mdash; <code>get_min()</code> should return <code>1</code> after each pop</li>
 <li id="test-6">push 4 &mdash; <code>top()</code> and <code>get_min()</code> should both return <code>4</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+class MinStack:
+    def __init__(self):
+        self.stack = []
+        self.min_stack = []
+
+    def push(self, val):
+        self.stack.append(val)
+        if not self.min_stack or val <= self.min_stack[-1]:
+            self.min_stack.append(val)
+        else:
+            self.min_stack.append(self.min_stack[-1])
+
+    def pop(self):
+        self.stack.pop()
+        self.min_stack.pop()
+
+    def top(self):
+        return self.stack[-1]
+
+    def get_min(self):
+        return self.min_stack[-1]
+```
+
+</details>

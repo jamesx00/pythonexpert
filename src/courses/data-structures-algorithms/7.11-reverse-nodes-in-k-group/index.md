@@ -48,3 +48,39 @@ For example, with `1 -> 2 -> 3 -> 4 -> 5` and `k = 2`, the result should be `2 -
 <li id="test-5"><code>reverse_k_group([1, 2], 3)</code> should return <code>[1, 2]</code></li>
 <li id="test-6"><code>reverse_k_group([1, 2, 3, 4, 5, 6, 7], 3)</code> should return <code>[3, 2, 1, 6, 5, 4, 7]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def reverse_k_group(head, k):
+    def get_kth(curr, k):
+        while curr and k > 0:
+            curr = curr.next
+            k -= 1
+        return curr
+
+    dummy = ListNode(0, head)
+    group_prev = dummy
+
+    while True:
+        kth = get_kth(group_prev, k)
+        if not kth:
+            break
+        group_next = kth.next
+
+        prev, curr = group_next, group_prev.next
+        while curr != group_next:
+            nxt = curr.next
+            curr.next = prev
+            prev = curr
+            curr = nxt
+
+        tmp = group_prev.next
+        group_prev.next = kth
+        group_prev = tmp
+
+    return dummy.next
+```
+
+</details>

@@ -56,3 +56,25 @@ length of `nums`.
 <li id="test-6"><code>window_max([2, 4, 6, 8, 10], 5)</code> should return <code>[10]</code></li>
 <li id="test-7"><code>window_max([-1, -3, -2, -5], 2)</code> should return <code>[-1, -2, -2]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+from collections import deque
+
+def window_max(nums, k):
+    dq = deque()
+    result = []
+    for i, n in enumerate(nums):
+        while dq and nums[dq[-1]] <= n:
+            dq.pop()
+        dq.append(i)
+        if dq[0] <= i - k:
+            dq.popleft()
+        if i >= k - 1:
+            result.append(nums[dq[0]])
+    return result
+```
+
+</details>

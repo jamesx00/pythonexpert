@@ -50,3 +50,17 @@ You're given a list of integers `nums` representing the daily change in a shop's
 <li id="test-6"><code>max_subarray([5, 4, -1, 7, 8])</code> should return <code>23</code></li>
 <li id="test-7"><code>max_subarray([0, 0, 0, 3, -1])</code> should return <code>3</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def max_subarray(nums):
+    max_sum = cur = nums[0]
+    for n in nums[1:]:
+        cur = max(n, cur + n)
+        max_sum = max(max_sum, cur)
+    return max_sum
+```
+
+</details>

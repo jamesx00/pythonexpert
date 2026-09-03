@@ -47,3 +47,30 @@ For example, given `[[1, 2], [1, 3], [2, 3]]`, the edges `[1, 2]` and `[1, 3]` a
 <li id="test-4"><code>find_redundant_connection([[1, 4], [3, 4], [1, 3], [1, 2]])</code> should return <code>[1, 3]</code></li>
 <li id="test-5"><code>find_redundant_connection([[1, 2], [2, 3], [1, 3]])</code> should return <code>[1, 3]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def find_redundant_connection(edges):
+    parent = {}
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    for a, b in edges:
+        parent.setdefault(a, a)
+        parent.setdefault(b, b)
+
+    for a, b in edges:
+        ra, rb = find(a), find(b)
+        if ra == rb:
+            return [a, b]
+        parent[ra] = rb
+    return []
+```
+
+</details>

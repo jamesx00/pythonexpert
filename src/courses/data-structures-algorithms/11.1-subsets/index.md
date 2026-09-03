@@ -49,3 +49,16 @@ For example, given `[1, 2, 3]`, a valid return value would be `[[], [1], [2], [3
 <li id="test-5"><code>subsets([0, -1])</code> should return all 4 subsets of <code>[0, -1]</code> (any order)</li>
 <li id="test-6"><code>subsets([1, 2, 3, 4])</code> should return all 16 subsets of <code>[1, 2, 3, 4]</code> (any order)</li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def subsets(nums):
+    result = [[]]
+    for n in nums:
+        result += [subset + [n] for subset in result]
+    return result
+```
+
+</details>

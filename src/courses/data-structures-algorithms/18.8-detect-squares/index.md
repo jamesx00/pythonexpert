@@ -50,3 +50,34 @@ For example, after adding `[3, 10]`, `[11, 2]`, and `[3, 2]`, calling `count([11
 <li id="test-5">continuing from test 4, adding <code>[0, 0]</code> again then calling <code>count([0, 0])</code> should return <code>2</code></li>
 <li id="test-6">a fresh instance: calling <code>count([5, 5])</code> with no points added should return <code>0</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+from collections import defaultdict
+
+
+class DetectSquares:
+    def __init__(self):
+        self.counts = defaultdict(int)
+        self.points = defaultdict(set)
+
+    def add(self, point):
+        x, y = point
+        self.counts[(x, y)] += 1
+        self.points[x].add(y)
+
+    def count(self, point):
+        x, y = point
+        total = 0
+        for y2 in list(self.points[x]):
+            if y2 == y:
+                continue
+            d = y2 - y
+            for x2 in (x + d, x - d):
+                total += self.counts[(x, y2)] * self.counts[(x2, y)] * self.counts[(x2, y2)]
+        return total
+```
+
+</details>

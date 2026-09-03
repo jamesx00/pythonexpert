@@ -49,3 +49,23 @@ For example, given `intervals = [[1, 2], [2, 3], [3, 4], [1, 3]]`, removing `[1,
 <li id="test-6"><code>erase_overlap_intervals([[0, 2], [1, 3], [2, 4], [3, 5], [4, 6]])</code> should return <code>2</code></li>
 <li id="test-7"><code>erase_overlap_intervals([[-5, -2], [-3, 1], [2, 5]])</code> should return <code>1</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def erase_overlap_intervals(intervals):
+    if not intervals:
+        return 0
+    ordered = sorted(intervals, key=lambda iv: iv[1])
+    removed = 0
+    prev_end = ordered[0][1]
+    for start, end in ordered[1:]:
+        if start < prev_end:
+            removed += 1
+        else:
+            prev_end = end
+    return removed
+```
+
+</details>

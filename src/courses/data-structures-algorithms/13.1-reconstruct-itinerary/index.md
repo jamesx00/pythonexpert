@@ -49,3 +49,27 @@ For example, given tickets `[["JFK", "SFO"], ["SFO", "ATL"], ["ATL", "JFK"], ["J
 <li id="test-5"><code>find_itinerary([["JFK", "B"], ["JFK", "A"], ["B", "JFK"]])</code> should return <code>["JFK", "B", "JFK", "A"]</code></li>
 <li id="test-6"><code>find_itinerary([["JFK", "SFO"]])</code> should return <code>["JFK", "SFO"]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+import heapq
+from collections import defaultdict
+
+
+def find_itinerary(tickets):
+    graph = defaultdict(list)
+    for src, dst in tickets:
+        heapq.heappush(graph[src], dst)
+
+    route = []
+    stack = ["JFK"]
+    while stack:
+        while graph[stack[-1]]:
+            stack.append(heapq.heappop(graph[stack[-1]]))
+        route.append(stack.pop())
+    return route[::-1]
+```
+
+</details>

@@ -48,3 +48,27 @@ The two functions must round-trip correctly for any list of strings, including s
 <li id="test-5"><code>decode(encode(["a", "", "bb", ""]))</code> should return <code>["a", "", "bb", ""]</code></li>
 <li id="test-6"><code>decode(encode(["hello world", "foo#bar"]))</code> should return <code>["hello world", "foo#bar"]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def encode(words):
+    return "".join(f"{len(w)}#{w}" for w in words)
+
+
+def decode(encoded):
+    words = []
+    i = 0
+    while i < len(encoded):
+        j = i
+        while encoded[j] != "#":
+            j += 1
+        length = int(encoded[i:j])
+        start = j + 1
+        words.append(encoded[start:start + length])
+        i = start + length
+    return words
+```
+
+</details>

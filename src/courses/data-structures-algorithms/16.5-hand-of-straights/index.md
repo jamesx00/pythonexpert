@@ -48,3 +48,26 @@ For example, `hand = [1, 2, 3, 6, 2, 3, 4, 7, 8]` with `group_size = 3` splits n
 <li id="test-5"><code>is_n_straight_hand([3, 4, 2, 1], 4)</code> should return <code>True</code></li>
 <li id="test-6"><code>is_n_straight_hand([1, 2, 3], 1)</code> should return <code>True</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+from collections import Counter
+
+def is_n_straight_hand(hand, group_size):
+    if len(hand) % group_size != 0:
+        return False
+    count = Counter(hand)
+    for k in sorted(count.keys()):
+        needed = count[k]
+        if needed == 0:
+            continue
+        for j in range(k, k + group_size):
+            if count[j] < needed:
+                return False
+            count[j] -= needed
+    return True
+```
+
+</details>

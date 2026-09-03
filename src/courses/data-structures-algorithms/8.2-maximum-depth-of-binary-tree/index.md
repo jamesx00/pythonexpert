@@ -48,3 +48,15 @@ The tree is built for you with the `build_tree` helper from a level-order list. 
 <li id="test-5"><code>max_depth(build_tree([1, 2, 3, 4, 5, 6, 7]))</code> should return <code>3</code></li>
 <li id="test-6"><code>max_depth(build_tree([1, None, 2, None, 3, None, 4]))</code> should return <code>4</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def max_depth(root):
+    if root is None:
+        return 0
+    return 1 + max(max_depth(root.left), max_depth(root.right))
+```
+
+</details>

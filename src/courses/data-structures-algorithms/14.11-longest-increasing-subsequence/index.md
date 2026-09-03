@@ -49,3 +49,22 @@ For example, given `nums = [0, 3, 1, 6, 2, 2, 7]`, one longest increasing subseq
 <li id="test-6"><code>length_of_lis([5, 4, 3, 2, 1])</code> should return <code>1</code></li>
 <li id="test-7"><code>length_of_lis([9, 1, 4, 2, 3, 3, 7])</code> should return <code>4</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+import bisect
+
+def length_of_lis(nums):
+    tails = []
+    for n in nums:
+        i = bisect.bisect_left(tails, n)
+        if i == len(tails):
+            tails.append(n)
+        else:
+            tails[i] = n
+    return len(tails)
+```
+
+</details>

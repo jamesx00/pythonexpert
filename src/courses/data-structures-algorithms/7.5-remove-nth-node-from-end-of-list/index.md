@@ -48,3 +48,21 @@ For example, given `1 -> 2 -> 3 -> 4 -> 5` and `n = 2`, the second-to-last node 
 <li id="test-5"><code>remove_nth_from_end([1, 2, 3, 4, 5], 5)</code> should return <code>[2, 3, 4, 5]</code></li>
 <li id="test-6"><code>remove_nth_from_end([10, 20, 30, 40], 1)</code> should return <code>[10, 20, 30]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def remove_nth_from_end(head, n):
+    dummy = ListNode(0, head)
+    fast = slow = dummy
+    for _ in range(n):
+        fast = fast.next
+    while fast.next:
+        fast = fast.next
+        slow = slow.next
+    slow.next = slow.next.next
+    return dummy.next
+```
+
+</details>

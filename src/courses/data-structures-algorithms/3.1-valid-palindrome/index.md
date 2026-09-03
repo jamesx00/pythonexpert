@@ -50,3 +50,23 @@ For example, `"A man, a plan, a canal, Panama"` should be treated as `"amanaplan
 <li id="test-6"><code>is_palindrome("race a car")</code> should return <code>False</code></li>
 <li id="test-7"><code>is_palindrome("12321")</code> should return <code>True</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def is_palindrome(s):
+    left, right = 0, len(s) - 1
+    while left < right:
+        while left < right and not s[left].isalnum():
+            left += 1
+        while left < right and not s[right].isalnum():
+            right -= 1
+        if s[left].lower() != s[right].lower():
+            return False
+        left += 1
+        right -= 1
+    return True
+```
+
+</details>

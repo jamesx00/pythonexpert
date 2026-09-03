@@ -49,3 +49,20 @@ For example, `[11, 15, 19, 2, 5, 8]` is `[2, 5, 8, 11, 15, 19]` rotated by three
 <li id="test-6"><code>find_min([9])</code> should return <code>9</code></li>
 <li id="test-7"><code>find_min([2, 1])</code> should return <code>1</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def find_min(nums):
+    lo, hi = 0, len(nums) - 1
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if nums[mid] > nums[hi]:
+            lo = mid + 1
+        else:
+            hi = mid
+    return nums[lo]
+```
+
+</details>

@@ -51,3 +51,22 @@ For example, `reverse_integer(513)` should return `315`, and `reverse_integer(-1
 <li id="test-6"><code>reverse_integer(-2147483648)</code> should return <code>0</code></li>
 <li id="test-7"><code>reverse_integer(7)</code> should return <code>7</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def reverse_integer(x):
+    sign = -1 if x < 0 else 1
+    digits = abs(x)
+    reversed_num = 0
+    while digits:
+        reversed_num = reversed_num * 10 + digits % 10
+        digits //= 10
+    reversed_num *= sign
+    if reversed_num < -2147483648 or reversed_num > 2147483647:
+        return 0
+    return reversed_num
+```
+
+</details>

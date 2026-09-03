@@ -51,3 +51,22 @@ For example, searching for `9` in `[-4, 0, 3, 9, 14, 22]` should return `3`, sin
 <li id="test-7"><code>binary_search([7], 3)</code> should return <code>-1</code></li>
 <li id="test-8"><code>binary_search([2, 4, 6, 8, 10, 12, 14], 12)</code> should return <code>5</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def binary_search(nums, target):
+    lo, hi = 0, len(nums) - 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] < target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return -1
+```
+
+</details>

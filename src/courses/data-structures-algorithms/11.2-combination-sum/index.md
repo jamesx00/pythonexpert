@@ -48,3 +48,27 @@ For example, with `candidates = [2, 3, 5]` and `target = 8`, valid combinations 
 <li id="test-5"><code>combination_sum([7, 11], 5)</code> should return <code>[]</code></li>
 <li id="test-6"><code>combination_sum([2, 4], 8)</code> should return <code>[[2, 2, 2, 2], [2, 2, 4], [4, 4]]</code> (any order)</li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def combination_sum(candidates, target):
+    result = []
+
+    def backtrack(start, remaining, path):
+        if remaining == 0:
+            result.append(list(path))
+            return
+        if remaining < 0:
+            return
+        for i in range(start, len(candidates)):
+            path.append(candidates[i])
+            backtrack(i, remaining - candidates[i], path)
+            path.pop()
+
+    backtrack(0, target, [])
+    return result
+```
+
+</details>

@@ -51,3 +51,31 @@ For example, with `capacity = 2`: `put(1, 10)`, `put(2, 20)`, `get(1)` returns `
 <li id="test-5">capacity <code>2</code>: <code>get(1)</code>, <code>put(1, 100)</code>, <code>get(1)</code> should return <code>[-1, None, 100]</code></li>
 <li id="test-6">capacity <code>2</code>: <code>put(1, 1)</code>, <code>put(1, 2)</code>, <code>get(1)</code> should return <code>[None, None, 2]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+from collections import OrderedDict
+
+
+class LRUCache:
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.cache = OrderedDict()
+
+    def get(self, key):
+        if key not in self.cache:
+            return -1
+        self.cache.move_to_end(key)
+        return self.cache[key]
+
+    def put(self, key, value):
+        if key in self.cache:
+            self.cache.move_to_end(key)
+        self.cache[key] = value
+        if len(self.cache) > self.capacity:
+            self.cache.popitem(last=False)
+```
+
+</details>

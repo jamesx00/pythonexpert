@@ -48,3 +48,24 @@ Write a function `max_path_sum(root)` that returns the largest possible sum of n
 <li id="test-5"><code>max_path_sum(build_tree([-1, -2, -3]))</code> should return <code>-1</code></li>
 <li id="test-6"><code>max_path_sum(build_tree([5, 4, 8, 11, None, 13, 4, 7, 2, None, None, None, 1]))</code> should return <code>48</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def max_path_sum(root):
+    best = [float('-inf')]
+
+    def dfs(node):
+        if node is None:
+            return 0
+        left = max(dfs(node.left), 0)
+        right = max(dfs(node.right), 0)
+        best[0] = max(best[0], node.val + left + right)
+        return node.val + max(left, right)
+
+    dfs(root)
+    return best[0]
+```
+
+</details>

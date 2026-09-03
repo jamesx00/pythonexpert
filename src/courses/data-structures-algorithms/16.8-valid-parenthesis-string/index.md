@@ -50,3 +50,27 @@ For example, `s = "(*))"` is valid because treating the `*` as `(` turns it into
 <li id="test-7"><code>check_valid_string("*")</code> should return <code>True</code></li>
 <li id="test-8"><code>check_valid_string("((*)")</code> should return <code>True</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def check_valid_string(s):
+    lo = hi = 0
+    for c in s:
+        if c == '(':
+            lo += 1
+            hi += 1
+        elif c == ')':
+            lo -= 1
+            hi -= 1
+        else:
+            lo -= 1
+            hi += 1
+        if hi < 0:
+            return False
+        lo = max(lo, 0)
+    return lo == 0
+```
+
+</details>

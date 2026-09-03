@@ -48,3 +48,31 @@ For example, given `[-2, 0, 1, 1, -1, -4]`, the valid zero-sum trios are `(-2, 1
 <li id="test-5"><code>three_sum([1, 2, 3])</code> should return <code>[]</code></li>
 <li id="test-6"><code>three_sum([-1, 0, 1, 2, -1, -4])</code> should return <code>[[-1, -1, 2], [-1, 0, 1]]</code> (any order)</li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def three_sum(nums):
+    nums = sorted(nums)
+    n = len(nums)
+    triplets = []
+    for i in range(n - 2):
+        if i > 0 and nums[i] == nums[i - 1]:
+            continue
+        left, right = i + 1, n - 1
+        while left < right:
+            total = nums[i] + nums[left] + nums[right]
+            if total < 0:
+                left += 1
+            elif total > 0:
+                right -= 1
+            else:
+                triplets.append([nums[i], nums[left], nums[right]])
+                left += 1
+                while left < right and nums[left] == nums[left - 1]:
+                    left += 1
+    return triplets
+```
+
+</details>

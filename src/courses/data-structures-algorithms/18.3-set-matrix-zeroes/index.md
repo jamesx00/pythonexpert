@@ -59,3 +59,24 @@ the `0` sits at row 1, column 1, so row 1 and column 1 both get zeroed out, prod
 <li id="test-5"><code>set_zeroes([[5]])</code> should return <code>[[5]]</code></li>
 <li id="test-6"><code>set_zeroes([[0]])</code> should return <code>[[0]]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def set_zeroes(matrix):
+    rows, cols = len(matrix), len(matrix[0])
+    zero_rows, zero_cols = set(), set()
+    for r in range(rows):
+        for c in range(cols):
+            if matrix[r][c] == 0:
+                zero_rows.add(r)
+                zero_cols.add(c)
+    for r in range(rows):
+        for c in range(cols):
+            if r in zero_rows or c in zero_cols:
+                matrix[r][c] = 0
+    return matrix
+```
+
+</details>

@@ -48,3 +48,25 @@ Write a function `good_nodes(root)` that returns how many good nodes the tree ha
 <li id="test-5"><code>good_nodes(build_tree([5, 4, 3, 2, 1]))</code> should return <code>1</code></li>
 <li id="test-6"><code>good_nodes(build_tree([1, 2, 3, 4, 5, 6, 7]))</code> should return <code>7</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def good_nodes(root):
+    count = [0]
+
+    def dfs(node, max_so_far):
+        if node is None:
+            return
+        if node.val >= max_so_far:
+            count[0] += 1
+            max_so_far = node.val
+        dfs(node.left, max_so_far)
+        dfs(node.right, max_so_far)
+
+    dfs(root, float('-inf'))
+    return count[0]
+```
+
+</details>

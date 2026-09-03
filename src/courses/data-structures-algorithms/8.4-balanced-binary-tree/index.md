@@ -48,3 +48,26 @@ For example, the tree built from `[3, 9, 20, None, None, 15, 7]` is balanced bec
 <li id="test-5"><code>is_balanced(build_tree([1, 2, None, 3, None, 4]))</code> should return <code>False</code></li>
 <li id="test-6"><code>is_balanced(build_tree([1, 2, 3]))</code> should return <code>True</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def is_balanced(root):
+    def height(node):
+        if node is None:
+            return 0
+        left = height(node.left)
+        if left == -1:
+            return -1
+        right = height(node.right)
+        if right == -1:
+            return -1
+        if abs(left - right) > 1:
+            return -1
+        return 1 + max(left, right)
+
+    return height(root) != -1
+```
+
+</details>

@@ -48,3 +48,38 @@ For example, with `num_courses = 3` and `prerequisites = [[1, 0], [2, 1]]`, cour
 <li id="test-5"><code>find_order(4, [[1, 0], [2, 0], [3, 1], [3, 2]])</code> should return a valid order such as <code>[0, 1, 2, 3]</code></li>
 <li id="test-6"><code>find_order(3, [])</code> should return a valid order such as <code>[0, 1, 2]</code> (any order)</li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+from collections import defaultdict
+
+def find_order(num_courses, prerequisites):
+    graph = defaultdict(list)
+    for course, prereq in prerequisites:
+        graph[course].append(prereq)
+
+    state = {}  # 0 = visiting, 1 = done
+    order = []
+
+    def dfs(node):
+        if state.get(node) == 0:
+            return False
+        if state.get(node) == 1:
+            return True
+        state[node] = 0
+        for neighbor in graph[node]:
+            if not dfs(neighbor):
+                return False
+        state[node] = 1
+        order.append(node)
+        return True
+
+    for course in range(num_courses):
+        if not dfs(course):
+            return []
+    return order
+```
+
+</details>

@@ -58,3 +58,22 @@ answer is `0` since no trade makes money.
 <li id="test-6"><code>max_profit([2, 4, 1, 7])</code> should return <code>6</code></li>
 <li id="test-7"><code>max_profit([7, 1, 5, 3, 6, 4])</code> should return <code>5</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def max_profit(prices):
+    if not prices:
+        return 0
+    min_price = prices[0]
+    best = 0
+    for p in prices[1:]:
+        if p - min_price > best:
+            best = p - min_price
+        if p < min_price:
+            min_price = p
+    return best
+```
+
+</details>

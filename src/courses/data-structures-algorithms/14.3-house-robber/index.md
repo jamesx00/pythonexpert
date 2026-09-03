@@ -49,3 +49,16 @@ For example, given `houses = [2, 7, 9, 3, 1]`, the best plan is to rob house `0`
 <li id="test-6"><code>rob([0, 0, 0])</code> should return <code>0</code></li>
 <li id="test-7"><code>rob([4, 1, 2, 7, 5, 3, 1])</code> should return <code>14</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def rob(houses):
+    prev, curr = 0, 0
+    for h in houses:
+        prev, curr = curr, max(curr, prev + h)
+    return curr
+```
+
+</details>

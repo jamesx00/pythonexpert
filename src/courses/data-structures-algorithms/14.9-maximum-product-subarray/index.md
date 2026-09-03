@@ -49,3 +49,20 @@ For example, given `nums = [2, 3, -2, 4]`, the best contiguous run is `[2, 3]`, 
 <li id="test-6"><code>max_product_subarray([2, -5, -2, -4, 3])</code> should return <code>24</code></li>
 <li id="test-7"><code>max_product_subarray([0, 2, -3, 4, -1, 0])</code> should return <code>24</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def max_product_subarray(nums):
+    res = nums[0]
+    cur_max = cur_min = nums[0]
+    for n in nums[1:]:
+        candidates = (n, cur_max * n, cur_min * n)
+        cur_max = max(candidates)
+        cur_min = min(candidates)
+        res = max(res, cur_max)
+    return res
+```
+
+</details>

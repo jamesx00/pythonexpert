@@ -49,3 +49,29 @@ For example, with `n = 4` and `edges = [[0, 1], [1, 2], [2, 3]]`, every node is 
 <li id="test-6"><code>valid_tree(2, [[0, 1]])</code> should return <code>True</code></li>
 <li id="test-7"><code>valid_tree(2, [])</code> should return <code>False</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def valid_tree(n, edges):
+    if len(edges) != n - 1:
+        return False
+    parent = list(range(n))
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    for a, b in edges:
+        ra, rb = find(a), find(b)
+        if ra == rb:
+            return False
+        parent[ra] = rb
+
+    return len({find(x) for x in range(n)}) == 1
+```
+
+</details>

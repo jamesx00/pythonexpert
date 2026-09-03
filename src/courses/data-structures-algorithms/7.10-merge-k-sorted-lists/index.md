@@ -48,3 +48,28 @@ For example, given the three lists `1 -> 4 -> 5`, `1 -> 3 -> 4`, and `2 -> 6`, t
 <li id="test-5"><code>merge_k_lists([[1, 2, 3], []])</code> should return <code>[1, 2, 3]</code></li>
 <li id="test-6"><code>merge_k_lists([[9], [1, 5], [2, 3, 7]])</code> should return <code>[1, 2, 3, 5, 7, 9]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+import heapq
+
+
+def merge_k_lists(lists):
+    heap = []
+    for i, node in enumerate(lists):
+        if node:
+            heapq.heappush(heap, (node.val, i, node))
+    dummy = ListNode()
+    curr = dummy
+    while heap:
+        val, i, node = heapq.heappop(heap)
+        curr.next = node
+        curr = curr.next
+        if node.next:
+            heapq.heappush(heap, (node.next.val, i, node.next))
+    return dummy.next
+```
+
+</details>

@@ -48,3 +48,24 @@ For example, with `prices = [1, 2, 3, 0, 2]` the best plan is to buy on day 0 at
 <li id="test-5"><code>max_profit([5, 4, 3, 2, 1])</code> should return <code>0</code></li>
 <li id="test-6"><code>max_profit([2, 1, 4, 5, 2, 9, 7])</code> should return <code>10</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def max_profit(prices):
+    if not prices:
+        return 0
+    n = len(prices)
+    hold = [0] * n
+    sold = [0] * n
+    rest = [0] * n
+    hold[0] = -prices[0]
+    for i in range(1, n):
+        hold[i] = max(hold[i - 1], rest[i - 1] - prices[i])
+        sold[i] = hold[i - 1] + prices[i]
+        rest[i] = max(rest[i - 1], sold[i - 1])
+    return max(sold[-1], rest[-1])
+```
+
+</details>

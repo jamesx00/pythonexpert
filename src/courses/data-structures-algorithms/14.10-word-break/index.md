@@ -49,3 +49,22 @@ For example, given `s = "pineapplepen"` and `word_dict = ["pine", "apple", "pen"
 <li id="test-6"><code>word_break("aaaaaaab", ["aaaa", "aaa"])</code> should return <code>False</code></li>
 <li id="test-7"><code>word_break("", ["a"])</code> should return <code>True</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def word_break(s, word_dict):
+    words = set(word_dict)
+    n = len(s)
+    dp = [False] * (n + 1)
+    dp[0] = True
+    for i in range(1, n + 1):
+        for j in range(i):
+            if dp[j] and s[j:i] in words:
+                dp[i] = True
+                break
+    return dp[n]
+```
+
+</details>

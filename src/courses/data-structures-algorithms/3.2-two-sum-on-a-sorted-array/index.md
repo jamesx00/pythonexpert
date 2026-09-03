@@ -48,3 +48,22 @@ For example, given `[1, 3, 4, 7, 11]` and a target of `10`, the values at positi
 <li id="test-5"><code>two_sum_sorted([-6, -3, -1, 2, 9], -9)</code> should return <code>[0, 1]</code></li>
 <li id="test-6"><code>two_sum_sorted([0, 0, 3, 5], 0)</code> should return <code>[0, 1]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def two_sum_sorted(nums, target):
+    left, right = 0, len(nums) - 1
+    while left < right:
+        total = nums[left] + nums[right]
+        if total == target:
+            return [left, right]
+        elif total < target:
+            left += 1
+        else:
+            right -= 1
+    return None
+```
+
+</details>

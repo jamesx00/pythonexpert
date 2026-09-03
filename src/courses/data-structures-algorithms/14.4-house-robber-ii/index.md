@@ -49,3 +49,21 @@ For example, given `houses = [2, 3, 2]`, robbing house `0` and house `2` is not 
 <li id="test-6"><code>rob_circular([0, 0, 0, 0])</code> should return <code>0</code></li>
 <li id="test-7"><code>rob_circular([6, 7, 1, 3, 8, 2, 4])</code> should return <code>19</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def _rob_line(houses):
+    prev, curr = 0, 0
+    for h in houses:
+        prev, curr = curr, max(curr, prev + h)
+    return curr
+
+def rob_circular(houses):
+    if len(houses) == 1:
+        return houses[0]
+    return max(_rob_line(houses[1:]), _rob_line(houses[:-1]))
+```
+
+</details>

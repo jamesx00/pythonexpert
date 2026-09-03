@@ -48,3 +48,18 @@ For example, with `amount = 5` and `coins = [1, 2, 5]`, the valid combinations a
 <li id="test-5"><code>count_ways(7, [2, 3, 5])</code> should return <code>2</code></li>
 <li id="test-6"><code>count_ways(4, [1, 2, 3])</code> should return <code>4</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def count_ways(amount, coins):
+    dp = [0] * (amount + 1)
+    dp[0] = 1
+    for c in coins:
+        for a in range(c, amount + 1):
+            dp[a] += dp[a - c]
+    return dp[amount]
+```
+
+</details>

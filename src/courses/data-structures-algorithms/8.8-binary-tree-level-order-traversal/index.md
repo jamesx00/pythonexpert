@@ -48,3 +48,28 @@ For example, the tree built from `[3, 9, 20, None, None, 15, 7]` has root level 
 <li id="test-5"><code>level_order(build_tree([1, None, 2, None, 3]))</code> should return <code>[[1], [2], [3]]</code></li>
 <li id="test-6"><code>level_order(build_tree([1, 2, None, 3]))</code> should return <code>[[1], [2], [3]]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def level_order(root):
+    if root is None:
+        return []
+    result = []
+    queue = [root]
+    while queue:
+        level = []
+        next_queue = []
+        for node in queue:
+            level.append(node.val)
+            if node.left:
+                next_queue.append(node.left)
+            if node.right:
+                next_queue.append(node.right)
+        result.append(level)
+        queue = next_queue
+    return result
+```
+
+</details>

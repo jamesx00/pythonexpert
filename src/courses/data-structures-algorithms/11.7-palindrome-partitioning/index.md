@@ -48,3 +48,32 @@ For example, given `"aab"`, one valid way to cut it is `["a", "a", "b"]` (three 
 <li id="test-5"><code>partition_palindromes("abc")</code> should return <code>[["a", "b", "c"]]</code></li>
 <li id="test-6"><code>partition_palindromes("aa")</code> should return <code>[["a", "a"], ["aa"]]</code> (any order)</li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def partition_palindromes(s):
+    result = []
+
+    def is_palindrome(sub):
+        return sub == sub[::-1]
+
+    def backtrack(start, path):
+        if start == len(s):
+            result.append(list(path))
+            return
+        for end in range(start + 1, len(s) + 1):
+            piece = s[start:end]
+            if is_palindrome(piece):
+                path.append(piece)
+                backtrack(end, path)
+                path.pop()
+
+    if s == "":
+        return [[]]
+    backtrack(0, [])
+    return result
+```
+
+</details>

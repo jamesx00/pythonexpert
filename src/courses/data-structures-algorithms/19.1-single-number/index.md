@@ -52,3 +52,16 @@ For example, given `nums = [4, 1, 2, 1, 2]`, the values `1` and `2` each appear 
 <li id="test-6"><code>single_number([0, 1, 0])</code> should return <code>1</code></li>
 <li id="test-7"><code>single_number([9, 5, 9])</code> should return <code>5</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def single_number(nums):
+    result = 0
+    for n in nums:
+        result ^= n
+    return result
+```
+
+</details>

@@ -48,3 +48,26 @@ For example, with `n = 5` and `edges = [[0, 1], [1, 2], [3, 4]]`, nodes `0`, `1`
 <li id="test-5"><code>count_components(6, [[0, 1], [2, 3], [4, 5]])</code> should return <code>3</code></li>
 <li id="test-6"><code>count_components(3, [[0, 1], [0, 2], [1, 2]])</code> should return <code>1</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def count_components(n, edges):
+    parent = list(range(n))
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    for a, b in edges:
+        ra, rb = find(a), find(b)
+        if ra != rb:
+            parent[ra] = rb
+
+    return len({find(x) for x in range(n)})
+```
+
+</details>

@@ -48,3 +48,26 @@ For example, given `[1, 2, 2]`, the subsets `[2]` picked from either copy of `2`
 <li id="test-5"><code>subsets_with_dup([1, 2, 3])</code> should return all 8 subsets of <code>[1, 2, 3]</code> (any order)</li>
 <li id="test-6"><code>subsets_with_dup([2, 1, 2, 1])</code> should return <code>[[], [1], [2], [1, 1], [1, 2], [2, 2], [1, 1, 2], [1, 2, 2], [1, 1, 2, 2]]</code> (any order)</li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def subsets_with_dup(nums):
+    nums = sorted(nums)
+    result = []
+
+    def backtrack(start, path):
+        result.append(list(path))
+        for i in range(start, len(nums)):
+            if i > start and nums[i] == nums[i - 1]:
+                continue
+            path.append(nums[i])
+            backtrack(i + 1, path)
+            path.pop()
+
+    backtrack(0, [])
+    return result
+```
+
+</details>

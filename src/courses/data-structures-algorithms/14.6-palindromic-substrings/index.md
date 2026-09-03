@@ -49,3 +49,27 @@ For example, given `s = "aaa"`, the palindromic substrings are `"a"`, `"a"`, `"a
 <li id="test-6"><code>count_palindromic_substrings("racecar")</code> should return <code>10</code></li>
 <li id="test-7"><code>count_palindromic_substrings("z")</code> should return <code>1</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def count_palindromic_substrings(s):
+    n = len(s)
+    count = 0
+
+    def expand(l, r):
+        c = 0
+        while l >= 0 and r < n and s[l] == s[r]:
+            c += 1
+            l -= 1
+            r += 1
+        return c
+
+    for i in range(n):
+        count += expand(i, i)
+        count += expand(i, i + 1)
+    return count
+```
+
+</details>

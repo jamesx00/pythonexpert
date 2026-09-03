@@ -48,3 +48,23 @@ For example, with heights `[1, 7, 2, 5, 4, 7, 3]`, choosing the walls at positio
 <li id="test-5"><code>max_area([0, 2])</code> should return <code>0</code></li>
 <li id="test-6"><code>max_area([2, 3, 4, 5, 18, 17, 6])</code> should return <code>17</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def max_area(heights):
+    left, right = 0, len(heights) - 1
+    best = 0
+    while left < right:
+        width = right - left
+        height = min(heights[left], heights[right])
+        best = max(best, width * height)
+        if heights[left] < heights[right]:
+            left += 1
+        else:
+            right -= 1
+    return best
+```
+
+</details>

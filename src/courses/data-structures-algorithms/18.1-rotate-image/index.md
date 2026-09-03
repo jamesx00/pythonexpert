@@ -59,3 +59,19 @@ the top row `1, 2, 3` becomes the rightmost column read top to bottom, producing
 <li id="test-4"><code>rotate([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]])</code> should return <code>[[13, 9, 5, 1], [14, 10, 6, 2], [15, 11, 7, 3], [16, 12, 8, 4]]</code></li>
 <li id="test-5"><code>rotate([[1, -2], [-3, 4]])</code> should return <code>[[-3, 1], [4, -2]]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def rotate(matrix):
+    n = len(matrix)
+    for i in range(n):
+        for j in range(i + 1, n):
+            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+    for row in matrix:
+        row.reverse()
+    return matrix
+```
+
+</details>

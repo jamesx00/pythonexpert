@@ -48,3 +48,25 @@ For example, the list `2 -> 4 -> 3` represents `342`, and the list `5 -> 6 -> 4`
 <li id="test-5"><code>add_two_numbers([1, 2], [9, 9, 9])</code> should return <code>[0, 2, 0, 1]</code></li>
 <li id="test-6"><code>add_two_numbers([9, 9], [9, 9])</code> should return <code>[8, 9, 1]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def add_two_numbers(l1, l2):
+    dummy = ListNode()
+    curr = dummy
+    carry = 0
+    while l1 or l2 or carry:
+        v1 = l1.val if l1 else 0
+        v2 = l2.val if l2 else 0
+        total = v1 + v2 + carry
+        carry = total // 10
+        curr.next = ListNode(total % 10)
+        curr = curr.next
+        l1 = l1.next if l1 else None
+        l2 = l2.next if l2 else None
+    return dummy.next
+```
+
+</details>

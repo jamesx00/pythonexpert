@@ -50,3 +50,17 @@ For example, `n = 1` is `00000000000000000000000000000001` as a 32-bit value. Re
 <li id="test-5"><code>reverse_bits(2147483648)</code> should return <code>1</code></li>
 <li id="test-6"><code>reverse_bits(2)</code> should return <code>1073741824</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def reverse_bits(n):
+    result = 0
+    for i in range(32):
+        bit = (n >> i) & 1
+        result |= bit << (31 - i)
+    return result
+```
+
+</details>

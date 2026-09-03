@@ -49,3 +49,23 @@ For example, given `stones = [8, 4, 3, 2]`, smashing `8` and `4` leaves a `4`, s
 <li id="test-6"><code>last_stone_weight([10, 4, 2, 10])</code> should return <code>2</code></li>
 <li id="test-7"><code>last_stone_weight([3, 3, 3, 3])</code> should return <code>0</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+import heapq
+
+
+def last_stone_weight(stones):
+    heap = [-s for s in stones]
+    heapq.heapify(heap)
+    while len(heap) > 1:
+        a = -heapq.heappop(heap)
+        b = -heapq.heappop(heap)
+        if a != b:
+            heapq.heappush(heap, -(a - b))
+    return -heap[0] if heap else 0
+```
+
+</details>

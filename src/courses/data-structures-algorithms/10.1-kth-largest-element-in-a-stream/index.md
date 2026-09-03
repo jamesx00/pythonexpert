@@ -49,3 +49,27 @@ For example, with `k = 2` and starting values `[3, 8]`, calling `add(5)` makes t
 <li id="test-5">KthLargest(3, [4, 5, 8, 2]), add(3), add(10) &mdash; should return <code>4</code>, then <code>5</code></li>
 <li id="test-6">KthLargest(2, []), add(-1), add(-1), add(-2) &mdash; should return <code>-1</code>, then <code>-1</code>, then <code>-1</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+import heapq
+
+
+class KthLargest:
+    def __init__(self, k, nums):
+        self.k = k
+        self.heap = list(nums)
+        heapq.heapify(self.heap)
+        while len(self.heap) > k:
+            heapq.heappop(self.heap)
+
+    def add(self, val):
+        heapq.heappush(self.heap, val)
+        while len(self.heap) > self.k:
+            heapq.heappop(self.heap)
+        return self.heap[0]
+```
+
+</details>

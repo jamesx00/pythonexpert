@@ -48,3 +48,19 @@ For example, given `points = [[1, 1], [4, 4], [0, 1], [3, 3]]` and `k = 2`, the 
 <li id="test-5"><code>k_closest([[1, 2], [-1, -2], [1, -2], [-1, 2]], 2)</code> should return 2 points, each with squared distance <code>5</code></li>
 <li id="test-6"><code>k_closest([[7, 7]], 1)</code> should return <code>[[7, 7]]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+import heapq
+
+
+def k_closest(points, k):
+    heap = [(x ** 2 + y ** 2, x, y) for x, y in points]
+    heapq.heapify(heap)
+    closest = heapq.nsmallest(k, heap)
+    return [[x, y] for d, x, y in closest]
+```
+
+</details>

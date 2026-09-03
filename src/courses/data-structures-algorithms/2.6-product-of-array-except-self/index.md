@@ -48,3 +48,23 @@ For example, given `nums = [2, 3, 4, 5]`, the value at index `0` should be `3 * 
 <li id="test-5"><code>product_except_self([0, 4, 5])</code> should return <code>[20, 0, 0]</code></li>
 <li id="test-6"><code>product_except_self([3, 0, 0, 6])</code> should return <code>[0, 0, 0, 0]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def product_except_self(nums):
+    n = len(nums)
+    output = [1] * n
+    prefix = 1
+    for i in range(n):
+        output[i] = prefix
+        prefix *= nums[i]
+    suffix = 1
+    for i in range(n - 1, -1, -1):
+        output[i] *= suffix
+        suffix *= nums[i]
+    return output
+```
+
+</details>

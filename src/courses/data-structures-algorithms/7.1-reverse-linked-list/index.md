@@ -49,3 +49,20 @@ For example, given the list `1 -> 2 -> 3 -> 4`, the function should return a lis
 <li id="test-5"><code>reverse_list([5, 5, 5, 5])</code> should return <code>[5, 5, 5, 5]</code></li>
 <li id="test-6"><code>reverse_list([9, -3, 4, 0, 2])</code> should return <code>[2, 0, 4, -3, 9]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def reverse_list(head):
+    prev = None
+    curr = head
+    while curr:
+        nxt = curr.next
+        curr.next = prev
+        prev = curr
+        curr = nxt
+    return prev
+```
+
+</details>

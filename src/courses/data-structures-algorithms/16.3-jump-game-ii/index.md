@@ -49,3 +49,21 @@ For example, `nums = [2, 3, 1, 1, 4]` can be solved in `2` jumps: `0 -> 1 -> 4`.
 <li id="test-6"><code>min_jumps([1, 2, 3])</code> should return <code>2</code></li>
 <li id="test-7"><code>min_jumps([2, 3, 0, 1, 4])</code> should return <code>2</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def min_jumps(nums):
+    jumps = 0
+    cur_end = 0
+    farthest = 0
+    for i in range(len(nums) - 1):
+        farthest = max(farthest, i + nums[i])
+        if i == cur_end:
+            jumps += 1
+            cur_end = farthest
+    return jumps
+```
+
+</details>

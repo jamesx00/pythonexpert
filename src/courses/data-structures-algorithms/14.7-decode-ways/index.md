@@ -49,3 +49,27 @@ For example, given `digits = "226"`, the valid decodings are `"2-2-6"` (BBF), `"
 <li id="test-6"><code>num_decodings("11106")</code> should return <code>2</code></li>
 <li id="test-7"><code>num_decodings("")</code> should return <code>1</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def num_decodings(digits):
+    n = len(digits)
+    if n == 0:
+        return 1
+    dp = [0] * (n + 1)
+    dp[n] = 1
+    dp[n - 1] = 1 if digits[n - 1] != '0' else 0
+    for i in range(n - 2, -1, -1):
+        if digits[i] == '0':
+            dp[i] = 0
+            continue
+        dp[i] = dp[i + 1]
+        two = int(digits[i:i + 2])
+        if 10 <= two <= 26:
+            dp[i] += dp[i + 2]
+    return dp[0]
+```
+
+</details>

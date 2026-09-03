@@ -48,3 +48,15 @@ For example, `is_anagram("stone", "tones")` should return `True` since both stri
 <li id="test-5"><code>is_anagram("", "")</code> should return <code>True</code></li>
 <li id="test-6"><code>is_anagram("aabbcc", "abcabc")</code> should return <code>True</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def is_anagram(word_one, word_two):
+    if len(word_one) != len(word_two):
+        return False
+    return sorted(word_one) == sorted(word_two)
+```
+
+</details>

@@ -48,3 +48,25 @@ For example, given `[1, 2, 3]`, the function should return all 6 orderings: `[1,
 <li id="test-5"><code>permute([1, -1])</code> should return <code>[[1, -1], [-1, 1]]</code> (any order)</li>
 <li id="test-6"><code>permute([1, 2, 3, 4])</code> should return all 24 permutations of <code>[1, 2, 3, 4]</code> (any order)</li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def permute(nums):
+    result = []
+
+    def backtrack(path, remaining):
+        if not remaining:
+            result.append(list(path))
+            return
+        for i in range(len(remaining)):
+            path.append(remaining[i])
+            backtrack(path, remaining[:i] + remaining[i + 1:])
+            path.pop()
+
+    backtrack([], nums)
+    return result
+```
+
+</details>

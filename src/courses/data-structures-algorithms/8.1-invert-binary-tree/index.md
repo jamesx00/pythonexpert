@@ -59,3 +59,16 @@ After inverting it, walking the result level-order should produce `[4, 7, 2, 9, 
 <li id="test-5"><code>invert_tree(build_tree([5]))</code> should mirror to <code>[5]</code></li>
 <li id="test-6"><code>invert_tree(build_tree([3, 9, 20, None, None, 15, 7]))</code> should mirror to <code>[3, 20, 9, 7, 15]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def invert_tree(root):
+    if root is None:
+        return None
+    root.left, root.right = invert_tree(root.right), invert_tree(root.left)
+    return root
+```
+
+</details>

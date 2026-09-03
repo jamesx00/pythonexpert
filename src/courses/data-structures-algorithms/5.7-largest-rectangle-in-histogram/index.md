@@ -48,3 +48,24 @@ The rectangle's height is limited by the shortest bar it spans, so a wide rectan
 <li id="test-5"><code>largest_rectangle_area([5])</code> should return <code>5</code></li>
 <li id="test-6"><code>largest_rectangle_area([0, 0, 0])</code> should return <code>0</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def largest_rectangle_area(heights):
+    stack = []  # (start_index, height)
+    max_area = 0
+    for i, h in enumerate(heights):
+        start = i
+        while stack and stack[-1][1] > h:
+            idx, height = stack.pop()
+            max_area = max(max_area, height * (i - idx))
+            start = idx
+        stack.append((start, h))
+    for idx, height in stack:
+        max_area = max(max_area, height * (len(heights) - idx))
+    return max_area
+```
+
+</details>

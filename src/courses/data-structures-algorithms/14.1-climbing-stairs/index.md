@@ -50,3 +50,18 @@ For example, with `n = 3` you could climb `1+1+1`, `1+2`, or `2+1`, so there are
 <li id="test-6"><code>climb_stairs(0)</code> should return <code>1</code></li>
 <li id="test-7"><code>climb_stairs(10)</code> should return <code>89</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def climb_stairs(n):
+    if n <= 1:
+        return 1
+    a, b = 1, 1
+    for _ in range(n - 1):
+        a, b = b, a + b
+    return b
+```
+
+</details>

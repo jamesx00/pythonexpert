@@ -48,3 +48,23 @@ For example, with `n = 3` airports and `flights = [[0, 1, 100], [1, 2, 100], [0,
 <li id="test-5"><code>find_cheapest_price(3, [[0, 1, 100]], 0, 2, 5)</code> should return <code>-1</code></li>
 <li id="test-6"><code>find_cheapest_price(2, [[0, 1, 10]], 0, 1, 0)</code> should return <code>10</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def find_cheapest_price(n, flights, src, dst, k):
+    prices = [float("inf")] * n
+    prices[src] = 0
+
+    for _ in range(k + 1):
+        updated = prices[:]
+        for u, v, w in flights:
+            if prices[u] != float("inf") and prices[u] + w < updated[v]:
+                updated[v] = prices[u] + w
+        prices = updated
+
+    return prices[dst] if prices[dst] != float("inf") else -1
+```
+
+</details>

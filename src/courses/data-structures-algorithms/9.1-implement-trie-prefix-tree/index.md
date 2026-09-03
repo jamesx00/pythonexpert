@@ -54,3 +54,39 @@ For example, after calling `insert("garden")`, `search("garden")` returns `True`
 <li id="test-5">insert "apple" and "app", then <code>search("app")</code> should return <code>True</code>, <code>starts_with("appl")</code> should return <code>True</code>, and <code>search("appl")</code> should return <code>False</code></li>
 <li id="test-6">insert "wolf" twice, then <code>search("wolf")</code> should return <code>True</code> and <code>starts_with("wo")</code> should return <code>True</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+class Trie:
+    def __init__(self):
+        self.children = {}
+        self.is_word = False
+
+    def insert(self, word):
+        node = self
+        for ch in word:
+            if ch not in node.children:
+                node.children[ch] = Trie()
+            node = node.children[ch]
+        node.is_word = True
+
+    def search(self, word):
+        node = self
+        for ch in word:
+            if ch not in node.children:
+                return False
+            node = node.children[ch]
+        return node.is_word
+
+    def starts_with(self, prefix):
+        node = self
+        for ch in prefix:
+            if ch not in node.children:
+                return False
+            node = node.children[ch]
+        return True
+```
+
+</details>

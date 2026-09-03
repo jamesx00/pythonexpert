@@ -48,3 +48,20 @@ For example, `build_tree([5, 3, 8, 1, 4, 7, 9])` is a valid BST. But `build_tree
 <li id="test-5"><code>is_valid_bst(build_tree([]))</code> should return <code>True</code></li>
 <li id="test-6"><code>is_valid_bst(build_tree([10, 5, 15, None, None, 6, 20]))</code> should return <code>False</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def is_valid_bst(root):
+    def valid(node, low, high):
+        if node is None:
+            return True
+        if not (low < node.val < high):
+            return False
+        return valid(node.left, low, node.val) and valid(node.right, node.val, high)
+
+    return valid(root, float('-inf'), float('inf'))
+```
+
+</details>

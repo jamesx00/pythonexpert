@@ -51,3 +51,39 @@ A `TrieNode` class and a `build_trie(words)` helper are already provided in the 
 <li id="test-4">board <code>[["x","y"],["y","x"]]</code>, words <code>["ab","cd"]</code> &mdash; should return <code>[]</code></li>
 <li id="test-5">board <code>[["o","a"],["e","t"]]</code>, words <code>["oa","oe","eat","ate"]</code> &mdash; should return <code>["oa","oe","ate"]</code> (any order)</li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def find_words(board, words):
+    if not board or not board[0]:
+        return []
+
+    root = build_trie(words)
+    rows, cols = len(board), len(board[0])
+    found = set()
+
+    def dfs(r, c, node):
+        ch = board[r][c]
+        if ch not in node.children:
+            return
+        nxt = node.children[ch]
+        if nxt.word is not None:
+            found.add(nxt.word)
+
+        board[r][c] = '#'
+        for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < rows and 0 <= nc < cols and board[nr][nc] != '#':
+                dfs(nr, nc, nxt)
+        board[r][c] = ch
+
+    for r in range(rows):
+        for c in range(cols):
+            dfs(r, c, root)
+
+    return list(found)
+```
+
+</details>

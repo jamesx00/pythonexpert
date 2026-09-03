@@ -50,3 +50,17 @@ For example, on a grid with 2 rows and 3 columns the robot can go right-right-do
 <li id="test-6"><code>count_paths(4, 4)</code> should return <code>20</code></li>
 <li id="test-7"><code>count_paths(5, 6)</code> should return <code>126</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def count_paths(rows, cols):
+    dp = [[1] * cols for _ in range(rows)]
+    for r in range(1, rows):
+        for c in range(1, cols):
+            dp[r][c] = dp[r - 1][c] + dp[r][c - 1]
+    return dp[rows - 1][cols - 1]
+```
+
+</details>

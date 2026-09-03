@@ -48,3 +48,27 @@ For example, with heights `[0, 1, 0, 2, 1, 0, 3, 1, 0, 2]`, water collects above
 <li id="test-5"><code>trap_rain_water([])</code> should return <code>0</code></li>
 <li id="test-6"><code>trap_rain_water([3, 0, 0, 2, 0, 4])</code> should return <code>10</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def trap_rain_water(heights):
+    if not heights:
+        return 0
+    left, right = 0, len(heights) - 1
+    left_max, right_max = heights[left], heights[right]
+    water = 0
+    while left < right:
+        if left_max <= right_max:
+            left += 1
+            left_max = max(left_max, heights[left])
+            water += left_max - heights[left]
+        else:
+            right -= 1
+            right_max = max(right_max, heights[right])
+            water += right_max - heights[right]
+    return water
+```
+
+</details>

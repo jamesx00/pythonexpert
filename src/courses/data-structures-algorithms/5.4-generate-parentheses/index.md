@@ -47,3 +47,25 @@ A string of parentheses is well-formed when every `(` has a matching `)` later i
 <li id="test-4"><code>generate_parentheses(4)</code> should return all 14 well-formed arrangements for 4 pairs (any order)</li>
 <li id="test-5"><code>generate_parentheses(0)</code> should return <code>[""]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def generate_parentheses(n):
+    result = []
+
+    def backtrack(current, open_count, close_count):
+        if len(current) == 2 * n:
+            result.append(current)
+            return
+        if open_count < n:
+            backtrack(current + '(', open_count + 1, close_count)
+        if close_count < open_count:
+            backtrack(current + ')', open_count, close_count + 1)
+
+    backtrack('', 0, 0)
+    return result
+```
+
+</details>

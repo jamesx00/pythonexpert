@@ -48,3 +48,21 @@ For example, given `nums = [9, 1, 4, 2, 3, 100]`, the values `1, 2, 3, 4` form a
 <li id="test-5"><code>longest_consecutive([10, 5, 12, 11, 6, 7])</code> should return <code>3</code></li>
 <li id="test-6"><code>longest_consecutive([-2, -1, 0, 1, 2, 8])</code> should return <code>5</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def longest_consecutive(nums):
+    num_set = set(nums)
+    longest = 0
+    for n in num_set:
+        if n - 1 not in num_set:
+            length = 1
+            while n + length in num_set:
+                length += 1
+            longest = max(longest, length)
+    return longest
+```
+
+</details>

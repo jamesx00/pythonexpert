@@ -48,3 +48,17 @@ For example, `triplets = [[2, 5, 3], [1, 8, 4], [1, 7, 5]]` and `target = [2, 7,
 <li id="test-5"><code>merge_triplets([[1, 1, 1]], [2, 2, 2])</code> should return <code>False</code></li>
 <li id="test-6"><code>merge_triplets([[2, 2, 2], [1, 1, 1], [3, 3, 3]], [3, 3, 3])</code> should return <code>True</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def merge_triplets(triplets, target):
+    best = [0, 0, 0]
+    for t in triplets:
+        if t[0] <= target[0] and t[1] <= target[1] and t[2] <= target[2]:
+            best = [max(best[i], t[i]) for i in range(3)]
+    return best == target
+```
+
+</details>

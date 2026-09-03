@@ -48,3 +48,19 @@ For example, `[1, 2, 9]` represents the number `129`, so adding one gives `130`,
 <li id="test-5"><code>plus_one([4, 3, 2, 9])</code> should return <code>[4, 3, 3, 0]</code></li>
 <li id="test-6"><code>plus_one([9])</code> should return <code>[1, 0]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def plus_one(digits):
+    digits = digits[:]
+    for i in range(len(digits) - 1, -1, -1):
+        if digits[i] < 9:
+            digits[i] += 1
+            return digits
+        digits[i] = 0
+    return [1] + digits
+```
+
+</details>

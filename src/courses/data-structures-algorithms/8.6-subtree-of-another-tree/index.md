@@ -48,3 +48,24 @@ For example, if `root` is built from `[3, 4, 5, 1, 2]` and `sub_root` is built f
 <li id="test-5"><code>is_subtree(build_tree([1, 2, 3]), build_tree([4]))</code> should return <code>False</code></li>
 <li id="test-6"><code>is_subtree(build_tree([]), build_tree([1]))</code> should return <code>False</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def is_subtree(root, sub_root):
+    def same(a, b):
+        if a is None and b is None:
+            return True
+        if a is None or b is None:
+            return False
+        return a.val == b.val and same(a.left, b.left) and same(a.right, b.right)
+
+    if root is None:
+        return False
+    if same(root, sub_root):
+        return True
+    return is_subtree(root.left, sub_root) or is_subtree(root.right, sub_root)
+```
+
+</details>

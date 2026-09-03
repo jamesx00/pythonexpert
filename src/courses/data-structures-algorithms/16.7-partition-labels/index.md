@@ -48,3 +48,21 @@ For example, `s = "abacbc"` needs to keep all of its `a`'s together and all of i
 <li id="test-5"><code>partition_labels("eccbbbeee")</code> should return <code>[9]</code></li>
 <li id="test-6"><code>partition_labels("aabbccddeeff")</code> should return <code>[2, 2, 2, 2, 2, 2]</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def partition_labels(s):
+    last = {c: i for i, c in enumerate(s)}
+    result = []
+    start = end = 0
+    for i, c in enumerate(s):
+        end = max(end, last[c])
+        if i == end:
+            result.append(end - start + 1)
+            start = i + 1
+    return result
+```
+
+</details>

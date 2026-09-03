@@ -58,3 +58,34 @@ the top-left `1`s form one connected island, and the lone `1` in the bottom-righ
 <li id="test-6"><code>num_islands([[0]])</code> should return <code>0</code></li>
 <li id="test-7"><code>num_islands([[1, 0], [0, 1], [1, 0]])</code> should return <code>3</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+def num_islands(grid):
+    rows, cols = len(grid), len(grid[0]) if grid else 0
+    visited = set()
+    count = 0
+
+    def bfs(r, c):
+        queue = [(r, c)]
+        visited.add((r, c))
+        while queue:
+            row, col = queue.pop()
+            for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                nr, nc = row + dr, col + dc
+                if (0 <= nr < rows and 0 <= nc < cols and
+                        grid[nr][nc] == 1 and (nr, nc) not in visited):
+                    visited.add((nr, nc))
+                    queue.append((nr, nc))
+
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == 1 and (r, c) not in visited:
+                bfs(r, c)
+                count += 1
+    return count
+```
+
+</details>

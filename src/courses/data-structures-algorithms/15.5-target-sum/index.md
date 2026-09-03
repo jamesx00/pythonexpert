@@ -48,3 +48,26 @@ For example, with `nums = [1, 1, 1, 1, 1]` and `target = 3`, one valid assignmen
 <li id="test-5"><code>count_target_sums([2, 3, 1, 4], 2)</code> should return <code>2</code></li>
 <li id="test-6"><code>count_target_sums([1, 2, 1], 0)</code> should return <code>2</code></li>
 </ul>
+
+<details class="border border-red-500 px-4 cursor-pointer">
+<summary class="select-none">Solution</summary>
+
+```python
+from functools import lru_cache
+
+
+def count_target_sums(nums, target):
+    n = len(nums)
+
+    @lru_cache(maxsize=None)
+    def dp(i, total):
+        if i == n:
+            return 1 if total == target else 0
+        return dp(i + 1, total + nums[i]) + dp(i + 1, total - nums[i])
+
+    result = dp(0, 0)
+    dp.cache_clear()
+    return result
+```
+
+</details>
