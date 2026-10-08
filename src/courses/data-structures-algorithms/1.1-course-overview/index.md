@@ -8,7 +8,7 @@ section: Getting Started
 
 ## Course Summary &#x1F4D7;
 
-This course teaches the patterns behind coding interview problems, one hands-on exercise at a time. Instead of grinding through problems at random, you'll move through 18 categories in order, from foundational array and hash-map tricks up through graphs and dynamic programming — the same rough progression used by popular pattern-based interview roadmaps.
+This course teaches the patterns behind coding interview problems, one hands-on exercise at a time. Instead of grinding through problems at random, you'll start with four foundations sections (Big-O analysis, recursion, sorting, and building core data structures yourself), then move through 18 pattern categories in order, from array and hash-map tricks up through graphs and dynamic programming — the same rough progression used by popular pattern-based interview roadmaps.
 
 ## How This Course Works &#x1F6E0;&#xFE0F;
 
@@ -22,6 +22,7 @@ Every exercise gives you a short problem statement and a Python starter file wit
 
 ## What You'll Cover &#x1F9ED;
 
+- **Foundations: Big-O, Recursion, Sorting & Build-It-Yourself Data Structures** — how to analyse your code's efficiency, think recursively, and understand what `list`, `dict`, `heapq` and binary search trees do under the hood.
 - **Arrays, Hashing, Two Pointers & Sliding Window** — the bread-and-butter techniques for scanning and searching sequences efficiently.
 - **Stacks & Binary Search** — structuring computation and cutting search spaces in half.
 - **Linked Lists & Trees** — pointer manipulation and recursive traversal.
