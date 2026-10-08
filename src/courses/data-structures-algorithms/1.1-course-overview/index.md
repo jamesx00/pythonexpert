@@ -30,6 +30,7 @@ Every exercise gives you a short problem statement and a Python starter file wit
 - **Backtracking & Graphs** — exploring all possibilities and traversing networks (including weighted/advanced graphs).
 - **Dynamic Programming (1-D and 2-D) & Greedy** — building solutions from subproblems, and knowing when a greedy choice is provably optimal.
 - **Intervals, Math & Geometry, Bit Manipulation** — the smaller but frequently-tested categories that round out most interview loops.
+- **Approaching New Problems** — a step-by-step routine for a problem when nobody tells you its pattern: restate it, try small examples, write the brute force, find the bottleneck, pick a pattern, and check edge cases.
 
 ## Before You Start &#x1F4CC;
 
