@@ -30,22 +30,20 @@ layout: layouts/base.njk
                             </a>
                         {% endif %}
                     </p>
-                    {% if difficulty or checkpoint or target_complexity %}
+                    {% if difficulty or checkpoint %}
                         <div class="lesson-meta mb-4 flex flex-wrap items-center gap-2 text-xs text-term-muted">
                             {% include "difficulty-badge.njk" %}
                             {% if checkpoint %}
                                 <span class="border border-term-accent/60 px-1.5 text-term-accent">Checkpoint: no hints</span>
                             {% endif %}
-                            {% if target_complexity %}
-                                <span class="target-complexity">
-                                    Target: <code>{{ target_complexity.time }}</code> time{% if target_complexity.space %}, <code>{{ target_complexity.space }}</code> space{% endif %}
-                                </span>
-                            {% endif %}
                         </div>
                     {% endif %}
+                    {%- set targetHtml %}{% if target_complexity %}
+<p class="target-complexity"><strong>Target complexity:</strong> <code>{{ target_complexity.time }}</code> time{% if target_complexity.space %}, <code>{{ target_complexity.space }}</code> space{% endif %}.</p>
+{% endif %}{% endset %}
                     {% set hintsHtml %}{% if hints %}{% include "lesson-hints.njk" %}{% endif %}{% endset %}
                     <div id="lesson-content" class="prose">
-                        {{ content | insertBeforeSolution(hintsHtml) | safe }}
+                        {{ content | insertBeforeTests(targetHtml) | insertBeforeSolution(hintsHtml) | safe }}
                     </div>
                 </div>
                 <!-- This is a very confusing part for mobile. Thing is, when there's no code editor, the complete and next button

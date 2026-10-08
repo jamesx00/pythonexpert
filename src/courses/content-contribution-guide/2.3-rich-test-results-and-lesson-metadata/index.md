@@ -45,7 +45,7 @@ Exercise lessons can set these optional front matter fields. Lessons without the
 
 ```yaml
 difficulty: easy            # easy | medium | hard. Shown in the lesson header and the sidebar.
-target_complexity:
+target_complexity:          # shown at the end of the problem statement, above Tests
   time: O(n)                # required if target_complexity is set
   space: O(n)               # optional
 hints:                      # revealed one at a time, placed before the Solution reveal

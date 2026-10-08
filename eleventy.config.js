@@ -144,6 +144,18 @@ module.exports = function (eleventyConfig) {
 		return content.slice(0, solution) + html + content.slice(solution);
 	});
 
+	// Places html (e.g. the target complexity) at the end of the problem
+	// statement: right before the Tests heading (and the rule above it), or
+	// before the Solution reveal if there is no Tests heading.
+	eleventyConfig.addFilter("insertBeforeTests", (content, html) => {
+		if (!html || !html.trim()) return content;
+		const tests = content.search(/(<hr>\s*)?<h[1-6][^>]*>\s*Tests\b/);
+		if (tests === -1) {
+			return eleventyConfig.getFilter("insertBeforeSolution")(content, html);
+		}
+		return content.slice(0, tests) + html + content.slice(tests);
+	});
+
 	eleventyConfig.addShortcode("currentBuildDate", () => {
 		return new Date().toISOString();
 	});
