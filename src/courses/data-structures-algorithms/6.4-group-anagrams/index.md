@@ -3,6 +3,15 @@ lesson_name: Group Anagrams
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n·k log k)
+  space: O(n·k)
+hints:
+  - "Anagrams look different but share something. What could you compute from a word that is the same for every anagram of it?"
+  - "Sorting a word's letters gives the same string for all its anagrams: `\"eat\"`, `\"tea\"` and `\"ate\"` all become `\"aet\"`. Use that as a dictionary key. This is the *Grouping by a key* block in *Arrays & Hashing Basics*."
+  - "Template: `groups.setdefault(key, []).append(word)` for each word, with `key = \"\".join(sorted(word))`. Return `list(groups.values())`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -47,6 +56,7 @@ For example, given `["bat", "tab", "eat", "tea", "owl"]`, the words `"bat"` and 
 <li id="test-4"><code>group_anagrams(["abc", "cba", "bca", "xyz"])</code> should return <code>[["abc", "cba", "bca"], ["xyz"]]</code> (grouping may differ in order)</li>
 <li id="test-5"><code>group_anagrams(["a", "a", "a"])</code> should return <code>[["a", "a", "a"]]</code></li>
 <li id="test-6"><code>group_anagrams(["cat", "dog"])</code> should return <code>[["cat"], ["dog"]]</code> (grouping may differ in order)</li>
+<li id="test-7">Performance: 20,000 words in 10,000 groups, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -60,5 +70,19 @@ def group_anagrams(words):
         groups.setdefault(key, []).append(w)
     return list(groups.values())
 ```
+
+Here `n` is the number of words and `k` is the length of the longest word.
+
+**Brute force:** keep a list of groups. For each word, compare it with the first word of every existing group and add it to the group it matches. With many groups this is `O(n²)` comparisons.
+
+**Bottleneck:** every new word is compared against every group to find the one it belongs to.
+
+**Optimal idea:** give each word a key that's identical for all its anagrams, the word's letters in sorted order. A dictionary from key to group then finds the right group in one `O(1)` lookup.
+
+**Why it's correct:** two words are anagrams exactly when their sorted letters are equal, so two words share a key exactly when they belong in the same group.
+
+**Complexity:** `O(n·k log k)` time: one `O(k log k)` sort per word. `O(n·k)` space to store every word and key. A 26-letter count tuple, `tuple(counts)`, is also a valid key and brings the time down to `O(n·k)`.
+
+**Common mistakes:** using `sorted(word)` directly as the key. It's a list, and lists can't be dictionary keys, so join it into a string or convert it to a tuple.
 
 </details>

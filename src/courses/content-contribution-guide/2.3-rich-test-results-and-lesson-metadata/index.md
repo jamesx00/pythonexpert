@@ -86,11 +86,11 @@ The test file prints one JSON object mapping test ID → result. A result can be
 
 Set `rich_test_results: true` on lessons that use this format. Then, if the execution service kills the whole run, every test the file didn't report is shown as too slow.
 
-Expected values are literal data in the test file, not computed by a reference implementation, so test files contain no solution code. This lesson's `tests.py` has a reusable `check()` helper (open hidden files in the editor settings to see it).
+Expected values are literal data in the test file, not computed by a reference implementation, so test files contain no solution code. This lesson's `tests.py` has a reusable `check()` helper (open hidden files in the editor settings to see it). Copy it into new test files as-is. Pass `normalize=` (e.g. `normalize=sorted`) when the answer's order doesn't matter: both values are normalized before comparing, but the learner still sees their raw return value. Values longer than 300 characters are cut short in the test output.
 
 #### Performance tests
 
-A performance test is a normal test ID whose input is generated deterministically (a fixed formula or seed) and run under a time budget enforced inside the test file: `check(..., time_budget=1.0)` interrupts the call with `SIGALRM` once the budget runs out and reports `timed_out`, so the other tests still report their results. Say the input size in the test description. Set the budget well above an efficient solution's runtime and well below a brute-force solution's runtime, measured on the execution service, and record both timings in a comment next to the budget.
+A performance test is a normal test ID whose input is generated deterministically (a fixed formula or seed) and run under a time budget enforced inside the test file: `check(..., time_budget=1.0)` interrupts the call with `SIGALRM` once the budget runs out and reports `timed_out`, so the other tests still report their results. Say the input size in the test description. Set the budget well above an efficient solution's runtime and well below a brute-force solution's runtime, measured on the execution service, and record both timings in a comment next to the budget. The execution service runs Python 3.10 and is roughly 2–5× slower than a typical laptop. Use one performance test per lesson, with an input large enough that the efficient solution takes well under 0.1 seconds and the brute force takes many seconds, and a 1-second budget.
 
 ---
 

@@ -1,42 +1,83 @@
 import sys
 import json
-import copy
+import signal
 
 from unittest.mock import patch
 patch('builtins.print').start()
 
 import main
-from main import *
-
-def first_unique(s):
-    counts = {}
-    for ch in s:
-        counts[ch] = counts.get(ch, 0) + 1
-    for i, ch in enumerate(s):
-        if counts[ch] == 1:
-            return i
-    return -1
-
-def check(fn, *args):
-    return fn(*args)
-
-cases = [
-    ('first_unique', ('leetcode',)),
-    ('first_unique', ('loveleetcode',)),
-    ('first_unique', ('aabb',)),
-    ('first_unique', ('',)),
-    ('first_unique', ('z',)),
-    ('first_unique', ('aabbc',)),
-]
 
 results = {}
 
-for index, (name, args) in enumerate(cases):
+
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
+def _show(value):
+    text = repr(value)
+    return text if len(text) <= 300 else text[:300] + "..."
+
+
+def check(test_id, call, expected, time_budget=None, normalize=None):
+    """Runs one test and records a rich result: got/expected as Python reprs,
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run). normalize, if given, is applied to both
+    values before comparing, for answers whose order doesn't matter."""
     try:
-        expected = check(globals()[name], *copy.deepcopy(args))
-        assert check(getattr(main, name), *copy.deepcopy(args)) == expected
-        results[index + 1] = True
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
+    except Exception as e:
+        results[test_id] = {
+            "passed": False,
+            "error": f"{type(e).__name__}: {e}",
+            "expected": _show(expected),
+        }
+        return
+    try:
+        if normalize is None:
+            passed = got == expected
+        else:
+            passed = normalize(got) == normalize(expected)
     except Exception:
-        results[index + 1] = False
+        passed = False
+    results[test_id] = {
+        "passed": bool(passed),
+        "got": _show(got),
+        "expected": _show(expected),
+    }
+
+
+cases = [
+    ("leetcode", 0),
+    ("loveleetcode", 2),
+    ("aabb", -1),
+    ("", -1),
+    ("z", 0),
+    ("aabbc", 4),
+]
+for index, (s, expected) in enumerate(cases):
+    check(index + 1, lambda: main.first_unique(s), expected)
+
+# Performance test: 200,000 characters where only the last one is unique.
+# Budget: 1.0s. Execution service: counting solution ~0.04s;
+# calling s.count(ch) for every character is interrupted at the budget.
+big = "ab" * 100_000 + "c"
+check(7, lambda: main.first_unique(big), 200_000, time_budget=1.0)
 
 sys.stdout.write(json.dumps(results))

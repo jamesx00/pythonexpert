@@ -3,6 +3,15 @@ lesson_name: Valid Sudoku
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(1)
+  space: O(1)
+hints:
+  - "A digit breaks the rules if it was already seen in the same row, the same column, or the same 3x3 box. How could you remember what each one has seen?"
+  - "Keep one `set` per row, per column and per box: 27 sets in total (the *Seen-set* block in *Arrays & Hashing Basics*, used 27 times). The box for cell `(r, c)` is `(r // 3) * 3 + c // 3`."
+  - "Template: scan every cell, skip `\".\"`, return `False` if the digit is already in its row, column or box set, otherwise add it to all three. Return `True` at the end."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -70,5 +79,17 @@ def is_valid_sudoku(board):
             boxes[box].add(v)
     return True
 ```
+
+**Brute force:** for each filled cell, scan its whole row, column and box for the same digit. That's 81 cells × about 27 checks each.
+
+**Bottleneck:** each cell rescans its row, column and box, although the same rows, columns and boxes are scanned again and again.
+
+**Optimal idea:** one pass over the board, recording each digit in the set for its row, its column and its box. A repeat shows up as a digit that's already in one of those sets.
+
+**Why it's correct:** a board is invalid exactly when some row, column or box contains a digit twice. The second occurrence of that digit finds the first one in the matching set, and no other situation makes a set check fail.
+
+**Complexity:** the board is always 9×9, so both time and space are `O(1)`. For an `n×n` board, it would be `O(n²)` time and space.
+
+**Common mistakes:** getting the box index wrong. `r // 3` picks the band of three rows and `c // 3` picks the stack of three columns, so the box is `(r // 3) * 3 + c // 3`, not `r // 3 + c // 3`, which gives two different boxes the same index.
 
 </details>

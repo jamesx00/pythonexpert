@@ -3,6 +3,15 @@ lesson_name: Two Sum
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(n)
+  space: O(n)
+hints:
+  - "When you're looking at `nums[i]`, which single value would it need to pair with to reach `target`?"
+  - "The partner of `n` is `target - n`. Store each value's index in a dictionary as you go, so you can check whether the partner has already appeared in `O(1)`. This is the *Complement lookup* block in *Arrays & Hashing Basics*."
+  - "Template: for each `i, n`, if `target - n` is in `seen`, return `[seen[target - n], i]`. Otherwise store `seen[n] = i`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -47,6 +56,7 @@ For example, given `nums = [3, 5, -4, 8]` and `target = 4`, the values `-4` and 
 <li id="test-4"><code>two_sum([1, 5, 5, 2], 10)</code> should return <code>[1, 2]</code></li>
 <li id="test-5"><code>two_sum([-3, 4, 3, 90], 0)</code> should return <code>[0, 2]</code></li>
 <li id="test-6"><code>two_sum([0, 4, 3, 0], 0)</code> should return <code>[0, 3]</code></li>
+<li id="test-7">Performance: 100,002 elements whose only valid pair is the last two, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -62,5 +72,17 @@ def two_sum(nums, target):
         seen[n] = i
     return []
 ```
+
+**Brute force:** try every pair `i < j` and return the first one that sums to `target`. That's `O(n²)` time.
+
+**Bottleneck:** for each `nums[i]`, the inner loop searches the list for one specific value, `target - nums[i]`.
+
+**Optimal idea:** remember every value you've passed in a dictionary from value to index. Then each "is my partner here?" question is one `O(1)` lookup.
+
+**Why it's correct:** let the answer be `i < j`. When the loop reaches `j`, `nums[i]` is already in `seen`, so the pair is found. Checking `seen` *before* storing `n` stops an element from pairing with itself, as with `[3, 2, 4]` and target `6`.
+
+**Complexity:** `O(n)` time for one pass with `O(1)` lookups. `O(n)` space for the dictionary.
+
+**Common mistakes:** storing `n` before checking for its complement, which pairs an element with itself. Building the whole dictionary first and then searching, without checking `seen[complement] != i`, has the same problem.
 
 </details>

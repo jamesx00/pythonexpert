@@ -3,6 +3,15 @@ lesson_name: Encode and Decode Strings
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n)
+  space: O(n)
+hints:
+  - "Any separator character might also appear inside a word. What else could tell `decode` where each word ends?"
+  - "Put each word's *length* in front of it, followed by a delimiter: `\"4:cats\"` becomes `\"6#4:cats\"`. `decode` reads digits up to the first `#`, then takes exactly that many characters, whatever they are."
+  - "Template: `decode` keeps an index `i`. Find the next `#` from `i`, parse the length between them, slice the word that follows, and move `i` past it."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -47,6 +56,7 @@ The two functions must round-trip correctly for any list of strings, including s
 <li id="test-4"><code>decode(encode(["4:cats", "dogs"]))</code> should return <code>["4:cats", "dogs"]</code></li>
 <li id="test-5"><code>decode(encode(["a", "", "bb", ""]))</code> should return <code>["a", "", "bb", ""]</code></li>
 <li id="test-6"><code>decode(encode(["hello world", "foo#bar"]))</code> should return <code>["hello world", "foo#bar"]</code></li>
+<li id="test-7">Performance: 100,000 words, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -70,5 +80,19 @@ def decode(encoded):
         i = start + length
     return words
 ```
+
+Here `n` is the total number of characters across all words.
+
+**Brute force:** join the words with a separator such as `","`. That's fast but wrong: a word containing the separator gets split in two. Escaping the separator fixes it, but makes both functions fiddly.
+
+**Bottleneck:** `decode` can't tell a separator from a character inside a word.
+
+**Optimal idea:** prefix each word with its length and a `#`. `decode` reads the digits up to the `#` and then takes exactly that many characters, so it never looks inside the word for a separator.
+
+**Why it's correct:** a length can't contain `#`, so the first `#` after a word's start always ends its length. The word is then sliced by length, so any `#`, digits or colons inside it are read as plain characters. Empty strings encode as `"0#"` and decode back to `""`.
+
+**Complexity:** `O(n)` time for both functions, since each character is visited a constant number of times. `O(n)` space for the result.
+
+**Common mistakes:** cutting the processed part off the front of the string after every word (`encoded = encoded[end:]`). Each slice copies the rest of the string, so decoding becomes `O(n²)`. Keep an index instead.
 
 </details>
