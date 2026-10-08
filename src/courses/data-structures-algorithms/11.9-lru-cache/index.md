@@ -3,6 +3,15 @@ lesson_name: LRU Cache
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(1) per operation
+  space: O(capacity)
+hints:
+  - "You need to find a key fast *and* keep keys in order of use, with moves to the front. Which structure gives `O(1)` lookup, and which gives `O(1)` reordering?"
+  - "Combine a dictionary (key to node) with a doubly linked list ordered by use, with dummy `head`/`tail` nodes as in *Linked List Basics*. Python's `OrderedDict` is exactly that, with `move_to_end()` and `popitem(last=False)`."
+  - "Template with `OrderedDict`: `get` returns `-1` if missing, otherwise `move_to_end(key)` and return the value. `put` does `move_to_end(key)` if the key exists, sets the value, and calls `popitem(last=False)` if the size is over `capacity`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -50,6 +59,7 @@ For example, with `capacity = 2`: `put(1, 10)`, `put(2, 20)`, `get(1)` returns `
 <li id="test-4">capacity <code>3</code>: <code>put(1, 1)</code>, <code>put(2, 2)</code>, <code>get(1)</code>, <code>put(3, 3)</code>, <code>put(4, 4)</code>, <code>get(2)</code>, <code>get(1)</code>, <code>get(4)</code> should return <code>[None, None, 1, None, None, -1, 1, 4]</code></li>
 <li id="test-5">capacity <code>2</code>: <code>get(1)</code>, <code>put(1, 100)</code>, <code>get(1)</code> should return <code>[-1, None, 100]</code></li>
 <li id="test-6">capacity <code>2</code>: <code>put(1, 1)</code>, <code>put(1, 2)</code>, <code>get(1)</code> should return <code>[None, None, 2]</code></li>
+<li id="test-7">Performance: capacity 30,000, with 90,002 calls, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -77,5 +87,17 @@ class LRUCache:
         if len(self.cache) > self.capacity:
             self.cache.popitem(last=False)
 ```
+
+**Brute force:** a dictionary for the values plus a Python list of keys in order of use. On every `get` and `put`, `order.remove(key)` and `order.append(key)`, and evict with `order.pop(0)`. `remove` and `pop(0)` are `O(capacity)`, so every operation is `O(capacity)`.
+
+**Bottleneck:** moving a key to the "most recent" end of a Python list means searching for it and shifting everything after it.
+
+**Optimal idea:** keep the usage order in a doubly linked list, and map each key to its node. With the node in hand, unlinking it and relinking it at the end takes a few pointer changes. `OrderedDict` implements exactly this.
+
+**Why it's correct:** the order always runs from least to most recently used, because every successful `get` and every `put` moves the key to the most recent end. So when the cache is over capacity, the key at the other end is the least recently used one, and `popitem(last=False)` removes it.
+
+**Complexity:** `O(1)` time for `get` and `put`: a dictionary lookup plus a constant number of pointer changes. `O(capacity)` space.
+
+**Common mistakes:** forgetting to mark a key as used on `get`. Updating an existing key's value without moving it, so it's evicted too early. Evicting *before* inserting a key that's already in the cache, which throws out a key for no reason.
 
 </details>

@@ -3,6 +3,15 @@ lesson_name: Reverse Nodes in K-Group
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: hard
+target_complexity:
+  time: O(n)
+  space: O(1)
+hints:
+  - "Before reversing a group, what do you need to check? And after reversing it, which two outside nodes need new links?"
+  - "Work group by group behind a dummy node. For each group, check `k` nodes exist, reverse them with the `prev = None` loop from *Linked List Basics* (starting `prev` at the node after the group), and reconnect the group to the node before it."
+  - "Template: `group_prev = dummy`. Find the `k`-th node after `group_prev` (stop if there isn't one). Reverse from `group_prev.next` up to `kth.next`. Then `first = group_prev.next`, `group_prev.next = kth`, and `group_prev = first`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -82,5 +91,17 @@ def reverse_k_group(head, k):
 
     return dummy.next
 ```
+
+**Brute force:** copy the values into a Python list, reverse each full chunk of `k`, and build a new list. That's `O(n)` time but `O(n)` extra space, and it builds new nodes instead of relinking the given ones.
+
+**Bottleneck:** the copy is only there to avoid the pointer bookkeeping at the edges of each group.
+
+**Optimal idea:** reverse each group in place with the usual reversal loop, then fix the two links at its edges: the node before the group must point to the group's new first node (the old `k`-th), and the group's new last node (the old first) must point to the node after the group.
+
+**Why it's correct:** starting `prev` at `group_next` makes the old first node of the group point to the node after the group once the reversal finishes. Setting `group_prev.next = kth` links the previous part to the reversed group. The old first node is now the group's last, so it's the `group_prev` for the next group. When fewer than `k` nodes are left, `get_kth` returns `None` and the rest stays as it is.
+
+**Complexity:** `O(n)` time: each node is counted once and reversed once. `O(1)` extra space.
+
+**Common mistakes:** reversing the last group even when it has fewer than `k` nodes. Losing the link between groups by starting `prev` at `None`, which cuts the list after the first group.
 
 </details>

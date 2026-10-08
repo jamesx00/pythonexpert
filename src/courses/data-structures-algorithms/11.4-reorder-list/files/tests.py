@@ -1,60 +1,115 @@
 import sys
 import json
+import signal
 
 from unittest.mock import patch
 patch('builtins.print').start()
 
 import main
 
-def test_reorder_list(values):
-    head = main.build_linked_list(values)
-    if not head:
-        return []
-
-    # find middle
-    slow, fast = head, head
-    while fast and fast.next:
-        slow = slow.next
-        fast = fast.next.next
-
-    # reverse second half
-    prev, curr = None, slow.next
-    slow.next = None
-    while curr:
-        nxt = curr.next
-        curr.next = prev
-        prev = curr
-        curr = nxt
-
-    # merge two halves
-    first, second = head, prev
-    while second:
-        tmp1, tmp2 = first.next, second.next
-        first.next = second
-        second.next = tmp1
-        first, second = tmp1, tmp2
-
-    return main.linked_list_to_list(head)
-
-inputs = [
-    ([1, 2, 3, 4, 5],),
-    ([1, 2, 3, 4],),
-    ([1],),
-    ([1, 2],),
-    ([9, 8, 7],),
-    ([1, 2, 3, 4, 5, 6],),
-]
-
 results = {}
 
-for index, i in enumerate(inputs):
+
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
+def _show(value):
+    text = repr(value)
+    return text if len(text) <= 300 else text[:300] + "..."
+
+
+def check(test_id, call, expected, time_budget=None, normalize=None):
+    """Runs one test and records a rich result: got/expected as Python reprs,
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run). normalize, if given, is applied to both
+    values before comparing, for answers whose order doesn't matter."""
     try:
-        result = test_reorder_list(*i)
-        student_head = main.build_linked_list(*i)
-        main.reorder_list(student_head)
-        assert main.linked_list_to_list(student_head) == result
-        results[index + 1] = True
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
+    except Exception as e:
+        results[test_id] = {
+            "passed": False,
+            "error": f"{type(e).__name__}: {e}",
+            "expected": _show(expected),
+        }
+        return
+    try:
+        if normalize is None:
+            passed = got == expected
+        else:
+            passed = normalize(got) == normalize(expected)
     except Exception:
-        results[index + 1] = False
+        passed = False
+    results[test_id] = {
+        "passed": bool(passed),
+        "got": _show(got),
+        "expected": _show(expected),
+    }
+
+
+def build(values):
+    """Builds a linked list of main.ListNode nodes holding values."""
+    head = None
+    for value in reversed(values):
+        head = main.ListNode(value, head)
+    return head
+
+
+def to_list(node):
+    """Reads the values from node onward. A loop is shown as "<cycle>"
+    instead of being followed forever."""
+    values = []
+    seen = set()
+    while node is not None:
+        if id(node) in seen:
+            values.append("<cycle>")
+            break
+        seen.add(id(node))
+        values.append(node.val)
+        node = node.next
+    return values
+
+
+def run(head):
+    """Calls reorder_list(head) and returns the values it left, in order."""
+    main.reorder_list(head)
+    return to_list(head)
+
+
+cases = [
+    ([1, 2, 3, 4, 5], [1, 5, 2, 4, 3]),
+    ([1, 2, 3, 4], [1, 4, 2, 3]),
+    ([1], [1]),
+    ([1, 2], [1, 2]),
+    ([9, 8, 7], [9, 7, 8]),
+    ([1, 2, 3, 4, 5, 6], [1, 6, 2, 5, 3, 4]),
+]
+for index, (values, expected) in enumerate(cases):
+    check(index + 1, lambda: run(build(values)), expected)
+
+# Performance test: the list 1 -> 2 -> ... -> 100,000, which becomes
+# 1, 100,000, 2, 99,999, ..., 50,000, 50,001. Built outside the budget.
+# Budget: 1.0s. Execution service: middle + reverse + merge solution
+# ~0.07s; walking to the tail for every node is interrupted at the budget.
+big = build(list(range(1, 100_001)))
+woven = [v for pair in zip(range(1, 50_001), range(100_000, 50_000, -1)) for v in pair]
+check(7, lambda: run(big), woven, time_budget=1.0)
+
 
 sys.stdout.write(json.dumps(results))

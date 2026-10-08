@@ -1,59 +1,101 @@
 import sys
 import json
+import signal
 
 from unittest.mock import patch
 patch('builtins.print').start()
 
 import main
 
-def get_kth(curr, k):
-    while curr and k > 0:
-        curr = curr.next
-        k -= 1
-    return curr
-
-def test_reverse_k_group(values, k):
-    head = main.build_linked_list(values)
-    dummy = main.ListNode(0, head)
-    group_prev = dummy
-
-    while True:
-        kth = get_kth(group_prev, k)
-        if not kth:
-            break
-        group_next = kth.next
-
-        prev, curr = group_next, group_prev.next
-        while curr != group_next:
-            nxt = curr.next
-            curr.next = prev
-            prev = curr
-            curr = nxt
-
-        tmp = group_prev.next
-        group_prev.next = kth
-        group_prev = tmp
-
-    return main.linked_list_to_list(dummy.next)
-
-inputs = [
-    ([1, 2, 3, 4, 5], 2),
-    ([1, 2, 3, 4, 5], 3),
-    ([1, 2, 3, 4, 5, 6], 1),
-    ([1, 2, 3, 4, 5, 6], 6),
-    ([1, 2], 3),
-    ([1, 2, 3, 4, 5, 6, 7], 3),
-]
-
 results = {}
 
-for index, i in enumerate(inputs):
+
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
+def _show(value):
+    text = repr(value)
+    return text if len(text) <= 300 else text[:300] + "..."
+
+
+def check(test_id, call, expected, time_budget=None, normalize=None):
+    """Runs one test and records a rich result: got/expected as Python reprs,
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run). normalize, if given, is applied to both
+    values before comparing, for answers whose order doesn't matter."""
     try:
-        result = test_reverse_k_group(*i)
-        student_head = main.reverse_k_group(main.build_linked_list(i[0]), i[1])
-        assert main.linked_list_to_list(student_head) == result
-        results[index + 1] = True
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
+    except Exception as e:
+        results[test_id] = {
+            "passed": False,
+            "error": f"{type(e).__name__}: {e}",
+            "expected": _show(expected),
+        }
+        return
+    try:
+        if normalize is None:
+            passed = got == expected
+        else:
+            passed = normalize(got) == normalize(expected)
     except Exception:
-        results[index + 1] = False
+        passed = False
+    results[test_id] = {
+        "passed": bool(passed),
+        "got": _show(got),
+        "expected": _show(expected),
+    }
+
+
+def build(values):
+    """Builds a linked list of main.ListNode nodes holding values."""
+    head = None
+    for value in reversed(values):
+        head = main.ListNode(value, head)
+    return head
+
+
+def to_list(node):
+    """Reads the values from node onward. A loop is shown as "<cycle>"
+    instead of being followed forever."""
+    values = []
+    seen = set()
+    while node is not None:
+        if id(node) in seen:
+            values.append("<cycle>")
+            break
+        seen.add(id(node))
+        values.append(node.val)
+        node = node.next
+    return values
+
+
+cases = [
+    (([1, 2, 3, 4, 5], 2), [2, 1, 4, 3, 5]),
+    (([1, 2, 3, 4, 5], 3), [3, 2, 1, 4, 5]),
+    (([1, 2, 3, 4, 5, 6], 1), [1, 2, 3, 4, 5, 6]),
+    (([1, 2, 3, 4, 5, 6], 6), [6, 5, 4, 3, 2, 1]),
+    (([1, 2], 3), [1, 2]),
+    (([1, 2, 3, 4, 5, 6, 7], 3), [3, 2, 1, 6, 5, 4, 7]),
+]
+for index, ((values, k), expected) in enumerate(cases):
+    check(index + 1, lambda: to_list(main.reverse_k_group(build(values), k)), expected)
+
 
 sys.stdout.write(json.dumps(results))

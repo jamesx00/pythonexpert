@@ -3,6 +3,14 @@ lesson_name: "Warm-up: Middle of the Linked List"
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(n)
+  space: O(1)
+hints:
+  - "If two runners start together and one runs twice as fast, where is the slow one when the fast one finishes?"
+  - "Use *Fast & slow pointers* from *Linked List Basics*: start both at `head`, move `slow` one step and `fast` two steps while `fast and fast.next`, then return `slow`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -36,8 +44,6 @@ Write a function `middle_node(head)` that returns the **middle node** of a singl
 
 For example, for `1 -> 2 -> 3 -> 4 -> 5` return the node `3` (the tests show the list from that node onward: `[3, 4, 5]`). For `1 -> 2 -> 3 -> 4` return node `3`.
 
-**Hint:** use fast & slow pointers. Start both at `head`. Move `slow` one step and `fast` two steps while `fast and fast.next`. When `fast` runs out of list, `slow` is halfway.
-
 ---
 
 ### Tests
@@ -63,6 +69,16 @@ def middle_node(head):
     return slow
 ```
 
-`fast` covers twice the distance of `slow`, so when `fast` reaches the end, `slow` has covered half. The condition `fast and fast.next` stops safely for both odd and even lengths, and an empty list just returns `None`. This finds the middle in one pass, without counting the length first.
+**Brute force:** copy every node into a Python list and return `nodes[len(nodes) // 2]`. That's `O(n)` time, but `O(n)` extra space. Counting the length first and then walking half of it avoids the list, but reads the list twice.
+
+**Bottleneck:** you only need the length to know when to stop, and the length isn't known until you reach the end.
+
+**Optimal idea:** move two pointers at once, `slow` one step and `fast` two steps. When `fast` reaches the end, `slow` has gone half as far.
+
+**Why it's correct:** after `k` steps, `slow` is at node `k` and `fast` at node `2k`. The loop stops when `fast` is the last node (odd length) or `None` just past it (even length), which leaves `slow` at index `n // 2`: the middle, or the second of the two middles.
+
+**Complexity:** `O(n)` time, one pass. `O(1)` extra space for the two pointers.
+
+**Common mistakes:** looping `while fast.next and fast.next.next`, which returns the *first* middle for even lengths and crashes on an empty list.
 
 </details>

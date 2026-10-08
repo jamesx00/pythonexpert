@@ -24,10 +24,6 @@ def linked_list_to_list(node):
 
 
 def reverse_list(head):
-    return None
-
-
-def reverse_list(head):
     prev = None
     curr = head
     while curr:

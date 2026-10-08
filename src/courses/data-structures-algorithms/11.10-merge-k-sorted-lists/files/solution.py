@@ -1,3 +1,6 @@
+import heapq
+
+
 class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
@@ -21,13 +24,6 @@ def linked_list_to_list(node):
         result.append(node.val)
         node = node.next
     return result
-
-
-def merge_k_lists(lists):
-    return None
-
-
-import heapq
 
 
 def merge_k_lists(lists):

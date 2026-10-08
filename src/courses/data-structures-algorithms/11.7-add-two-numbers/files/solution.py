@@ -24,10 +24,6 @@ def linked_list_to_list(node):
 
 
 def add_two_numbers(l1, l2):
-    return None
-
-
-def add_two_numbers(l1, l2):
     dummy = ListNode()
     curr = dummy
     carry = 0

@@ -3,6 +3,15 @@ lesson_name: Reverse Linked List
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(n)
+  space: O(1)
+hints:
+  - "When you flip `curr.next` to point backwards, how do you still reach the rest of the list?"
+  - "Use the `prev = None` reversal loop from *Linked List Basics*: save `nxt = curr.next` before flipping the pointer, then step `prev` and `curr` forward."
+  - "Template: `prev, curr = None, head`. While `curr`: `nxt = curr.next`, `curr.next = prev`, `prev = curr`, `curr = nxt`. Return `prev`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -63,5 +72,17 @@ def reverse_list(head):
         curr = nxt
     return prev
 ```
+
+**Brute force:** copy the values into a Python list and build a new linked list from it in reverse. That's `O(n)` time but `O(n)` extra space, and it creates new nodes instead of reversing the given ones.
+
+**Bottleneck:** the copy only exists because flipping a pointer seems to lose the rest of the list.
+
+**Optimal idea:** walk the list once and flip each `next` pointer to the previous node, saving the old `next` first so the rest of the list isn't lost.
+
+**Why it's correct:** before each step, `prev` is the head of the already-reversed part and `curr` the head of the untouched part. One step moves `curr` from the second part to the front of the first. When `curr` is `None`, everything is reversed and `prev` is the new head. Starting with `prev = None` makes the old head the new tail.
+
+**Complexity:** `O(n)` time, `O(1)` extra space.
+
+**Common mistakes:** setting `curr.next = prev` before saving `curr.next`, which cuts off the rest of the list. Returning `head` or `curr` instead of `prev`. A recursive version is also `O(n)` time, but uses `O(n)` stack space and hits Python's recursion limit on long lists.
 
 </details>

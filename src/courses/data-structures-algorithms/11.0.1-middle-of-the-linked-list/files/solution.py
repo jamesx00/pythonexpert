@@ -22,9 +22,6 @@ def linked_list_to_list(node):
         node = node.next
     return result
 
-def middle_node(head):
-    return None
-
 
 def middle_node(head):
     slow = fast = head

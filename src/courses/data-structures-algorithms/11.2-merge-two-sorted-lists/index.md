@@ -3,6 +3,15 @@ lesson_name: Merge Two Sorted Lists
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(n + m)
+  space: O(1)
+hints:
+  - "Which node must come first in the merged list, and what's left to merge after you take it?"
+  - "Compare the two heads, attach the smaller one to the result, and advance that list. Build the result behind a dummy node with a `tail` pointer, as in *The dummy (sentinel) node* in *Linked List Basics*."
+  - "Template: `dummy = tail = ListNode()`. While both lists are non-empty, attach the smaller head to `tail.next` and advance it and `tail`. After the loop, `tail.next = list1 or list2`. Return `dummy.next`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -67,5 +76,19 @@ def merge_two_lists(list1, list2):
     curr.next = list1 if list1 else list2
     return dummy.next
 ```
+
+Here `n` and `m` are the lengths of the two lists.
+
+**Brute force:** collect all values from both lists, sort them, and build a new list. That's `O((n + m) log(n + m))` time and `O(n + m)` extra space.
+
+**Bottleneck:** sorting throws away the fact that both lists are already sorted.
+
+**Optimal idea:** the smallest remaining value is always at one of the two heads. Repeatedly take the smaller head and append it to the result.
+
+**Why it's correct:** each step takes the smallest value not yet merged, so the result is in order. When one list runs out, the other's remaining nodes are all at least as big as everything taken, so they can be attached as they are.
+
+**Complexity:** `O(n + m)` time, each node is attached once. `O(1)` extra space, since the existing nodes are relinked.
+
+**Common mistakes:** forgetting to attach the leftover nodes after the loop. Writing special cases for an empty first node instead of using a dummy, which is where most bugs come from.
 
 </details>

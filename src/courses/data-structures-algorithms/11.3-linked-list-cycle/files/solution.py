@@ -5,10 +5,6 @@ class ListNode:
 
 
 def has_cycle(head):
-    return False
-
-
-def has_cycle(head):
     slow = fast = head
     while fast and fast.next:
         slow = slow.next

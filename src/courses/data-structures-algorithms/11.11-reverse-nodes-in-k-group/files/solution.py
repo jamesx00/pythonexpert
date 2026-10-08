@@ -24,10 +24,6 @@ def linked_list_to_list(node):
 
 
 def reverse_k_group(head, k):
-    return head
-
-
-def reverse_k_group(head, k):
     def get_kth(curr, k):
         while curr and k > 0:
             curr = curr.next

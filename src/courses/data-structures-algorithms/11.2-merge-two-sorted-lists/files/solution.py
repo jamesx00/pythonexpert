@@ -24,10 +24,6 @@ def linked_list_to_list(node):
 
 
 def merge_two_lists(list1, list2):
-    return None
-
-
-def merge_two_lists(list1, list2):
     dummy = ListNode()
     curr = dummy
     while list1 and list2:

@@ -3,6 +3,15 @@ lesson_name: Add Two Numbers
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(max(m, n))
+  space: O(max(m, n))
+hints:
+  - "How do you add two numbers on paper, and which digit do you start with?"
+  - "The lists already start at the ones digit, so add digit by digit from the heads, carrying `total // 10` to the next step. Build the result behind a dummy node, as in *Linked List Basics*."
+  - "Template: `carry = 0`. While `l1 or l2 or carry`: add the two digits (`0` for a finished list) and `carry`, append `ListNode(total % 10)`, set `carry = total // 10`, and advance whichever lists are left."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -68,5 +77,19 @@ def add_two_numbers(l1, l2):
         l2 = l2.next if l2 else None
     return dummy.next
 ```
+
+Here `m` and `n` are the lengths of the two lists.
+
+**Brute force:** turn each list into a Python integer, add them, and turn the sum back into a list of digits. It works in Python because integers have no size limit, but converting very long numbers to and from integers is slower than linear, and in most other languages the numbers wouldn't fit in an integer at all.
+
+**Bottleneck:** the conversion is unnecessary: the digits are already in the order you'd add them.
+
+**Optimal idea:** do school addition directly on the lists, one digit at a time from the ones digit, carrying into the next position.
+
+**Why it's correct:** at each position the digit is `(d1 + d2 + carry) % 10` and the carry is `(d1 + d2 + carry) // 10`, which is exactly column addition. Treating a finished list as `0` handles different lengths, and looping while `carry` is non-zero adds the final digit, as in `999 + 1 = 1000`.
+
+**Complexity:** `O(max(m, n))` time, one step per digit. `O(max(m, n))` space for the result, `O(1)` besides it.
+
+**Common mistakes:** stopping when both lists end, which drops the last carry, as in `[5] + [5]`. Advancing `l1.next` when `l1` is already `None`.
 
 </details>

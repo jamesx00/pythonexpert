@@ -6,10 +6,6 @@ class Node:
 
 
 def copy_random_list(head):
-    return None
-
-
-def copy_random_list(head):
     if not head:
         return None
 

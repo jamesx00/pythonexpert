@@ -22,9 +22,6 @@ def linked_list_to_list(node):
         node = node.next
     return result
 
-def remove_elements(head, val):
-    return head
-
 
 def remove_elements(head, val):
     dummy = ListNode(0, head)

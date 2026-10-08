@@ -3,6 +3,14 @@ lesson_name: "Warm-up: Remove Linked List Elements"
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(n)
+  space: O(1)
+hints:
+  - "To unlink a node you need the node *before* it. What's before the head?"
+  - "Use *The dummy (sentinel) node* from *Linked List Basics*: put `dummy = ListNode(0, head)` in front, walk `curr` from `dummy`, and skip `curr.next` with `curr.next = curr.next.next` whenever it matches. Return `dummy.next`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -36,8 +44,6 @@ Write a function `remove_elements(head, val)` that removes **every** node whose 
 
 For example, removing `6` from `1 -> 6 -> 2 -> 6 -> 3` gives `1 -> 2 -> 3`. Removing `7` from `7 -> 7 -> 7` gives an empty list (`None`).
 
-**Hint:** the tricky part is when the head itself must be removed, possibly several times in a row. Put a **dummy node** in front: `dummy = ListNode(0, head)`. Now every real node has a node before it, so removal is always `curr.next = curr.next.next`. Return `dummy.next` at the end.
-
 ---
 
 ### Tests
@@ -66,6 +72,16 @@ def remove_elements(head, val):
     return dummy.next
 ```
 
-`curr` always stands one node **before** the one being checked, so it can unlink it. After removing a node, `curr` stays where it is, because the new `curr.next` hasn't been checked yet. Without the dummy you'd need a separate loop to strip matching nodes off the front of the list.
+**Brute force:** first strip matching nodes off the front with a separate loop, then walk the rest. It's also `O(n)`, but the two loops are easy to get wrong, for example when every node matches.
+
+**Bottleneck:** the head has no node before it, so removing it needs a special case.
+
+**Optimal idea:** a dummy node in front of the head gives every real node a predecessor, so one loop handles all removals.
+
+**Why it's correct:** `curr` always stands one node before the node being checked, so it can unlink it. After a removal `curr` stays put, because the new `curr.next` hasn't been checked yet. Removed heads are skipped by `dummy.next` just like any other node.
+
+**Complexity:** `O(n)` time, each node is checked once. `O(1)` extra space.
+
+**Common mistakes:** moving `curr` forward after a removal, which skips the next node, as in `[5, 1, 5, 5, 2, 5]`. Returning `head` instead of `dummy.next`, which still points at a removed node.
 
 </details>

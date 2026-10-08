@@ -24,10 +24,6 @@ def linked_list_to_list(node):
 
 
 def reorder_list(head):
-    pass
-
-
-def reorder_list(head):
     if not head:
         return
 

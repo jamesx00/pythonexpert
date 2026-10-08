@@ -24,10 +24,6 @@ def linked_list_to_list(node):
 
 
 def remove_nth_from_end(head, n):
-    return head
-
-
-def remove_nth_from_end(head, n):
     dummy = ListNode(0, head)
     fast = slow = dummy
     for _ in range(n):
