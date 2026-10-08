@@ -88,6 +88,22 @@ function resolveSource(lessonDir, source) {
 	return candidates.find((candidate) => fs.existsSync(candidate)) || null;
 }
 
+// The lesson layout embeds each shipped file with btoa, which throws on any
+// character above U+00FF, and the build then fails with a misleading ENOENT.
+function nonLatin1Char(text) {
+	const lines = text.split("\n");
+	for (let i = 0; i < lines.length; i++) {
+		for (const char of lines[i]) {
+			const code = char.codePointAt(0);
+			if (code > 0xff) {
+				const hex = code.toString(16).toUpperCase().padStart(4, "0");
+				return { line: i + 1, char, codePoint: `U+${hex}` };
+			}
+		}
+	}
+	return null;
+}
+
 function listedTestIds(body) {
 	const ids = new Set();
 	for (const match of body.matchAll(/id="test-(\d+)"/g)) {
@@ -166,8 +182,17 @@ async function checkLesson(lesson, options) {
 	const fileGroups = data.file_groups || [];
 	for (const group of fileGroups) {
 		for (const file of group.files || []) {
-			if (!resolveSource(lesson.dir, file.source)) {
+			const source = resolveSource(lesson.dir, file.source);
+			if (!source) {
 				fail(`file "${file.source}" referenced in front matter does not exist`);
+				continue;
+			}
+			const problem = nonLatin1Char(fs.readFileSync(source, "utf-8"));
+			if (problem) {
+				fail(
+					`file "${file.source}" line ${problem.line} contains "${problem.char}" (${problem.codePoint}), ` +
+						"which the site can't embed (btoa only accepts Latin-1); use an escape such as \\u2192 instead"
+				);
 			}
 		}
 	}

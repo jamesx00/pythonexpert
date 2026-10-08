@@ -119,3 +119,14 @@ test("a lesson with a reference but no listed tests reports the unlisted IDs, no
 		]
 	);
 });
+
+test("a shipped file with a character the site can't embed is reported with its line", async () => {
+	const report = await checkCourses(fixture("non-latin1-file"));
+	assert.deepStrictEqual(report.errors, [
+		{
+			lesson: "demo/1.1-add",
+			message:
+				'file "main.py" line 2 contains "→" (U+2192), which the site can\'t embed (btoa only accepts Latin-1); use an escape such as \\u2192 instead',
+		},
+	]);
+});

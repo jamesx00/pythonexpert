@@ -65,7 +65,7 @@ Write every walkthrough in this order: brute force and its complexity → the bo
 
 #### Reference solutions
 
-Put the reference solution in `files/solution.<ext>` next to the starter, using the same extension as the lesson's main file (`solution.py`, `solution.sql`). It isn't listed in `file_groups`, so it's never shipped to the browser. Run `npm run check-content` to verify every lesson: the reference must pass every test, the starter must fail at least one, and the test IDs the test file reports must match the `test-N` list items.
+Put the reference solution in `files/solution.<ext>` next to the starter, using the same extension as the lesson's main file (`solution.py`, `solution.sql`). It isn't listed in `file_groups`, so it's never shipped to the browser. Run `npm run check-content` to verify every lesson: the reference must pass every test, the starter must fail at least one, and the test IDs the test file reports must match the `test-N` list items. Files listed in `file_groups` are shipped to the browser with `btoa`, so they may only contain Latin-1 characters: write `"\u2192"` rather than `"→"` in code, and stick to ASCII in comments. The checker reports any other character with its line number.
 
 #### Rich test results
 
