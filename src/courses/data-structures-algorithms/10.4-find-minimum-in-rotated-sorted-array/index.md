@@ -3,6 +3,15 @@ lesson_name: Find Minimum in Rotated Sorted Array
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(log n)
+  space: O(1)
+hints:
+  - "Compare the middle element with the last element. What does it tell you about where the rotation point is?"
+  - "If `nums[mid] > nums[hi]`, the drop to the minimum happens after `mid`. Otherwise `mid..hi` is sorted, so the minimum is at `mid` or before it. Use template 2 in *Binary Search Basics*."
+  - "Template: `lo, hi = 0, len(nums) - 1`. While `lo < hi`, set `lo = mid + 1` if `nums[mid] > nums[hi]`, else `hi = mid`. Return `nums[lo]`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -48,6 +57,7 @@ For example, `[11, 15, 19, 2, 5, 8]` is `[2, 5, 8, 11, 15, 19]` rotated by three
 <li id="test-5"><code>find_min([2, 3, 4, 1])</code> should return <code>1</code></li>
 <li id="test-6"><code>find_min([9])</code> should return <code>9</code></li>
 <li id="test-7"><code>find_min([2, 1])</code> should return <code>1</code></li>
+<li id="test-8">Performance: 5,000 calls on a 200,000-element list, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -64,5 +74,17 @@ def find_min(nums):
             hi = mid
     return nums[lo]
 ```
+
+**Brute force:** `min(nums)`, or a scan for the place where a value is smaller than the one before it. That's `O(n)`.
+
+**Bottleneck:** the list is two sorted runs, and one comparison tells you which run `mid` is in, but a scan never uses that.
+
+**Optimal idea:** compare `nums[mid]` with `nums[hi]`. If it's bigger, `mid` is in the left run and the minimum is to its right. Otherwise `mid` is in the right run, and the minimum is `mid` or something before it.
+
+**Why it's correct:** the minimum is always inside `[lo, hi]`. If `nums[mid] > nums[hi]`, the values must drop somewhere after `mid`, and the minimum is where they drop, so `lo = mid + 1` keeps it. Otherwise `nums[mid..hi]` is sorted, so nothing after `mid` is smaller than `nums[mid]`, and `hi = mid` keeps it. The values are distinct, so one of the two cases always applies.
+
+**Complexity:** `O(log n)` time. `O(1)` extra space.
+
+**Common mistakes:** comparing with `nums[lo]` instead of `nums[hi]`, which fails on a list that isn't rotated, like `[1, 2, 3, 4]`. Setting `hi = mid - 1`, which can skip the minimum when it's at `mid`.
 
 </details>
