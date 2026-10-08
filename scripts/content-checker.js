@@ -35,6 +35,46 @@ function parseLesson(markdown) {
 	return { data, body: match[2] };
 }
 
+const DIFFICULTIES = ["easy", "medium", "hard"];
+
+const isNonEmptyString = (value) =>
+	typeof value === "string" && value.trim() !== "";
+
+// Optional lesson metadata; see the content contribution guide for the format.
+function metadataErrors(data) {
+	const errors = [];
+	if (data.difficulty !== undefined && !DIFFICULTIES.includes(data.difficulty)) {
+		errors.push(
+			`difficulty must be one of ${DIFFICULTIES.join(", ")} (got ${JSON.stringify(data.difficulty)})`
+		);
+	}
+	const complexity = data.target_complexity;
+	if (complexity !== undefined) {
+		if (complexity === null || typeof complexity !== "object") {
+			errors.push("target_complexity must have a time (and optionally a space) field");
+		} else {
+			if (!isNonEmptyString(complexity.time)) {
+				errors.push("target_complexity.time must be a non-empty string");
+			}
+			if (complexity.space !== undefined && !isNonEmptyString(complexity.space)) {
+				errors.push("target_complexity.space must be a non-empty string");
+			}
+		}
+	}
+	if (
+		data.hints !== undefined &&
+		!(Array.isArray(data.hints) && data.hints.every(isNonEmptyString))
+	) {
+		errors.push("hints must be a list of non-empty strings");
+	}
+	for (const flag of ["checkpoint", "rich_test_results"]) {
+		if (data[flag] !== undefined && typeof data[flag] !== "boolean") {
+			errors.push(`${flag} must be true or false`);
+		}
+	}
+	return errors;
+}
+
 // A lesson's file may live in its own files/ folder or the course's shared one.
 function resolveSource(lessonDir, source) {
 	const candidates = [
@@ -131,6 +171,10 @@ async function checkLesson(lesson, options) {
 		return errors;
 	}
 	const { data, body } = parsed;
+
+	for (const message of metadataErrors(data)) {
+		fail(message);
+	}
 
 	const fileGroups = data.file_groups || [];
 	for (const group of fileGroups) {

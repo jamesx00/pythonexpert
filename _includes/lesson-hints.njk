@@ -1,0 +1,17 @@
+{# Hints revealed one at a time, placed before the Solution reveal. #}
+<div x-data="{ revealed: 0 }" class="lesson-hints my-6">
+    {% for hint in hints %}
+        <div x-cloak x-show="revealed > {{ loop.index0 }}" class="border border-term-yellow/60 px-4 mb-3">
+            <p class="font-medium text-term-yellow">Hint {{ loop.index }} of {{ hints.length }}</p>
+            {{ hint | markdown | safe }}
+        </div>
+    {% endfor %}
+    <button
+        type="button"
+        x-show="revealed < {{ hints.length }}"
+        @click="revealed++"
+        class="border border-term-yellow/60 px-4 py-2 text-sm text-term-yellow hover:bg-term-yellow/10">
+        <i class="far fa-lightbulb mr-1"></i>
+        Show hint <span x-text="revealed + 1">1</span> of {{ hints.length }}
+    </button>
+</div>

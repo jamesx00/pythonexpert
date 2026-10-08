@@ -71,3 +71,22 @@ test("the reference replaces the lesson's main file whatever its name, using cou
 	assert.deepStrictEqual(report.errors, []);
 	assert.strictEqual(report.lessonsChecked, 1);
 });
+
+test("valid lesson metadata (difficulty, target complexity, hints) is accepted", async () => {
+	const report = await checkCourses(fixture("valid-metadata"));
+	assert.deepStrictEqual(report.errors, []);
+});
+
+test("invalid lesson metadata is reported field by field", async () => {
+	const report = await checkCourses(fixture("invalid-metadata"));
+	assert.deepStrictEqual(
+		report.errors.map((error) => error.message),
+		[
+			'difficulty must be one of easy, medium, hard (got "tricky")',
+			"target_complexity.time must be a non-empty string",
+			"hints must be a list of non-empty strings",
+			"checkpoint must be true or false",
+		]
+	);
+	assert.ok(report.errors.every((error) => error.lesson === "demo/1.1-add"));
+});

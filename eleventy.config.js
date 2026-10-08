@@ -114,7 +114,9 @@ module.exports = function (eleventyConfig) {
 	});
 
 	// Customize Markdown library settings:
+	let markdownLibrary;
 	eleventyConfig.amendLibrary("md", (mdLib) => {
+		markdownLibrary = mdLib;
 		mdLib.use(markdownItAnchor, {
 			permalink: markdownItAnchor.permalink.ariaHidden({
 				placement: "after",
@@ -125,6 +127,21 @@ module.exports = function (eleventyConfig) {
 			level: [1, 2, 3, 4],
 			slugify: eleventyConfig.getFilter("slugify"),
 		});
+	});
+
+	eleventyConfig.addFilter("markdown", (text) => {
+		return markdownLibrary.render(text || "");
+	});
+
+	// Places html (e.g. lesson hints) right before the lesson's Solution reveal,
+	// or at the end of the content if there is none.
+	eleventyConfig.addFilter("insertBeforeSolution", (content, html) => {
+		if (!html || !html.trim()) return content;
+		const solution = content.search(
+			/<details[^>]*>\s*<summary[^>]*>\s*Solution\s*<\/summary>/
+		);
+		if (solution === -1) return content + html;
+		return content.slice(0, solution) + html + content.slice(solution);
 	});
 
 	eleventyConfig.addShortcode("currentBuildDate", () => {

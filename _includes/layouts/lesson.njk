@@ -30,8 +30,22 @@ layout: layouts/base.njk
                             </a>
                         {% endif %}
                     </p>
+                    {% if difficulty or checkpoint or target_complexity %}
+                        <div class="lesson-meta mb-4 flex flex-wrap items-center gap-2 text-xs text-term-muted">
+                            {% include "difficulty-badge.njk" %}
+                            {% if checkpoint %}
+                                <span class="border border-term-accent/60 px-1.5 text-term-accent">Checkpoint: no hints</span>
+                            {% endif %}
+                            {% if target_complexity %}
+                                <span class="target-complexity">
+                                    Target: <code>{{ target_complexity.time }}</code> time{% if target_complexity.space %}, <code>{{ target_complexity.space }}</code> space{% endif %}
+                                </span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    {% set hintsHtml %}{% if hints %}{% include "lesson-hints.njk" %}{% endif %}{% endset %}
                     <div id="lesson-content" class="prose">
-                        {{ content|safe }}
+                        {{ content | insertBeforeSolution(hintsHtml) | safe }}
                     </div>
                 </div>
                 <!-- This is a very confusing part for mobile. Thing is, when there's no code editor, the complete and next button
@@ -303,6 +317,10 @@ layout: layouts/base.njk
                                             <a href="{{ lesson.url }}" class="{% if page.url == lesson.url %}text-primary-700 font-medium currentLesson{% endif %}">
                                                 {{ lesson.data.lesson_name }}
                                             </a>
+                                            {% if lesson.data.difficulty %}
+                                                {% set difficulty = lesson.data.difficulty %}
+                                                {% include "difficulty-badge.njk" %}
+                                            {% endif %}
                                         </div>
                                         {% if loop.last %}
                                         </div>
