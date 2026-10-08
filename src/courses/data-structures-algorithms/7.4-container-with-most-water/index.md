@@ -3,6 +3,15 @@ lesson_name: Container With Most Water
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n)
+  space: O(1)
+hints:
+  - "Start with the widest container, the two outer walls. To have any chance of holding more water when you make it narrower, which wall would you move?"
+  - "Use opposite-ends pointers (shape 1 in *Two Pointers Basics*). The shorter wall limits the height, so keeping it while moving the taller wall inward can never help. Always move the shorter one."
+  - "Template: `while left < right`, record `(right - left) * min(heights[left], heights[right])`, then move whichever pointer is at the shorter wall."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -47,6 +56,7 @@ For example, with heights `[1, 7, 2, 5, 4, 7, 3]`, choosing the walls at positio
 <li id="test-4"><code>max_area([1, 2, 1])</code> should return <code>2</code></li>
 <li id="test-5"><code>max_area([0, 2])</code> should return <code>0</code></li>
 <li id="test-6"><code>max_area([2, 3, 4, 5, 18, 17, 6])</code> should return <code>17</code></li>
+<li id="test-7">Performance: 100,000 walls, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -66,5 +76,17 @@ def max_area(heights):
             right -= 1
     return best
 ```
+
+**Brute force:** compute the area for every pair of walls. That's `O(n²)` time.
+
+**Bottleneck:** most pairs can be ruled out without measuring them.
+
+**Optimal idea:** start with the widest pair and move inward, always moving the pointer at the shorter wall.
+
+**Why it's correct:** say `heights[left] <= heights[right]`. Every other container that uses wall `left` is narrower than this one, and its height is still at most `heights[left]`, so it holds at most what was just measured. Wall `left` can't do any better, so it's safe to drop it. Each step drops one wall that can't beat the best area recorded so far, so the best pair is measured before its walls are dropped.
+
+**Complexity:** `O(n)` time, because each step moves one pointer inward. `O(1)` extra space.
+
+**Common mistakes:** moving the taller wall, which can skip the best container. Using the taller wall's height in the area instead of the shorter one's.
 
 </details>
