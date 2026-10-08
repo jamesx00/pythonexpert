@@ -3,6 +3,14 @@ lesson_name: "Warm-up: Next Greater Element"
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(n)
+  space: O(n)
+hints:
+  - "When a new number arrives, which earlier numbers has it just become the answer for?"
+  - "Keep a stack of indices still waiting for an answer, with decreasing values (the *Monotonic stack* block in *Stack Basics*). When `nums[i]` is bigger than the value on top, it's that index's answer: pop, record, and repeat. Then push `i`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -36,8 +44,6 @@ Write a function `next_greater(nums)` that returns a list where position `i` hol
 
 For example, `next_greater([2, 1, 3, 2, 4])` returns `[3, 3, 4, 4, -1]`.
 
-**Hint:** use a monotonic stack of **indices** whose values are decreasing. When a new number is bigger than the value at the top of the stack, it's the answer for that index: pop it, record the answer, and keep popping while that's still true. Then push the current index.
-
 ---
 
 ### Tests
@@ -50,6 +56,7 @@ For example, `next_greater([2, 1, 3, 2, 4])` returns `[3, 3, 4, 4, -1]`.
 <li id="test-5"><code>next_greater([7])</code> should return <code>[-1]</code></li>
 <li id="test-6"><code>next_greater([3, 3, 4])</code> should return <code>[4, 4, -1]</code></li>
 <li id="test-7"><code>next_greater([4, 1, 2, 5, 3])</code> should return <code>[5, 2, 5, -1, -1]</code></li>
+<li id="test-8">Performance: 100,000 falling values, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -66,6 +73,16 @@ def next_greater(nums):
     return result
 ```
 
-The stack holds indices still waiting for a bigger number, and their values are decreasing from bottom to top. A new value `x` resolves every waiting index with a smaller value. Indices left on the stack at the end never found one, so they keep `-1`. Each index is pushed and popped at most once: `O(n)`.
+**Brute force:** for each index, scan to the right until a bigger value appears. On a falling list every scan runs to the end, so this is `O(n²)`.
+
+**Bottleneck:** the same stretch of the list is rescanned for many different indices.
+
+**Optimal idea:** scan once, keeping a stack of indices that haven't found a bigger value yet. Their values decrease from bottom to top, so a new value resolves the top few at once.
+
+**Why it's correct:** an index waits on the stack until the first bigger value to its right arrives, and that value pops it immediately, so the recorded answer is the *first* greater value. Indices never popped keep their default `-1`.
+
+**Complexity:** `O(n)` time, because each index is pushed once and popped at most once. `O(n)` space for the stack and the result.
+
+**Common mistakes:** pushing values instead of indices, which leaves no way to know where to write the answer. Popping on `<=` instead of `<`, which treats an equal value as greater, as in `[3, 3, 4]`.
 
 </details>

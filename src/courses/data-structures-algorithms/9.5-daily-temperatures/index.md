@@ -3,6 +3,15 @@ lesson_name: Daily Temperatures
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n)
+  space: O(n)
+hints:
+  - "When a warm day arrives, which earlier days has it just answered?"
+  - "This is *Next Greater Element* again, but you record a distance instead of a value. Keep a stack of days still waiting for a warmer one (the *Monotonic stack* block in *Stack Basics*)."
+  - "Template: for each `i, t`, while the day on top of the stack is colder than `t`, pop it as `j` and set `answer[j] = i - j`. Then push `i`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -47,6 +56,7 @@ For example, given `[68, 70, 65, 72]`, day 0 (68) only has to wait 1 day to hit 
 <li id="test-4"><code>daily_temperatures([60, 50, 40, 30])</code> should return <code>[0, 0, 0, 0]</code></li>
 <li id="test-5"><code>daily_temperatures([55])</code> should return <code>[0]</code></li>
 <li id="test-6"><code>daily_temperatures([50, 50, 50])</code> should return <code>[0, 0, 0]</code></li>
+<li id="test-7">Performance: 100,000 days of falling temperatures, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -63,5 +73,17 @@ def daily_temperatures(temps):
         stack.append(i)
     return answer
 ```
+
+**Brute force:** for each day, scan forward until a warmer day appears. When temperatures fall all the way, every scan reaches the end, so this is `O(n²)`.
+
+**Bottleneck:** the same days are rescanned for many different starting days.
+
+**Optimal idea:** scan once with a stack of days still waiting for a warmer day. Their temperatures decrease from bottom to top, so a warm day resolves the top few at once.
+
+**Why it's correct:** a day waits on the stack until the first warmer day arrives, which pops it right away, so `i - j` is the wait until the *first* warmer day. Days never popped keep their default `0`.
+
+**Complexity:** `O(n)` time, because each day is pushed once and popped at most once. `O(n)` space for the stack and the answer.
+
+**Common mistakes:** popping on `<=`, which treats an equal temperature as warmer, as in `[50, 50, 50]`. Storing temperatures on the stack instead of indices, which loses the information needed to compute the wait.
 
 </details>

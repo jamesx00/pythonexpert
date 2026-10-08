@@ -1,43 +1,85 @@
 import sys
 import json
-import copy
+import signal
 
 from unittest.mock import patch
 patch('builtins.print').start()
 
 import main
-from main import *
-
-def next_greater(nums):
-    result = [-1] * len(nums)
-    stack = []
-    for i, x in enumerate(nums):
-        while stack and nums[stack[-1]] < x:
-            result[stack.pop()] = x
-        stack.append(i)
-    return result
-
-def check(fn, *args):
-    return fn(*args)
-
-cases = [
-    ('next_greater', ([2, 1, 3, 2, 4],)),
-    ('next_greater', ([5, 4, 3],)),
-    ('next_greater', ([1, 2, 3],)),
-    ('next_greater', ([],)),
-    ('next_greater', ([7],)),
-    ('next_greater', ([3, 3, 4],)),
-    ('next_greater', ([4, 1, 2, 5, 3],)),
-]
 
 results = {}
 
-for index, (name, args) in enumerate(cases):
+
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
+def _show(value):
+    text = repr(value)
+    return text if len(text) <= 300 else text[:300] + "..."
+
+
+def check(test_id, call, expected, time_budget=None, normalize=None):
+    """Runs one test and records a rich result: got/expected as Python reprs,
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run). normalize, if given, is applied to both
+    values before comparing, for answers whose order doesn't matter."""
     try:
-        expected = check(globals()[name], *copy.deepcopy(args))
-        assert check(getattr(main, name), *copy.deepcopy(args)) == expected
-        results[index + 1] = True
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
+    except Exception as e:
+        results[test_id] = {
+            "passed": False,
+            "error": f"{type(e).__name__}: {e}",
+            "expected": _show(expected),
+        }
+        return
+    try:
+        if normalize is None:
+            passed = got == expected
+        else:
+            passed = normalize(got) == normalize(expected)
     except Exception:
-        results[index + 1] = False
+        passed = False
+    results[test_id] = {
+        "passed": bool(passed),
+        "got": _show(got),
+        "expected": _show(expected),
+    }
+
+
+cases = [
+    ([2, 1, 3, 2, 4], [3, 3, 4, 4, -1]),
+    ([5, 4, 3], [-1, -1, -1]),
+    ([1, 2, 3], [2, 3, -1]),
+    ([], []),
+    ([7], [-1]),
+    ([3, 3, 4], [4, 4, -1]),
+    ([4, 1, 2, 5, 3], [5, 2, 5, -1, -1]),
+]
+for index, (nums, expected) in enumerate(cases):
+    check(index + 1, lambda: main.next_greater(nums), expected)
+
+# Performance test: 100,000 values falling from 100,000 to 1, so no value
+# has a greater one to its right.
+# Budget: 1.0s. Execution service: monotonic-stack solution
+# ~0.02s; scanning right from every index is interrupted at the budget.
+big = list(range(100_000, 0, -1))
+check(8, lambda: main.next_greater(big), [-1] * 100_000, time_budget=1.0)
 
 sys.stdout.write(json.dumps(results))

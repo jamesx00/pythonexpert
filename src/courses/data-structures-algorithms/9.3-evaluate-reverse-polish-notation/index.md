@@ -3,6 +3,15 @@ lesson_name: Evaluate Reverse Polish Notation
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n)
+  space: O(n)
+hints:
+  - "When you reach an operator, which two numbers does it apply to?"
+  - "It applies to the two most recent numbers that haven't been used yet, which is exactly the top two of a stack (see *Stack Basics*). The result goes back on the stack as a new number."
+  - "Template: push numbers as `int`. For an operator, pop `b` then `a`, push `a op b`, and use `int(a / b)` for division. Return the last value on the stack."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -72,5 +81,17 @@ def evaluate_rpn(tokens):
             stack.append(int(tok))
     return stack[-1]
 ```
+
+**Brute force:** repeatedly find the first operator in the list, replace it and its two operands with the result, and start again. Each replacement rebuilds the list, so this is `O(n²)`.
+
+**Bottleneck:** after every operation the scan starts again from the beginning, although the operands an operator needs are always the most recent unused values.
+
+**Optimal idea:** scan once with a stack. Numbers are pushed, and an operator pops its two operands and pushes the result.
+
+**Why it's correct:** in postfix notation, each operator's operands are the two values produced immediately before it, which are the top two of the stack. Pushing the result makes it the operand for the next operator that needs it. A valid expression leaves exactly one value at the end.
+
+**Complexity:** `O(n)` time for one pass. `O(n)` space for the stack.
+
+**Common mistakes:** popping the operands in the wrong order. The first pop is the *right* operand, so `["7", "2", "-"]` is `7 - 2`, not `2 - 7`. Using `a // b`, which rounds toward negative infinity: `6 // -3` is fine, but `-7 // 2` is `-4` where truncation gives `-3`.
 
 </details>

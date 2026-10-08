@@ -3,6 +3,15 @@ lesson_name: Car Fleet
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n log n)
+  space: O(n)
+hints:
+  - "A car can only be slowed down by cars *ahead* of it. In what order would you look at the cars?"
+  - "Sort the cars by position, closest to the target first, and compute each car's arrival time if it drove alone: `(target - position) / speed`. A car that would arrive no later than the fleet in front catches it and joins it."
+  - "Template: walk the sorted cars, tracking the slowest arrival time so far. A car whose time is greater starts a new fleet and becomes the new slowest time. (A stack of fleet times, as in *Stack Basics*, works the same way.)"
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -48,6 +57,7 @@ For example, with `target = 10`, `positions = [0, 4]`, and `speeds = [2, 1]`: th
 <li id="test-3"><code>car_fleet(100, [0, 2, 4], [4, 2, 1])</code> should return <code>1</code></li>
 <li id="test-4"><code>car_fleet(10, [3], [3])</code> should return <code>1</code></li>
 <li id="test-5"><code>car_fleet(20, [0, 5, 10, 15], [1, 1, 1, 1])</code> should return <code>4</code></li>
+<li id="test-6">Performance: 100,000 cars, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -65,5 +75,17 @@ def car_fleet(target, positions, speeds):
             max_time = time
     return fleets
 ```
+
+**Brute force:** for each car, check every car ahead of it to see whether any of them arrives later and would hold it up. A car that isn't held up leads its own fleet. That's `O(n²)`.
+
+**Bottleneck:** each car compares itself with every car ahead, but only the slowest arrival time ahead of it matters.
+
+**Optimal idea:** sort the cars from the front of the road to the back and keep the slowest arrival time seen so far. A car leads a new fleet only if it would arrive later than that.
+
+**Why it's correct:** a car arriving no later than some car ahead catches up before the target and is then held to that fleet's pace, so it can't start a fleet of its own. A car arriving strictly later never catches anything ahead, so it leads a new fleet, and its time becomes the one the cars behind must beat.
+
+**Complexity:** `O(n log n)` time for the sort, plus `O(n)` for the scan. `O(n)` space for the sorted list.
+
+**Common mistakes:** sorting from the back of the road instead of the front. Using `>=` instead of `>`, which counts a car that arrives exactly with the fleet ahead as a separate fleet. Integer division for the times, which makes different arrival times look equal.
 
 </details>
