@@ -20,6 +20,9 @@ jobs:
         with:
           python-version: "3.10"
 
+      - name: Install Python packages used by lessons
+        run: pip install prettytable faker
+
       - name: Install dependencies
         run: npm install
 

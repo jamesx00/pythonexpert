@@ -1,0 +1,418 @@
+[
+	{
+		"name": "basic python: starter fails",
+		"lesson": "basic-python/1.3-assigning-variables",
+		"listedTestIds": [
+			1
+		],
+		"response": {
+			"language": "python",
+			"version": "3.10.0",
+			"run": {
+				"stdout": "{\"1\": false}",
+				"stderr": "",
+				"code": 0,
+				"signal": null,
+				"output": "{\"1\": false}"
+			}
+		},
+		"expectedDisplay": {
+			"mode": "tests",
+			"tests": [
+				{
+					"id": 1,
+					"status": "failed"
+				}
+			],
+			"panelText": "##### Tests #####\nTest Result: 0/1\n",
+			"passed": false
+		}
+	},
+	{
+		"name": "basic python: passing run",
+		"lesson": "basic-python/1.3-assigning-variables",
+		"listedTestIds": [
+			1
+		],
+		"response": {
+			"language": "python",
+			"version": "3.10.0",
+			"run": {
+				"stdout": "{\"1\": true}",
+				"stderr": "",
+				"code": 0,
+				"signal": null,
+				"output": "{\"1\": true}"
+			}
+		},
+		"expectedDisplay": {
+			"mode": "tests",
+			"tests": [
+				{
+					"id": 1,
+					"status": "passed"
+				}
+			],
+			"panelText": "##### Tests #####\nTest Result: 1/1\n",
+			"passed": true
+		}
+	},
+	{
+		"name": "basic python: print in learner code",
+		"lesson": "basic-python/1.3-assigning-variables",
+		"listedTestIds": [
+			1
+		],
+		"response": {
+			"language": "python",
+			"version": "3.10.0",
+			"run": {
+				"stdout": "{\"1\": true}",
+				"stderr": "",
+				"code": 0,
+				"signal": null,
+				"output": "{\"1\": true}"
+			}
+		},
+		"expectedDisplay": {
+			"mode": "tests",
+			"tests": [
+				{
+					"id": 1,
+					"status": "passed"
+				}
+			],
+			"panelText": "##### Tests #####\nTest Result: 1/1\n",
+			"passed": true
+		}
+	},
+	{
+		"name": "DSA: starter, some tests fail",
+		"lesson": "data-structures-algorithms/6.1-contains-duplicate",
+		"listedTestIds": [
+			1,
+			2,
+			3,
+			4,
+			5,
+			6
+		],
+		"response": {
+			"language": "python",
+			"version": "3.10.0",
+			"run": {
+				"stdout": "{\"1\": false, \"2\": true, \"3\": false, \"4\": true, \"5\": true, \"6\": false}",
+				"stderr": "",
+				"code": 0,
+				"signal": null,
+				"output": "{\"1\": false, \"2\": true, \"3\": false, \"4\": true, \"5\": true, \"6\": false}"
+			}
+		},
+		"expectedDisplay": {
+			"mode": "tests",
+			"tests": [
+				{
+					"id": 1,
+					"status": "failed"
+				},
+				{
+					"id": 2,
+					"status": "passed"
+				},
+				{
+					"id": 3,
+					"status": "failed"
+				},
+				{
+					"id": 4,
+					"status": "passed"
+				},
+				{
+					"id": 5,
+					"status": "passed"
+				},
+				{
+					"id": 6,
+					"status": "failed"
+				}
+			],
+			"panelText": "##### Tests #####\nTest Result: 3/6\n",
+			"passed": false
+		}
+	},
+	{
+		"name": "DSA: reference passes",
+		"lesson": "data-structures-algorithms/6.1-contains-duplicate",
+		"listedTestIds": [
+			1,
+			2,
+			3,
+			4,
+			5,
+			6
+		],
+		"response": {
+			"language": "python",
+			"version": "3.10.0",
+			"run": {
+				"stdout": "{\"1\": true, \"2\": true, \"3\": true, \"4\": true, \"5\": true, \"6\": true}",
+				"stderr": "",
+				"code": 0,
+				"signal": null,
+				"output": "{\"1\": true, \"2\": true, \"3\": true, \"4\": true, \"5\": true, \"6\": true}"
+			}
+		},
+		"expectedDisplay": {
+			"mode": "tests",
+			"tests": [
+				{
+					"id": 1,
+					"status": "passed"
+				},
+				{
+					"id": 2,
+					"status": "passed"
+				},
+				{
+					"id": 3,
+					"status": "passed"
+				},
+				{
+					"id": 4,
+					"status": "passed"
+				},
+				{
+					"id": 5,
+					"status": "passed"
+				},
+				{
+					"id": 6,
+					"status": "passed"
+				}
+			],
+			"panelText": "##### Tests #####\nTest Result: 6/6\n",
+			"passed": true
+		}
+	},
+	{
+		"name": "DSA: syntax error in learner code (non-JSON stdout)",
+		"lesson": "data-structures-algorithms/6.1-contains-duplicate",
+		"listedTestIds": [
+			1,
+			2,
+			3,
+			4,
+			5,
+			6
+		],
+		"response": {
+			"language": "python",
+			"version": "3.10.0",
+			"run": {
+				"stdout": "",
+				"stderr": "Traceback (most recent call last):\n  File \"/piston/jobs/3f2a9c1e-7b4d-4e8a-9c2f-1a2b3c4d5e6f/tests.py\", line 7, in <module>\n    import main\n  File \"/piston/jobs/3f2a9c1e-7b4d-4e8a-9c2f-1a2b3c4d5e6f/main.py\", line 1\n    def contains_duplicate(nums)\n                                ^\nSyntaxError: expected ':'\n",
+				"code": 1,
+				"signal": null,
+				"output": "Traceback (most recent call last):\n  File \"/piston/jobs/3f2a9c1e-7b4d-4e8a-9c2f-1a2b3c4d5e6f/tests.py\", line 7, in <module>\n    import main\n  File \"/piston/jobs/3f2a9c1e-7b4d-4e8a-9c2f-1a2b3c4d5e6f/main.py\", line 1\n    def contains_duplicate(nums)\n                                ^\nSyntaxError: expected ':'\n"
+			}
+		},
+		"expectedDisplay": {
+			"mode": "raw",
+			"tests": [],
+			"panelText": "##### Exercise #####\nTraceback (most recent call last):\n  File \"tests.py\", line 7, in <module>\n    import main\n  File \"main.py\", line 1\n    def contains_duplicate(nums)\n                                ^\nSyntaxError: expected ':'\n",
+			"passed": false
+		}
+	},
+	{
+		"name": "Essential SQL: query errors, test file prints {}",
+		"lesson": "essential-sql/2.1-select-a-single-column",
+		"listedTestIds": [
+			1
+		],
+		"response": {
+			"language": "python",
+			"version": "3.10.0",
+			"run": {
+				"stdout": "{}",
+				"stderr": "",
+				"code": 0,
+				"signal": null,
+				"output": "{}"
+			}
+		},
+		"expectedDisplay": {
+			"mode": "tests",
+			"tests": [
+				{
+					"id": 1,
+					"status": "failed"
+				}
+			],
+			"panelText": "##### Tests #####\nTest Result: 0/1\n",
+			"passed": false
+		}
+	},
+	{
+		"name": "Essential SQL: passing query",
+		"lesson": "essential-sql/2.1-select-a-single-column",
+		"listedTestIds": [
+			1
+		],
+		"response": {
+			"language": "python",
+			"version": "3.10.0",
+			"run": {
+				"stdout": "{\"1\": true}",
+				"stderr": "",
+				"code": 0,
+				"signal": null,
+				"output": "{\"1\": true}"
+			}
+		},
+		"expectedDisplay": {
+			"mode": "tests",
+			"tests": [
+				{
+					"id": 1,
+					"status": "passed"
+				}
+			],
+			"panelText": "##### Tests #####\nTest Result: 1/1\n",
+			"passed": true
+		}
+	},
+	{
+		"name": "non-JSON test output",
+		"lesson": "content-contribution-guide/2.1-test-case-version-1",
+		"listedTestIds": [],
+		"response": {
+			"language": "python",
+			"version": "3.10.0",
+			"run": {
+				"stdout": "from test\n",
+				"stderr": "",
+				"code": 0,
+				"signal": null,
+				"output": "from test\n"
+			}
+		},
+		"expectedDisplay": {
+			"mode": "raw",
+			"tests": [],
+			"panelText": "##### Exercise #####\nfrom test\n",
+			"passed": true
+		}
+	},
+	{
+		"name": "SIGKILL with no output",
+		"lesson": "data-structures-algorithms/6.1-contains-duplicate",
+		"listedTestIds": [
+			1,
+			2,
+			3,
+			4,
+			5,
+			6
+		],
+		"response": {
+			"language": "python",
+			"version": "3.10.0",
+			"run": {
+				"stdout": "",
+				"stderr": "",
+				"code": null,
+				"signal": "SIGKILL",
+				"output": ""
+			}
+		},
+		"expectedDisplay": {
+			"mode": "raw",
+			"tests": [],
+			"panelText": "Code execution failed with output: \n\n##### Exercise #####\n",
+			"passed": false
+		}
+	},
+	{
+		"name": "SIGKILL after a complete JSON result",
+		"lesson": "data-structures-algorithms/6.1-contains-duplicate",
+		"listedTestIds": [
+			1,
+			2,
+			3,
+			4,
+			5,
+			6
+		],
+		"response": {
+			"language": "python",
+			"version": "3.10.0",
+			"run": {
+				"stdout": "{\"1\": true, \"2\": true}",
+				"stderr": "",
+				"code": null,
+				"signal": "SIGKILL",
+				"output": "{\"1\": true, \"2\": true}"
+			}
+		},
+		"expectedDisplay": {
+			"mode": "tests",
+			"tests": [
+				{
+					"id": 1,
+					"status": "passed"
+				},
+				{
+					"id": 2,
+					"status": "passed"
+				},
+				{
+					"id": 3,
+					"status": "failed"
+				},
+				{
+					"id": 4,
+					"status": "failed"
+				},
+				{
+					"id": 5,
+					"status": "failed"
+				},
+				{
+					"id": 6,
+					"status": "failed"
+				}
+			],
+			"panelText": "##### Tests #####\nTest Result: 2/6\n",
+			"passed": false
+		}
+	},
+	{
+		"name": "SIGKILL with partial non-JSON output",
+		"lesson": "data-structures-algorithms/6.1-contains-duplicate",
+		"listedTestIds": [
+			1,
+			2,
+			3,
+			4,
+			5,
+			6
+		],
+		"response": {
+			"language": "python",
+			"version": "3.10.0",
+			"run": {
+				"stdout": "{\"1\": tr",
+				"stderr": "",
+				"code": null,
+				"signal": "SIGKILL",
+				"output": "{\"1\": tr"
+			}
+		},
+		"expectedDisplay": {
+			"mode": "raw",
+			"tests": [],
+			"panelText": "Code execution failed with output: \n\n##### Exercise #####\n{\"1\": tr",
+			"passed": false
+		}
+	}
+]

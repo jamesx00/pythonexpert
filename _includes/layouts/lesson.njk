@@ -319,6 +319,9 @@ layout: layouts/base.njk
 {% if adding_file_allowed %}
     <div id="adding_file_allowed" class="hidden">true</div>
 {% endif %}
+{% if rich_test_results %}
+    <div id="rich_test_results" class="hidden"></div>
+{% endif %}
 {% if code_editor %}
     <div id="file_groups" class="hidden">
         {{ file_groups|dump|safe }}
@@ -341,5 +344,6 @@ layout: layouts/base.njk
 {% if code_editor %}
     <script src="/js/pe-monaco-editor.js"></script>
     <script src="/js/expected-runtimes.js"></script>
+    <script src="/js/test-results.js"></script>
     <script src="/js/lesson.js"></script>
 {% endif %}
