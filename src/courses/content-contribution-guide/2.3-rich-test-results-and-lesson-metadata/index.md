@@ -57,6 +57,7 @@ rich_test_results: true     # the test file reports rich results (see below)
 ```
 
 - **Hints** are Markdown. Quote a hint that starts with a backtick or contains `: ` so the YAML stays valid. The full solution is the existing Solution reveal, so hints stop at the template. In Mixed Practice problems, the first hint names the pattern.
+- **Mixed Practice** problems (section 25 of *Data Structures & Algorithms*) are copies of problems from the pattern sections, renumbered into a mixed order. A copy keeps the original's files, tests and walkthrough, and adds a first hint that names the pattern (`"Pattern: *Stack*."`). When you change a problem that has a copy, change the copy too.
 - **Checkpoint** problems have no `hints` (the content checker enforces this).
 
 #### Solution walkthroughs

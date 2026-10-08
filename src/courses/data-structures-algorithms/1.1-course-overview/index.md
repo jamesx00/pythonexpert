@@ -31,6 +31,7 @@ Every exercise gives you a short problem statement and a Python starter file wit
 - **Dynamic Programming (1-D and 2-D) & Greedy** — building solutions from subproblems, and knowing when a greedy choice is provably optimal.
 - **Intervals, Math & Geometry, Bit Manipulation** — the smaller but frequently-tested categories that round out most interview loops.
 - **Approaching New Problems** — a step-by-step routine for a problem when nobody tells you its pattern: restate it, try small examples, write the brute force, find the bottleneck, pick a pattern, and check edge cases.
+- **Mixed Practice (optional)** — problems from earlier sections in a mixed order without their section names, so you practise working out which pattern each one needs.
 
 ## Before You Start &#x1F4CC;
 

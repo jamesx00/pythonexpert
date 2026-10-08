@@ -158,4 +158,4 @@ The `{0: 1}` starting entry is the kind of detail edge cases catch. Without it, 
 - **Use the size limit.** It tells you the target complexity, which rules out patterns before you try them.
 - **Test the examples you wrote by hand first.** They're small enough to check without a computer, so they catch mistakes in the idea, not just in the code.
 
-Use this routine on every problem from now on, including ones you revisit from earlier sections: cover the section name, and start from step 1.
+The next section, *Mixed Practice*, is optional. Its problems don't say which pattern they need, so you can practise this routine from step 1.
