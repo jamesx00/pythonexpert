@@ -3,6 +3,14 @@ lesson_name: "Warm-up: Max Sum Subarray of Size K"
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(n)
+  space: O(1)
+hints:
+  - "When the window slides one step right, how many numbers actually change?"
+  - "Use a fixed-size window (the *Fixed size `k`* block in *Sliding Window Basics*): sum the first `k` numbers once, then for each step add the number entering on the right and subtract the one leaving on the left."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -36,8 +44,6 @@ Write a function `max_sum_k(nums, k)` that returns the largest sum of any **cont
 
 For example, `max_sum_k([2, 1, 5, 1, 3, 2], 3)` returns `9`, from `[5, 1, 3]`.
 
-**Hint:** this is the fixed-size sliding window. Compute the sum of the first `k` numbers once. Then, each time the window slides one step right, add the number that enters and subtract the number that leaves, instead of re-summing the whole window.
-
 ---
 
 ### Tests
@@ -49,6 +55,7 @@ For example, `max_sum_k([2, 1, 5, 1, 3, 2], 3)` returns `9`, from `[5, 1, 3]`.
 <li id="test-4"><code>max_sum_k([-1, -2, -3, -4], 2)</code> should return <code>-3</code></li>
 <li id="test-5"><code>max_sum_k([1, 9, -1, -2, 7, 3, -1, 2], 4)</code> should return <code>13</code></li>
 <li id="test-6"><code>max_sum_k([4, 2, 1, 7, 8, 1, 2, 8, 1, 0], 3)</code> should return <code>16</code></li>
+<li id="test-7">Performance: 100,000 values with <code>k = 50,000</code>, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -64,6 +71,16 @@ def max_sum_k(nums, k):
     return best
 ```
 
-When `right` enters the window, `nums[right - k]` is the element that just fell out the left side. Updating the running sum costs `O(1)`, so the whole scan is `O(n)` instead of `O(n·k)`.
+**Brute force:** sum every window with `sum(nums[i:i + k])`. There are `n - k + 1` windows of `k` numbers each, so this is `O(n·k)`, which is `O(n²)` when `k` is about `n / 2`.
+
+**Bottleneck:** neighbouring windows share `k - 1` numbers, but each sum starts from scratch.
+
+**Optimal idea:** keep a running window sum. Each slide adds `nums[right]` and subtracts `nums[right - k]`.
+
+**Why it's correct:** the window ending at `right` is the previous window plus `nums[right]` minus `nums[right - k]`, so the running sum always equals the current window's sum, and every window is compared with `best`.
+
+**Complexity:** `O(n)` time: `O(k)` for the first sum and `O(1)` per slide. `O(1)` extra space.
+
+**Common mistakes:** starting `best` at `0`, which is wrong when every number is negative, as in `[-1, -2, -3, -4]`. Start it at the first window's sum.
 
 </details>

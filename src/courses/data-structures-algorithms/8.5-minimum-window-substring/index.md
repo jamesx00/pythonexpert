@@ -3,6 +3,15 @@ lesson_name: Minimum Window Substring
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: hard
+target_complexity:
+  time: O(n)
+  space: O(k)
+hints:
+  - "Once a window covers every character of `chars`, can it get shorter and still cover them?"
+  - "Use a variable-size window (the *grow right, shrink left* block in *Sliding Window Basics*): grow `right` until the window covers `chars`, then shrink `left` as far as possible while it still covers them, recording the shortest window you see."
+  - "Template: keep `need` counts and a `missing` total. Adding `text[right]` lowers `missing` if it was still needed. While `missing == 0`, record the window, give back `text[left]` (raising `missing` if it becomes needed again), and move `left`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -56,6 +65,7 @@ answer is `"aa"`.
 <li id="test-5"><code>min_window("acbbaca", "aba")</code> should return <code>"baca"</code></li>
 <li id="test-6"><code>min_window("xyz", "w")</code> should return <code>""</code></li>
 <li id="test-7"><code>min_window("aaflslflsldkalskaaa", "aaa")</code> should return <code>"aaa"</code></li>
+<li id="test-8">Performance: 100,000 characters, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -84,5 +94,19 @@ def min_window(text, chars):
             left += 1
     return "" if best[0] == float("inf") else text[best[1]:best[2]]
 ```
+
+Here `k` is the number of distinct characters.
+
+**Brute force:** from every start index, extend the window until it covers `chars`, and keep the shortest. That's `O(n²)` windows, each checked against the counts.
+
+**Bottleneck:** each start index rescans characters that the previous start already counted.
+
+**Optimal idea:** one window. Grow `right` until everything is covered, then shrink `left` while the window still covers everything. A single `missing` counter makes "is it covered?" an `O(1)` check.
+
+**Why it's correct:** for each `right`, the shrinking stops at the last `left` that still covers `chars`, so the shortest covering window ending at `right` is recorded. Every possible end is tried, so the overall shortest is found. A window replaces `best` only when it's strictly shorter, so ties keep the one that starts first.
+
+**Complexity:** `O(n)` time, since `left` and `right` each move at most `n` times. `O(k)` space for the counts.
+
+**Common mistakes:** decrementing `missing` for every character instead of only those still needed, which breaks with repeated characters such as `chars = "aa"`. Recording the window after moving `left` instead of before.
 
 </details>

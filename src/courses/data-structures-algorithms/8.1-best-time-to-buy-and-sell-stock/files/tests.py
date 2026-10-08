@@ -1,41 +1,85 @@
 import sys
 import json
+import signal
 
 from unittest.mock import patch
 patch('builtins.print').start()
 
 import main
 
-def test_func(prices):
-    if not prices:
-        return 0
-    min_price = prices[0]
-    best = 0
-    for p in prices[1:]:
-        if p - min_price > best:
-            best = p - min_price
-        if p < min_price:
-            min_price = p
-    return best
-
-inputs = [
-    ([9, 2, 7, 1, 5, 3],),
-    ([8, 6, 4, 2],),
-    ([1, 2, 3, 4, 5],),
-    ([5],),
-    ([3, 3, 3, 3],),
-    ([2, 4, 1, 7],),
-    ([7, 1, 5, 3, 6, 4],),
-]
-
 results = {}
 
-for index, i in enumerate(inputs):
+
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
+def _show(value):
+    text = repr(value)
+    return text if len(text) <= 300 else text[:300] + "..."
+
+
+def check(test_id, call, expected, time_budget=None, normalize=None):
+    """Runs one test and records a rich result: got/expected as Python reprs,
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run). normalize, if given, is applied to both
+    values before comparing, for answers whose order doesn't matter."""
     try:
-        result = test_func(*i)
-        assert main.max_profit(*i) == result
-        results[index + 1] = True
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
+    except Exception as e:
+        results[test_id] = {
+            "passed": False,
+            "error": f"{type(e).__name__}: {e}",
+            "expected": _show(expected),
+        }
+        return
+    try:
+        if normalize is None:
+            passed = got == expected
+        else:
+            passed = normalize(got) == normalize(expected)
     except Exception:
-        results[index + 1] = False
+        passed = False
+    results[test_id] = {
+        "passed": bool(passed),
+        "got": _show(got),
+        "expected": _show(expected),
+    }
+
+
+cases = [
+    ([9, 2, 7, 1, 5, 3], 5),
+    ([8, 6, 4, 2], 0),
+    ([1, 2, 3, 4, 5], 4),
+    ([5], 0),
+    ([3, 3, 3, 3], 0),
+    ([2, 4, 1, 7], 6),
+    ([7, 1, 5, 3, 6, 4], 5),
+]
+for index, (prices, expected) in enumerate(cases):
+    check(index + 1, lambda: main.max_profit(prices), expected)
+
+# Performance test: 100,000 prices falling from 100,000 to 1, so no trade
+# makes money.
+# Budget: 1.0s. Execution service: running-minimum solution
+# <0.01s; trying every buy/sell pair is interrupted at the budget.
+big = list(range(100_000, 0, -1))
+check(8, lambda: main.max_profit(big), 0, time_budget=1.0)
 
 sys.stdout.write(json.dumps(results))

@@ -3,6 +3,15 @@ lesson_name: Longest Repeating Character Replacement
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n)
+  space: O(1)
+hints:
+  - "In a window, which characters would you choose to change, and how many changes does that take?"
+  - "Keep the most common letter and change the rest: a window needs `window length - count of its most common letter` changes. Grow a window to the right and shrink it from the left while that number is above `k` (the *grow right, shrink left* block in *Sliding Window Basics*)."
+  - "Template: count letters in the window and track `max_freq`. After adding `s[right]`, while `(right - left + 1) - max_freq > k`, remove `s[left]` and move `left`. Update `best` with the window length."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -56,6 +65,7 @@ run already present in `s`.
 <li id="test-5"><code>longest_replacement("A", 0)</code> should return <code>1</code></li>
 <li id="test-6"><code>longest_replacement("AABBCC", 2)</code> should return <code>4</code></li>
 <li id="test-7"><code>longest_replacement("BAAAB", 2)</code> should return <code>5</code></li>
+<li id="test-8">Performance: 100,000 characters with <code>k = 1,000</code>, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -78,5 +88,17 @@ def longest_replacement(s, k):
         best = max(best, right - left + 1)
     return best
 ```
+
+**Brute force:** from every start index, extend the window and keep letter counts until it needs more than `k` changes. That's `O(n²)` windows.
+
+**Bottleneck:** after a window gets too expensive, the brute force restarts from the next index instead of reusing the counts it already has.
+
+**Optimal idea:** one window that grows on the right and shrinks on the left. A window is valid when `length - max_freq <= k`, because the cheapest fix is to change every letter except the most common one.
+
+**Why it's correct:** for each `right`, the window shrinks only until it's valid again, so it's the longest valid window ending at `right`, and `best` takes the maximum of these. `max_freq` is never decreased when letters leave the window. That's still correct: a stale, too-large `max_freq` only lets the window keep its size, never grow, and `best` only increases when a window with a genuinely higher frequency appears.
+
+**Complexity:** `O(n)` time, since `left` and `right` each move at most `n` times. `O(1)` space, because there are only 26 uppercase letters.
+
+**Common mistakes:** checking `length - max_freq >= k` instead of `> k`, which shrinks windows that are exactly allowed. Recomputing `max(counts.values())` every step is correct and still `O(26·n)`, but easy to get wrong when the counts dictionary holds zeros.
 
 </details>

@@ -3,6 +3,15 @@ lesson_name: Permutation in String
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n)
+  space: O(1)
+hints:
+  - "A permutation of `pattern` has the same length as `pattern`. What does that tell you about the size of the windows to check?"
+  - "Slide a fixed window of `len(pattern)` over `text` (the *Fixed size `k`* block in *Sliding Window Basics*). A window matches when its letter counts equal `pattern`'s letter counts, like *Valid Anagram*."
+  - "Template: count `pattern` and the first window. On each slide, add the entering letter and remove the leaving one (deleting zero counts), and return `True` as soon as the two counts are equal."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -39,8 +48,8 @@ that returns `True` if any contiguous block of `text` is a rearrangement
 For example, with `pattern = "abc"` and `text = "eidbacoo"`, the block
 `"bac"` starting at index 3 uses exactly the letters `a`, `b`, `c` once each,
 so the function should return `True`. With `pattern = "abc"` and
-`text = "eidboaoo"`, no five-character... rather no three-character block of
-`text` rearranges to `"abc"`, so the function should return `False`.
+`text = "eidboaoo"`, no three-character block of `text` rearranges
+to `"abc"`, so the function should return `False`.
 
 ---
 
@@ -54,6 +63,7 @@ so the function should return `True`. With `pattern = "abc"` and
 <li id="test-5"><code>contains_permutation("xyz", "xy")</code> should return <code>False</code></li>
 <li id="test-6"><code>contains_permutation("a", "a")</code> should return <code>True</code></li>
 <li id="test-7"><code>contains_permutation("hello", "ooolleoooleh")</code> should return <code>False</code></li>
+<li id="test-8">Performance: a 1,000-letter pattern in a 100,000-letter text, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -81,5 +91,19 @@ def contains_permutation(pattern, text):
             return True
     return False
 ```
+
+Here `n` is the length of `text` and `m` the length of `pattern`.
+
+**Brute force:** for every window of length `m`, sort it and compare it with the sorted pattern. That's `O(n·m log m)`.
+
+**Bottleneck:** neighbouring windows differ by one letter in and one letter out, but each window is rebuilt and sorted from scratch.
+
+**Optimal idea:** keep the letter counts of the current window. Sliding one step changes two counts, and comparing two count dictionaries is `O(26)`.
+
+**Why it's correct:** two strings are permutations of each other exactly when their letter counts are equal. The sliding counts always match the current window, and every window of length `m` is checked.
+
+**Complexity:** `O(n)` time: `O(1)` work per slide plus an `O(26)` comparison. `O(1)` space, because the counts hold at most 26 letters each.
+
+**Common mistakes:** comparing plain dictionaries that still hold zero counts: `{"a": 1, "b": 0}` isn't equal to `{"a": 1}`, so delete letters whose count drops to zero. (`Counter` ignores zero counts when comparing, from Python 3.10 on.) Forgetting the case where `pattern` is longer than `text`, where building the first window runs off the end of `text`.
 
 </details>
