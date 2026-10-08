@@ -12,7 +12,13 @@ This course teaches the patterns behind coding interview problems, one hands-on 
 
 ## How This Course Works &#x1F6E0;&#xFE0F;
 
-Every lesson gives you a short problem statement and a Python starter file with a function signature already in place. Fill in the function body, run your code, and the built-in test suite checks your solution against a set of cases instantly — no separate judge, no waiting.
+Each section follows the same three steps:
+
+1. **Basics lesson.** A short read on how to spot the pattern, the core Python templates, and the gotchas that trip people up (like starting `prev` at `None` when reversing a linked list, or marking nodes visited when you enqueue them in BFS).
+2. **Warm-ups.** Small exercises where you build the fundamental technique yourself: depth-first search, breadth-first search, topological sort, Dijkstra, union-find, tree traversals, memoization, and so on.
+3. **Interview problems.** Classic problems that apply the pattern.
+
+Every exercise gives you a short problem statement and a Python starter file with a function signature already in place. Fill in the function body, run your code, and the built-in test suite checks your solution against a set of cases instantly — no separate judge, no waiting. If you get stuck on an interview problem, go back to that section's basics lesson and warm-ups: the template you need is almost always there.
 
 ## What You'll Cover &#x1F9ED;
 

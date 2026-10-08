@@ -1,6 +1,5 @@
 ---
 lesson_name: Subsets
-section: Backtracking
 code_editor: True
 code_execution: True
 adding_file_allowed: False

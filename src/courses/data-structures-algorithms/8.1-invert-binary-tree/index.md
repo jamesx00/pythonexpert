@@ -3,7 +3,6 @@ lesson_name: Invert Binary Tree
 code_editor: True
 code_execution: True
 adding_file_allowed: False
-section: Trees
 file_groups:
   - common: false
     files:

@@ -1,6 +1,5 @@
 ---
 lesson_name: Climbing Stairs
-section: 1-D Dynamic Programming
 code_editor: True
 code_execution: True
 adding_file_allowed: False

@@ -21,8 +21,9 @@ module.exports = function (eleventyConfig) {
 	const getNumberPrefix = (inputPath) => {
 		const dirName = path.basename(path.dirname(inputPath));
 		const prefix = dirName.split("-")[0];
-		const [beforeDecimal, afterDecimal] = prefix.split(".").map(Number);
-		return [beforeDecimal, afterDecimal || 0];
+		// "12.0.1" -> [12, 0, 1]; missing parts count as 0.
+		const [major, minor, patch] = prefix.split(".").map(Number);
+		return [major, minor || 0, patch || 0];
 	};
 
 	// The integer folder prefix (e.g. 1 for "1.3-what-is-a-database") used to
@@ -33,12 +34,14 @@ module.exports = function (eleventyConfig) {
 
 	eleventyConfig.addFilter("sortByDirectoryPrefix", (array) => {
 		return array.sort((a, b) => {
-			const [aBefore, aAfter] = getNumberPrefix(a.inputPath);
-			const [bBefore, bAfter] = getNumberPrefix(b.inputPath);
-			if (aBefore === bBefore) {
-				return aAfter - bAfter;
+			const aPrefix = getNumberPrefix(a.inputPath);
+			const bPrefix = getNumberPrefix(b.inputPath);
+			for (let i = 0; i < aPrefix.length; i++) {
+				if (aPrefix[i] !== bPrefix[i]) {
+					return aPrefix[i] - bPrefix[i];
+				}
 			}
-			return aBefore - bBefore;
+			return 0;
 		});
 	});
 

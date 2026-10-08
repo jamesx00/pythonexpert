@@ -3,7 +3,6 @@ lesson_name: Unique Paths
 code_editor: True
 code_execution: True
 adding_file_allowed: False
-section: 2-D Dynamic Programming
 file_groups:
   - common: false
     files:

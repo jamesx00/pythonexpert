@@ -3,7 +3,6 @@ lesson_name: Best Time to Buy and Sell Stock
 code_editor: True
 code_execution: True
 adding_file_allowed: False
-section: Sliding Window
 file_groups:
   - common: false
     files:

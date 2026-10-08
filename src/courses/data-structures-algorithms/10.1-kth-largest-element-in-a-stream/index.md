@@ -1,6 +1,5 @@
 ---
 lesson_name: Kth Largest Element in a Stream
-section: Heap / Priority Queue
 code_editor: True
 code_execution: True
 adding_file_allowed: False

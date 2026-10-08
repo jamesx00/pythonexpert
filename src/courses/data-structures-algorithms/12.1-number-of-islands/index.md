@@ -1,6 +1,5 @@
 ---
 lesson_name: Number of Islands
-section: Graphs
 code_editor: True
 code_execution: True
 adding_file_allowed: False

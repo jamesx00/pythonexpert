@@ -1,6 +1,5 @@
 ---
 lesson_name: Insert Interval
-section: Intervals
 code_editor: True
 code_execution: True
 adding_file_allowed: False

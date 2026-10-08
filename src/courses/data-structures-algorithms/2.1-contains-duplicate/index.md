@@ -3,7 +3,6 @@ lesson_name: Contains Duplicate
 code_editor: True
 code_execution: True
 adding_file_allowed: False
-section: Arrays & Hashing
 file_groups:
   - common: false
     files:

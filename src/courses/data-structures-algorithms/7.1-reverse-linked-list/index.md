@@ -3,7 +3,6 @@ lesson_name: Reverse Linked List
 code_editor: True
 code_execution: True
 adding_file_allowed: False
-section: Linked List
 file_groups:
   - common: false
     files:

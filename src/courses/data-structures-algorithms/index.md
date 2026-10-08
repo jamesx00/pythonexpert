@@ -4,7 +4,7 @@ layout: layouts/course.njk
 override:tags: true
 tags: ["course"]
 order: 3
-description: Master the data structures and algorithmic patterns that show up over and over in coding interviews, working through a curated set of 150 hands-on problems organized by pattern.
+description: Master the data structures and algorithmic patterns that show up over and over in coding interviews, working through pattern primers, warm-up exercises, and a curated set of 150 interview problems organized by pattern.
 ---
 
 ## Course Summary &#x1F4D7;
@@ -18,7 +18,8 @@ The problem set and ordering are inspired by the well-known "150" style intervie
 - **Pattern recognition:** Learn to spot which technique (two pointers, sliding window, backtracking, etc.) applies to a new problem.
 - **Core data structures:** Get hands-on practice with arrays, hash maps, stacks, linked lists, trees, tries, and heaps in Python.
 - **Algorithmic techniques:** Binary search, BFS/DFS, backtracking, greedy strategies, and dynamic programming (both 1-D and 2-D).
-- **Problem-solving speed:** Each lesson is a self-contained coding exercise with instant test feedback, so you can practice at your own pace.
+- **Fundamentals first:** Every section opens with a basics lesson and hands-on warm-ups (BFS, DFS, topological sort, Dijkstra, union-find, memoization and more) before the interview problems.
+- **Problem-solving speed:** Each exercise is self-contained with instant test feedback, so you can practice at your own pace.
 
 ## Who Is This Course For? &#x1F468;‍&#x1F393;
 

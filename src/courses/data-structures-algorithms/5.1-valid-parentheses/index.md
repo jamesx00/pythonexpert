@@ -3,7 +3,6 @@ lesson_name: Valid Parentheses
 code_editor: True
 code_execution: True
 adding_file_allowed: False
-section: Stack
 file_groups:
   - common: false
     files:

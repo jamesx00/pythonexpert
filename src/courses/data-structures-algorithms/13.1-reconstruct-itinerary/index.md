@@ -3,7 +3,6 @@ lesson_name: Reconstruct Itinerary
 code_editor: True
 code_execution: True
 adding_file_allowed: False
-section: Advanced Graphs
 file_groups:
   - common: false
     files:
