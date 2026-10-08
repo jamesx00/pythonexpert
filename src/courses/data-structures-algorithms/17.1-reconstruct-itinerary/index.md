@@ -42,7 +42,7 @@ For example, given tickets `[["JFK", "SFO"], ["SFO", "ATL"], ["ATL", "JFK"], ["J
 
 <ul>
 <li id="test-1"><code>find_itinerary([["JFK", "SFO"], ["SFO", "ATL"], ["ATL", "JFK"], ["JFK", "ATL"]])</code> should return <code>["JFK", "ATL", "JFK", "SFO", "ATL"]</code></li>
-<li id="test-2"><code>find_itinerary([["JFK", "SFO"], ["JFK", "ATL"], ["SFO", "ATL"], ["ATL", "JFK"], ["ATL", "SFO"]])</code> should return <code>["JFK", "ATL", "JFK", "ATL", "SFO", "ATL"]</code></li>
+<li id="test-2"><code>find_itinerary([["JFK", "SFO"], ["JFK", "ATL"], ["SFO", "ATL"], ["ATL", "JFK"], ["ATL", "SFO"]])</code> should return <code>["JFK", "ATL", "JFK", "SFO", "ATL", "SFO"]</code></li>
 <li id="test-3"><code>find_itinerary([["JFK", "KUL"], ["JFK", "NRT"], ["NRT", "JFK"]])</code> should return <code>["JFK", "NRT", "JFK", "KUL"]</code></li>
 <li id="test-4"><code>find_itinerary([["JFK", "A"], ["A", "B"], ["B", "JFK"]])</code> should return <code>["JFK", "A", "B", "JFK"]</code></li>
 <li id="test-5"><code>find_itinerary([["JFK", "B"], ["JFK", "A"], ["B", "JFK"]])</code> should return <code>["JFK", "B", "JFK", "A"]</code></li>

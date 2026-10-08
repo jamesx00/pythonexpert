@@ -34,14 +34,14 @@ file_groups:
 
 Write a function `min_interval_for_queries(intervals, queries)` that takes a list of `[start, end]` intervals and a list of query points. For each query `q`, find the size (`end - start + 1`) of the smallest interval that contains `q` (i.e. `start <= q <= end`), and return a list of those sizes in the same order as `queries`. If no interval contains a given query, its size should be `-1`.
 
-For example, given `intervals = [[1, 4], [2, 4], [3, 6], [4, 4]]` and `queries = [2, 3, 4, 5]`, the query `4` is covered by `[4, 4]` (size 1), `[2, 4]` (size 3), and `[1, 4]` (size 4) — the smallest is 1 — while the query `2` is only covered by `[1, 4]` and `[2, 4]`, and the smallest of those is `[2, 4]` with size 3. The full result is `[3, 3, 1, 3]`.
+For example, given `intervals = [[1, 4], [2, 4], [3, 6], [4, 4]]` and `queries = [2, 3, 4, 5]`, the query `4` is covered by `[4, 4]` (size 1), `[2, 4]` (size 3), and `[1, 4]` (size 4) — the smallest is 1 — while the query `2` is only covered by `[1, 4]` and `[2, 4]`, and the smallest of those is `[2, 4]` with size 3. Query `5` is only covered by `[3, 6]` (size 4). The full result is `[3, 3, 1, 4]`.
 
 ---
 
 ### Tests
 
 <ul>
-<li id="test-1"><code>min_interval_for_queries([[1, 4], [2, 4], [3, 6], [4, 4]], [2, 3, 4, 5])</code> should return <code>[3, 3, 1, 3]</code></li>
+<li id="test-1"><code>min_interval_for_queries([[1, 4], [2, 4], [3, 6], [4, 4]], [2, 3, 4, 5])</code> should return <code>[3, 3, 1, 4]</code></li>
 <li id="test-2"><code>min_interval_for_queries([[2, 3], [2, 5], [1, 8], [20, 25]], [2, 19, 5, 22])</code> should return <code>[2, -1, 4, 6]</code></li>
 <li id="test-3"><code>min_interval_for_queries([[1, 5]], [1, 3, 5, 6])</code> should return <code>[5, 5, 5, -1]</code></li>
 <li id="test-4"><code>min_interval_for_queries([], [1, 2, 3])</code> should return <code>[-1, -1, -1]</code></li>
