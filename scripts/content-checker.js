@@ -6,6 +6,7 @@ const os = require("os");
 const path = require("path");
 const { execFile } = require("child_process");
 const yaml = require("js-yaml");
+const { parseTestOutput, toTestState } = require("../public/js/test-results");
 
 const DEFAULT_TIMEOUT_MS = 20000;
 
@@ -67,6 +68,9 @@ function metadataErrors(data) {
 	) {
 		errors.push("hints must be a list of non-empty strings");
 	}
+	if (data.checkpoint === true && data.hints !== undefined) {
+		errors.push("checkpoint lessons must not have hints");
+	}
 	for (const flag of ["checkpoint", "rich_test_results"]) {
 		if (data[flag] !== undefined && typeof data[flag] !== "boolean") {
 			errors.push(`${flag} must be true or false`);
@@ -109,25 +113,8 @@ function runPython(python, cwd, script, timeoutMs) {
 	});
 }
 
-// Mirrors the front-end: stdout is either one JSON object of test ID → result,
-// or anything else (the raw-output fallback).
-function parseResults(stdout) {
-	let parsed;
-	try {
-		parsed = JSON.parse(stdout);
-	} catch (e) {
-		return null;
-	}
-	if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
-		return null;
-	}
-	return parsed;
-}
-
-function isPassed(value) {
-	if (value === true) return true;
-	return value !== null && typeof value === "object" && value.passed === true;
-}
+const isPassed = (results, id) =>
+	results[id] !== undefined && toTestState(id, results[id]).status === "passed";
 
 async function runExercise({ group, commonGroups, lessonDir, mainFile, replacement, python, timeoutMs }) {
 	const workDir = fs.mkdtempSync(path.join(os.tmpdir(), "content-check-"));
@@ -208,11 +195,16 @@ async function checkLesson(lesson, options) {
 				timeoutMs: options.timeoutMs,
 			});
 
-		const listed = listedTestIds(body);
+		const listedIds = listedTestIds(body);
 
 		const starterRun = await run(null);
 		if (starterRun.timedOut) {
 			fail("starter code run timed out");
+			continue;
+		}
+		const starter = parseTestOutput(starterRun.stdout);
+		if (!starter.isJson && starterRun.stderr !== "") {
+			fail(`starter run crashed without printing a JSON result: ${summarize(starterRun)}`);
 			continue;
 		}
 
@@ -220,32 +212,33 @@ async function checkLesson(lesson, options) {
 		const reference = path.join(lesson.dir, "files", `solution${extension}`);
 		if (!fs.existsSync(reference)) continue;
 
-		const starterResults = parseResults(starterRun.stdout);
 		if (
-			starterResults !== null &&
-			[...listed].every((id) => isPassed(starterResults[id]))
+			starter.isJson &&
+			listedIds.size > 0 &&
+			[...listedIds].every((id) => isPassed(starter.results, id))
 		) {
 			fail("starter code passes every test; at least one should fail");
 		}
 
 		const referenceRun = await run(reference);
-		const referenceResults = parseResults(referenceRun.stdout);
 		if (referenceRun.timedOut) {
 			fail("reference solution run timed out");
 			continue;
 		}
-		if (referenceResults === null) {
+		const referenceOutput = parseTestOutput(referenceRun.stdout);
+		if (!referenceOutput.isJson) {
 			fail(`reference solution run did not print a JSON result: ${summarize(referenceRun)}`);
 			continue;
 		}
-		const reported = new Set(Object.keys(referenceResults).map(Number));
-		const allIds = [...new Set([...listed, ...reported])].sort((a, b) => a - b);
+		const referenceResults = referenceOutput.results;
+		const reportedIds = new Set(Object.keys(referenceResults).map(Number));
+		const allIds = [...new Set([...listedIds, ...reportedIds])].sort((a, b) => a - b);
 		for (const id of allIds) {
-			if (!listed.has(id)) {
+			if (!listedIds.has(id)) {
 				fail("test file reports this test ID but the lesson does not list it", id);
-			} else if (!reported.has(id)) {
+			} else if (!reportedIds.has(id)) {
 				fail("lesson lists this test ID but the test file does not report it", id);
-			} else if (!isPassed(referenceResults[id])) {
+			} else if (!isPassed(referenceResults, id)) {
 				fail("reference solution fails this test", id);
 			}
 		}
@@ -273,7 +266,7 @@ async function mapWithConcurrency(items, limit, fn) {
 }
 
 async function checkCourses(coursesDir, options = {}) {
-	const resolved = {
+	const runOptions = {
 		python: options.python || process.env.PYTHON || "python3",
 		timeoutMs: options.timeoutMs || DEFAULT_TIMEOUT_MS,
 	};
@@ -281,7 +274,7 @@ async function checkCourses(coursesDir, options = {}) {
 	const perLesson = await mapWithConcurrency(
 		lessons,
 		options.concurrency || os.cpus().length,
-		(lesson) => checkLesson(lesson, resolved)
+		(lesson) => checkLesson(lesson, runOptions)
 	);
 	return { errors: perLesson.flat(), lessonsChecked: lessons.length };
 }

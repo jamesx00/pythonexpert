@@ -1,5 +1,6 @@
 import sys
 import json
+import signal
 import time
 
 from unittest.mock import patch
@@ -10,23 +11,38 @@ import main
 results = {}
 
 
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
 def check(test_id, call, expected, time_budget=None):
     """Runs one test and records a rich result: got/expected as Python reprs,
-    the exception if the learner's code raised, or timed_out if it ran longer
-    than time_budget seconds."""
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run)."""
     try:
-        start = time.perf_counter()
-        got = call()
-        elapsed = time.perf_counter() - start
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
     except Exception as e:
         results[test_id] = {
             "passed": False,
             "error": f"{type(e).__name__}: {e}",
             "expected": repr(expected),
         }
-        return
-    if time_budget is not None and elapsed > time_budget:
-        results[test_id] = {"passed": False, "timed_out": True}
         return
     results[test_id] = {
         "passed": got == expected,
@@ -47,9 +63,10 @@ for index, (args, expected) in enumerate(cases):
 
 # Performance test: 100,000 distinct even numbers, odd target, so no pair
 # exists and every element must be examined. Generated deterministically.
-# Budget: 1.0s. Measured locally (Python 3.12, laptop): set-based solution
-# ~0.01s; nested-loop solution doesn't finish in minutes. Calibrate against
-# the execution service and record its timings here.
+# Budget: 1.0s. Timings (local Python 3.12, NOT yet the execution service):
+# set-based solution ~0.004s; nested-loop solution interrupted at the 1.0s
+# budget (it needs ~5 billion pair checks). Real lessons must record timings
+# measured on the execution service here instead.
 big = list(range(0, 200_000, 2))
 check(6, lambda: main.has_pair_with_sum(big, 7), False, time_budget=1.0)
 

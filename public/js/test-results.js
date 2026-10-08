@@ -24,12 +24,17 @@
 		return outputText;
 	}
 
-	function parseJson(text) {
+	// Parses a test file's stdout: one JSON object of test ID → result. When it
+	// isn't JSON, `isJson` is false and the page falls back to raw output.
+	function parseTestOutput(stdout) {
+		let value;
 		try {
-			return { ok: true, value: JSON.parse(text) };
+			value = JSON.parse(stdout);
 		} catch (e) {
-			return { ok: false };
+			return { isJson: false, results: {} };
 		}
+		const results = value !== null && typeof value === "object" ? value : {};
+		return { isJson: true, results };
 	}
 
 	const MAX_VALUE_LENGTH = 200;
@@ -66,33 +71,37 @@
 		return state;
 	}
 
+	function testsDisplay(tests, passed, note = "") {
+		const passedCount = tests.filter((t) => t.status === "passed").length;
+		return {
+			mode: "tests",
+			tests,
+			panelText: `##### Tests #####\nTest Result: ${passedCount}/${tests.length}\n${note}`,
+			passed: passed && passedCount === tests.length,
+		};
+	}
+
 	// `richResults` marks lessons whose test file uses the object result format.
 	// For those, a run killed by the service shows unreported tests as timed out.
 	function interpretTestRun(response, listedTestIds, options = {}) {
 		const run = response.run;
-		const parsed = parseJson(run.stdout);
+		const { isJson, results } = parseTestOutput(run.stdout);
 		const killed = run.signal === "SIGKILL";
 
 		if (options.richResults && killed) {
-			const results =
-				parsed.ok && parsed.value !== null && typeof parsed.value === "object"
-					? parsed.value
-					: {};
 			const tests = listedTestIds.map((id) =>
 				results[id] === undefined
 					? { id, status: "timed_out" }
 					: toTestState(id, results[id])
 			);
-			const passedCount = tests.filter((t) => t.status === "passed").length;
-			return {
-				mode: "tests",
+			return testsDisplay(
 				tests,
-				panelText: `##### Tests #####\nTest Result: ${passedCount}/${tests.length}\nThe run was stopped because it took too long.\n`,
-				passed: false,
-			};
+				false,
+				"The run was stopped because it took too long.\n"
+			);
 		}
 
-		if (!parsed.ok) {
+		if (!isJson) {
 			// Exercises whose test output isn't JSON pass when nothing went wrong.
 			return {
 				mode: "raw",
@@ -102,26 +111,20 @@
 					stderr: run.stderr,
 					signal: run.signal,
 				}),
-				passed: run.signal !== "SIGKILL" && run.stderr === "",
+				passed: !killed && run.stderr === "",
 			};
 		}
 
-		const results =
-			parsed.value !== null && typeof parsed.value === "object"
-				? parsed.value
-				: {};
 		const tests = listedTestIds.map((id) => toTestState(id, results[id]));
-		const passedCount = tests.filter((t) => t.status === "passed").length;
-
-		return {
-			mode: "tests",
-			tests,
-			panelText: `##### Tests #####\nTest Result: ${passedCount}/${tests.length}\n`,
-			passed: run.signal !== "SIGKILL" && passedCount === tests.length,
-		};
+		return testsDisplay(tests, !killed);
 	}
 
-	const api = { interpretTestRun, formatOutputText };
+	const api = {
+		interpretTestRun,
+		formatOutputText,
+		parseTestOutput,
+		toTestState,
+	};
 	if (typeof module !== "undefined" && module.exports) {
 		module.exports = api;
 	} else {

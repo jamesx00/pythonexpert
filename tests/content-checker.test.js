@@ -90,3 +90,32 @@ test("invalid lesson metadata is reported field by field", async () => {
 	);
 	assert.ok(report.errors.every((error) => error.lesson === "demo/1.1-add"));
 });
+
+test("a lesson without a reference whose test file crashes instead of printing a result is reported", async () => {
+	const report = await checkCourses(fixture("test-file-crashes"));
+	assert.deepStrictEqual(report.errors, [
+		{
+			lesson: "demo/1.1-add",
+			message:
+				"starter run crashed without printing a JSON result: RuntimeError: broken test file",
+		},
+	]);
+});
+
+test("a checkpoint lesson with hints is reported", async () => {
+	const report = await checkCourses(fixture("checkpoint-with-hints"));
+	assert.deepStrictEqual(report.errors, [
+		{ lesson: "demo/1.1-add", message: "checkpoint lessons must not have hints" },
+	]);
+});
+
+test("a lesson with a reference but no listed tests reports the unlisted IDs, not a passing starter", async () => {
+	const report = await checkCourses(fixture("no-listed-tests"));
+	assert.deepStrictEqual(
+		report.errors.map((error) => error.message),
+		[
+			"test file reports this test ID but the lesson does not list it",
+			"test file reports this test ID but the lesson does not list it",
+		]
+	);
+});

@@ -57,7 +57,7 @@ rich_test_results: true     # the test file reports rich results (see below)
 ```
 
 - **Hints** are Markdown. Quote a hint that starts with a backtick or contains `: ` so the YAML stays valid. The full solution is the existing Solution reveal, so hints stop at the template. In Mixed Practice problems, the first hint names the pattern.
-- **Checkpoint** problems have no `hints`.
+- **Checkpoint** problems have no `hints` (the content checker enforces this).
 
 #### Solution walkthroughs
 
@@ -90,7 +90,7 @@ Expected values are literal data in the test file, not computed by a reference i
 
 #### Performance tests
 
-A performance test is a normal test ID whose input is generated deterministically (a fixed formula or seed) and run under a time budget measured inside the test file. Say the input size in the test description. Set the budget well above an efficient solution's runtime and well below a brute-force solution's runtime, measured on the execution service, and record both timings in a comment next to the budget.
+A performance test is a normal test ID whose input is generated deterministically (a fixed formula or seed) and run under a time budget enforced inside the test file: `check(..., time_budget=1.0)` interrupts the call with `SIGALRM` once the budget runs out and reports `timed_out`, so the other tests still report their results. Say the input size in the test description. Set the budget well above an efficient solution's runtime and well below a brute-force solution's runtime, measured on the execution service, and record both timings in a comment next to the budget.
 
 ---
 
