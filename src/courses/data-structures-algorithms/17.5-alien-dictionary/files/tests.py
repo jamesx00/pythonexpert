@@ -1,76 +1,118 @@
 import sys
 import json
-from collections import deque
+import signal
 
 from unittest.mock import patch
 patch('builtins.print').start()
 
 import main
 
-def get_constraints(words):
-    letters = set()
-    for w in words:
-        letters.update(w)
-    edges = set()
-    prefix_invalid = False
-    for w1, w2 in zip(words, words[1:]):
-        min_len = min(len(w1), len(w2))
-        found = False
-        for i in range(min_len):
-            if w1[i] != w2[i]:
-                edges.add((w1[i], w2[i]))
-                found = True
-                break
-        if not found and len(w1) > len(w2):
-            prefix_invalid = True
-    return letters, edges, prefix_invalid
-
-def has_cycle(letters, edges):
-    graph = {c: [] for c in letters}
-    indegree = {c: 0 for c in letters}
-    for a, b in edges:
-        graph[a].append(b)
-        indegree[b] += 1
-    q = deque([c for c in letters if indegree[c] == 0])
-    visited_count = 0
-    while q:
-        c = q.popleft()
-        visited_count += 1
-        for nxt in graph[c]:
-            indegree[nxt] -= 1
-            if indegree[nxt] == 0:
-                q.append(nxt)
-    return visited_count != len(letters)
-
-def is_valid_order(words, order):
-    letters, edges, prefix_invalid = get_constraints(words)
-    if prefix_invalid or has_cycle(letters, edges):
-        return order == ""
-    if not order or sorted(order) != sorted(letters):
-        return False
-    pos = {c: i for i, c in enumerate(order)}
-    for a, b in edges:
-        if pos[a] >= pos[b]:
-            return False
-    return True
-
-inputs = [
-    (["z", "x"],),
-    (["z", "x", "z"],),
-    (["abc", "ab"],),
-    (["ac", "ab", "zc", "zb"],),
-    (["wrt", "wrf", "er", "ett", "rftt"],),
-    (["abc", "abd", "abe"],),
-]
-
 results = {}
 
-for index, i in enumerate(inputs):
+
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
+def _show(value):
+    text = repr(value)
+    return text if len(text) <= 300 else text[:300] + "..."
+
+
+def check(test_id, call, expected, time_budget=None, normalize=None):
+    """Runs one test and records a rich result: got/expected as Python reprs,
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run). normalize, if given, is applied to both
+    values before comparing, for answers whose order doesn't matter."""
     try:
-        student_result = main.alien_order(*i)
-        assert is_valid_order(i[0], student_result)
-        results[index + 1] = True
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
+    except Exception as e:
+        results[test_id] = {
+            "passed": False,
+            "error": f"{type(e).__name__}: {e}",
+            "expected": _show(expected),
+        }
+        return
+    try:
+        if normalize is None:
+            passed = got == expected
+        else:
+            passed = normalize(got) == normalize(expected)
     except Exception:
-        results[index + 1] = False
+        passed = False
+    results[test_id] = {
+        "passed": bool(passed),
+        "got": _show(got),
+        "expected": _show(expected),
+    }
+
+
+
+
+def rules(words):
+    """The letters in words, and the (before, after) pairs that comparing
+    each word with the next one forces."""
+    letters = set("".join(words))
+    pairs = set()
+    for w1, w2 in zip(words, words[1:]):
+        for a, b in zip(w1, w2):
+            if a != b:
+                pairs.add((a, b))
+                break
+    return letters, pairs
+
+
+def consistent_with(words):
+    """A normalize function for one case. Any order that holds each letter
+    once and puts every forced pair the right way round counts as the same
+    answer. Anything else, such as "", is compared as it is."""
+    letters, pairs = rules(words)
+
+    def normalize(order):
+        if not isinstance(order, str) or len(order) != len(letters) or set(order) != letters:
+            return order
+        pos = {c: i for i, c in enumerate(order)}
+        if all(pos[a] < pos[b] for a, b in pairs):
+            return "a valid order"
+        return order
+    return normalize
+
+
+cases = [
+    (["z", "x"], "zx"),
+    (["z", "x", "z"], ""),
+    (["abc", "ab"], ""),
+    (["ac", "ab", "zc", "zb"], "acbz"),
+    (["wrt", "wrf", "er", "ett", "rftt"], "wertf"),
+    (["abc", "abd", "abe"], "abcde"),
+    (["ba", "bc", "ac", "cab"], "bac"),
+    (["a", "b", "ca", "cb", "a"], ""),
+]
+for index, (words, expected) in enumerate(cases):
+    check(index + 1, lambda: main.alien_order(words), expected, normalize=consistent_with(words))
+
+# Performance test: the 26 letters as one-letter words, from "z" down to
+# "a". The only valid order is the alphabet reversed.
+# Budget: 1.0s. Execution service: topological sort <0.001s; trying every
+# ordering of the letters starts from "abc...z" and would have to go
+# through about 26! orderings, so it's interrupted at the budget.
+big = [chr(c) for c in range(ord("z"), ord("a") - 1, -1)]
+check(9, lambda: main.alien_order(big), "zyxwvutsrqponmlkjihgfedcba", time_budget=1.0, normalize=consistent_with(big))
 
 sys.stdout.write(json.dumps(results))

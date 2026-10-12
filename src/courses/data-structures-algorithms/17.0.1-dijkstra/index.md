@@ -3,6 +3,14 @@ lesson_name: "Warm-up: Dijkstra's Algorithm"
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(E log V)
+  space: O(V + E)
+hints:
+  - "BFS always expands the node with the fewest edges. With weights, which node should you expand next instead, and what data structure hands it to you quickly?"
+  - "Use the *Dijkstra* template from *Advanced Graphs Basics*: a min-heap of `(cost_so_far, node)`. Pop the cheapest, skip it if `d > dist[node]` (a stale entry), and push a neighbour whenever `d + w < dist[v]` improves it. Turn any `inf` left at the end into `-1`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -42,8 +50,6 @@ dijkstra(3, [[0, 1, 4], [0, 2, 1], [2, 1, 2]], 0)   # -> [0, 3, 1]
 
 The direct edge `0 -> 1` costs `4`, but `0 -> 2 -> 1` costs only `1 + 2 = 3`. Plain BFS can't see this because it counts edges, not costs.
 
-**Hint:** it's BFS with a min-heap. Store `(cost_so_far, node)` in the heap and always pop the cheapest. When you pop a node whose cost is worse than the best already recorded in `dist`, it's a stale entry, so skip it. Otherwise, try to improve each neighbour: if `d + w < dist[v]`, update it and push it.
-
 ---
 
 ### Tests
@@ -55,6 +61,7 @@ The direct edge `0 -> 1` costs `4`, but `0 -> 2 -> 1` costs only `1 + 2 = 3`. Pl
 <li id="test-4"><code>dijkstra(4, [[0, 1, 1], [1, 2, 1], [2, 3, 1], [0, 3, 10]], 0)</code> should return <code>[0, 1, 2, 3]</code></li>
 <li id="test-5"><code>dijkstra(4, [[0, 1, 1], [1, 2, 1], [2, 3, 1], [0, 3, 10]], 2)</code> should return <code>[-1, -1, 0, 1]</code></li>
 <li id="test-6"><code>dijkstra(5, [[0, 1, 2], [0, 2, 6], [1, 2, 3], [1, 3, 8], [2, 3, 0], [3, 4, 1]], 0)</code> should return <code>[0, 2, 5, 5, 6]</code></li>
+<li id="test-7">Performance: 20,000 nodes in a line with about 40,000 edges, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -82,6 +89,18 @@ def dijkstra(n, edges, start):
     return [x if x != float("inf") else -1 for x in dist]
 ```
 
-Because weights are non-negative, the cheapest node in the heap can never be improved later, so its distance is final when it's popped. A node can be pushed several times as better routes are found. The `d > dist[node]` check throws away the outdated copies. Runtime is `O(E log V)`. *Network Delay Time* is this function plus `max(dist)`.
+Here `V` is the number of nodes and `E` the number of edges.
+
+**Brute force:** Bellman-Ford. Go over every edge and relax it (`dist[v] = min(dist[v], dist[u] + w)`), and repeat until nothing changes. That can take `V - 1` rounds, so it's `O(V · E)`. Another slow version is Dijkstra that finds the closest unfinished node with a linear scan, which is `O(V²)`.
+
+**Bottleneck:** both spend most of their time on nodes whose distance is already final, or looking for the next closest node.
+
+**Optimal idea:** keep the candidates in a min-heap keyed by cost, so the cheapest one comes out in `O(log V)`. Each time a node's cost improves, push the new cost. A node can sit in the heap several times. When an old, more expensive copy comes out, skip it.
+
+**Why it's correct:** weights are never negative, so a path can only get more expensive as it grows. When the cheapest entry in the heap is popped, any other route to that node would have to go through a node that costs at least as much already. So its distance is final, and relaxing its edges from that final distance is safe.
+
+**Complexity:** `O(E log V)` time: each edge pushes at most one heap entry, and each push or pop costs `O(log E) = O(log V)`. `O(V + E)` extra space for the graph, `dist` and the heap.
+
+**Common mistakes:** marking a node done when it's *pushed* instead of when it's *popped*, which can lock in a cost before a cheaper route shows up, as in test 1. Forgetting the stale-entry check, which still gives the right answer but redoes work. Returning `inf` instead of `-1` for nodes you can't reach.
 
 </details>

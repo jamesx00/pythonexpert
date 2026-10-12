@@ -1,26 +1,23 @@
-import heapq
-
-
 def min_cost_connect_points(points):
     n = len(points)
-    if n <= 1:
-        return 0
-
-    visited = [False] * n
-    min_heap = [(0, 0)]
+    in_tree = [False] * n
+    # best[v]: cheapest edge from the tree to point v found so far
+    best = [float("inf")] * n
+    best[0] = 0
     total = 0
-    connected = 0
 
-    while min_heap and connected < n:
-        cost, u = heapq.heappop(min_heap)
-        if visited[u]:
-            continue
-        visited[u] = True
-        total += cost
-        connected += 1
+    for _ in range(n):
+        u = -1
         for v in range(n):
-            if not visited[v]:
-                dist = abs(points[u][0] - points[v][0]) + abs(points[u][1] - points[v][1])
-                heapq.heappush(min_heap, (dist, v))
+            if not in_tree[v] and (u == -1 or best[v] < best[u]):
+                u = v
+        in_tree[u] = True
+        total += best[u]
+        ux, uy = points[u]
+        for v in range(n):
+            if not in_tree[v]:
+                d = abs(ux - points[v][0]) + abs(uy - points[v][1])
+                if d < best[v]:
+                    best[v] = d
 
     return total

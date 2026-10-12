@@ -3,6 +3,15 @@ lesson_name: Reconstruct Itinerary
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: hard
+target_complexity:
+  time: O(E log E)
+  space: O(E)
+hints:
+  - "If you always take the alphabetically smallest ticket, you can get stuck at an airport with tickets left over. Which part of the route are you sure about at the moment you get stuck?"
+  - "You need an Eulerian path (every edge exactly once), from *Spotting It* and *Tips & Gotchas* in *Advanced Graphs Basics*: Hierholzer's algorithm. Walk the smallest unused ticket each time. When an airport has no tickets left, it's the *last* stop among those still to place, so add it to the route then, and reverse the route at the end."
+  - "Template: build `graph[src]` as a min-heap of destinations. `stack = [\"JFK\"]`, `route = []`. While `stack`: while `graph[stack[-1]]` has tickets, push `heappop(graph[stack[-1]])`. Then `route.append(stack.pop())`. Return `route[::-1]`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -47,6 +56,7 @@ For example, given tickets `[["JFK", "SFO"], ["SFO", "ATL"], ["ATL", "JFK"], ["J
 <li id="test-4"><code>find_itinerary([["JFK", "A"], ["A", "B"], ["B", "JFK"]])</code> should return <code>["JFK", "A", "B", "JFK"]</code></li>
 <li id="test-5"><code>find_itinerary([["JFK", "B"], ["JFK", "A"], ["B", "JFK"]])</code> should return <code>["JFK", "B", "JFK", "A"]</code></li>
 <li id="test-6"><code>find_itinerary([["JFK", "SFO"]])</code> should return <code>["JFK", "SFO"]</code></li>
+<li id="test-7">Performance: a chain of 26 airports, each with a round trip to a side airport, 77 tickets, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -70,5 +80,19 @@ def find_itinerary(tickets):
         route.append(stack.pop())
     return route[::-1]
 ```
+
+Here `E` is the number of tickets.
+
+**Brute force:** backtracking. Sort the tickets, and from each airport try the smallest unused ticket first. If you get stuck with tickets left, undo the last ticket and try the next one. The first route that uses every ticket is the answer. It works, but a dead end can show up long after the wrong choice, and then you undo and retry everything in between. In the performance test that adds up to about `2^25` routes.
+
+**Bottleneck:** you can't tell that a ticket is the wrong choice until much later.
+
+**Optimal idea:** Hierholzer's algorithm never undoes anything. Follow the smallest ticket until you get stuck. An airport where you get stuck has no tickets left, so it has to come after everything you still need to place: add it to the *end* of the route. Then step back one airport and keep using its remaining tickets. The route is built back to front, so reverse it at the end.
+
+**Why it's correct:** each ticket is popped from a heap once, so each is used once. In a valid route, every airport except the last one has a ticket out for each ticket in. So the first time you get stuck, you're at the airport where the route ends, and it's right to place it last. The same goes for a detour you skipped: when you step back to an airport that still has tickets, they form a loop back to it, and that loop is placed just before the part already placed. The smallest ticket is taken first wherever a full route is still possible, which gives the alphabetically smallest itinerary.
+
+**Complexity:** `O(E log E)` time: each ticket is pushed and popped from a heap once. `O(E)` extra space for the graph, the stack and the route.
+
+**Common mistakes:** adding an airport to the route when you *arrive* there instead of when you get stuck, which gives `["JFK", "KUL", "NRT", "JFK"]` for test 3. Forgetting to reverse the route. Using a plain list and `pop(0)` for the destinations, which works but costs `O(E)` per ticket.
 
 </details>

@@ -1,51 +1,94 @@
 import sys
 import json
-import heapq
-from collections import defaultdict
+import signal
 
 from unittest.mock import patch
 patch('builtins.print').start()
 
 import main
 
-def test_network_delay_time(times, n, start):
-    graph = defaultdict(list)
-    for u, v, w in times:
-        graph[u].append((v, w))
-
-    dist = {}
-    min_heap = [(0, start)]
-
-    while min_heap:
-        d, node = heapq.heappop(min_heap)
-        if node in dist:
-            continue
-        dist[node] = d
-        for nei, w in graph[node]:
-            if nei not in dist:
-                heapq.heappush(min_heap, (d + w, nei))
-
-    if len(dist) != n:
-        return -1
-    return max(dist.values())
-
-inputs = [
-    ([[1, 2, 2], [1, 3, 5], [2, 3, 1], [3, 4, 1]], 4, 1),
-    ([[2, 1, 1], [2, 3, 1], [3, 4, 1]], 4, 2),
-    ([[1, 2, 1]], 2, 1),
-    ([[1, 2, 1]], 2, 2),
-    ([[1, 2, 1], [2, 3, 2], [1, 3, 5]], 3, 1),
-    ([[1, 2, 1]], 3, 1),
-]
-
 results = {}
 
-for index, i in enumerate(inputs):
+
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
+def _show(value):
+    text = repr(value)
+    return text if len(text) <= 300 else text[:300] + "..."
+
+
+def check(test_id, call, expected, time_budget=None, normalize=None):
+    """Runs one test and records a rich result: got/expected as Python reprs,
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run). normalize, if given, is applied to both
+    values before comparing, for answers whose order doesn't matter."""
     try:
-        result = test_network_delay_time(*i)
-        assert main.network_delay_time(*i) == result
-        results[index + 1] = True
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
+    except Exception as e:
+        results[test_id] = {
+            "passed": False,
+            "error": f"{type(e).__name__}: {e}",
+            "expected": _show(expected),
+        }
+        return
+    try:
+        if normalize is None:
+            passed = got == expected
+        else:
+            passed = normalize(got) == normalize(expected)
     except Exception:
-        results[index + 1] = False
+        passed = False
+    results[test_id] = {
+        "passed": bool(passed),
+        "got": _show(got),
+        "expected": _show(expected),
+    }
+
+
+
+
+cases = [
+    (([[1, 2, 2], [1, 3, 5], [2, 3, 1], [3, 4, 1]], 4, 1), 4),
+    (([[2, 1, 1], [2, 3, 1], [3, 4, 1]], 4, 2), 2),
+    (([[1, 2, 1]], 2, 1), 1),
+    (([[1, 2, 1]], 2, 2), -1),
+    (([[1, 2, 1], [2, 3, 2], [1, 3, 5]], 3, 1), 3),
+    (([[1, 2, 1]], 3, 1), -1),
+]
+for index, (args, expected) in enumerate(cases):
+    check(index + 1, lambda: main.network_delay_time(*args), expected)
+
+# Performance test: 20,000 nodes in a line. Each node i has an edge to i + 1
+# taking 2 and an edge to i + 2 taking 3. Taking skip edges is cheaper, so
+# the last node, 20,000, is reached at 3 * 9,999 + 2 = 29,999.
+# The edges are listed from the far end backwards, so each round of
+# Bellman-Ford only settles about two more nodes.
+# Budget: 1.0s. Execution service: Dijkstra ~0.04s; Bellman-Ford is
+# interrupted at the budget.
+n = 20_000
+big_times = []
+for i in range(n - 1, 0, -1):
+    big_times.append([i, i + 1, 2])
+    if i + 2 <= n:
+        big_times.append([i, i + 2, 3])
+check(7, lambda: main.network_delay_time(big_times, n, 1), 29_999, time_budget=1.0)
 
 sys.stdout.write(json.dumps(results))
