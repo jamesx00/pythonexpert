@@ -3,6 +3,15 @@ lesson_name: Set Matrix Zeroes
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(m * n)
+  space: O(m + n)
+hints:
+  - "If you zero cells as soon as you find a `0`, the new zeros look just like the original ones. How can you tell them apart?"
+  - "Find all the zeros first, then write. Only the row and column numbers matter, so two sets are enough. *In-place markers* in *Math & Geometry Basics* shows how to shrink even those to `O(1)` space."
+  - "Template: one pass over the grid adds `r` to `zero_rows` and `c` to `zero_cols` for every `0`. A second pass sets `matrix[r][c] = 0` when `r in zero_rows or c in zero_cols`. Return `matrix`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -58,6 +67,9 @@ the `0` sits at row 1, column 1, so row 1 and column 1 both get zeroed out, prod
 <li id="test-4"><code>set_zeroes([[1, 0, 3], [4, 5, 6], [0, 8, 9]])</code> should return <code>[[0, 0, 0], [0, 0, 6], [0, 0, 0]]</code></li>
 <li id="test-5"><code>set_zeroes([[5]])</code> should return <code>[[5]]</code></li>
 <li id="test-6"><code>set_zeroes([[0]])</code> should return <code>[[0]]</code></li>
+<li id="test-7"><code>set_zeroes([[1, 2, 3, 4], [5, 0, 7, 0], [9, 10, 11, 12]])</code> should return <code>[[1, 0, 3, 0], [0, 0, 0, 0], [9, 0, 11, 0]]</code></li>
+<li id="test-8">after <code>m = [[1, 2, 3], [4, 0, 6], [7, 8, 9]]</code> and <code>set_zeroes(m)</code>, <code>m</code> itself should be <code>[[1, 0, 3], [0, 0, 0], [7, 0, 9]]</code></li>
+<li id="test-9">Performance: a 600x600 grid with 40,000 zeros, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -78,5 +90,19 @@ def set_zeroes(matrix):
                 matrix[r][c] = 0
     return matrix
 ```
+
+Here `m` and `n` are the number of rows and columns.
+
+**Brute force:** copy the grid, then for every `0` in the copy, zero its whole row and column in `matrix`. Each `0` costs `O(m + n)`, so a grid full of zeros takes `O((m * n) * (m + n))`. Test 9 has 40,000 zeros in a 600x600 grid, about 48 million writes.
+
+**Bottleneck:** many zeros share a row or a column, and each one zeros it again.
+
+**Optimal idea:** a row ends up all `0` exactly when it holds at least one `0`, and the same goes for columns. So one pass records which rows and columns have a `0`, and a second pass zeros each cell whose row or column was recorded.
+
+**Why it's correct:** the first pass only reads, so it sees the original zeros and nothing else. A cell must become `0` exactly when its row or its column had an original `0`, and that's what the second pass checks.
+
+**Complexity:** `O(m * n)` time, two passes over the grid. `O(m + n)` extra space for the two sets. You can get to `O(1)` by storing the flags in the first row and first column themselves, plus one variable for whether the first row had a `0` (see *In-place markers* in *Math & Geometry Basics*).
+
+**Common mistakes:** zeroing rows and columns during the first scan, so the new zeros spread and the whole grid ends up `0`. Building and returning a new grid, which leaves `matrix` unchanged (test 8).
 
 </details>
