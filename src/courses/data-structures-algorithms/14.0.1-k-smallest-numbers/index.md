@@ -3,6 +3,14 @@ lesson_name: "Warm-up: K Smallest Numbers"
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(n + k log n)
+  space: O(n)
+hints:
+  - "A min-heap always has its smallest item at the root. What do you get if you pop it `k` times?"
+  - "Copy `nums`, turn the copy into a heap with `heapq.heapify` (see the `heapq` calls at the top of *Heap / Priority Queue Basics*), then call `heapq.heappop` `k` times and collect the results in order."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -38,8 +46,6 @@ For example, `k_smallest([5, 1, 4, 2, 3], 2)` returns `[1, 2]`.
 
 Use the `heapq` module and practise the core operations: `heapify` turns the list into a min-heap in `O(n)`, and each `heappop` removes and returns the current smallest in `O(log n)`.
 
-**Hint:** copy the list, `heapify` it, then pop `k` times.
-
 ---
 
 ### Tests
@@ -65,6 +71,16 @@ def k_smallest(nums, k):
     return [heapq.heappop(heap) for _ in range(k)]
 ```
 
-`heapify` costs `O(n)` and each of the `k` pops costs `O(log n)`, for `O(n + k log n)` total. Copying first (`list(nums)`) avoids scrambling the caller's list, because `heapify` works in place. When the input is a stream too big to hold, use the other approach from the basics lesson instead: a size-`k` **max**-heap (negated values).
+**Brute force:** `sorted(nums)[:k]`. That's `O(n log n)`, and it's fine here. The point of this warm-up is the heap operations.
+
+**Bottleneck:** sorting puts all `n` numbers in order, but you only need the first `k` of them.
+
+**Optimal idea:** `heapify` builds a min-heap in `O(n)`. Each `heappop` then removes the current smallest in `O(log n)`, so `k` pops give the `k` smallest in ascending order.
+
+**Why it's correct:** the root of a min-heap is always its smallest item. After a pop the heap is fixed up, so the next pop returns the next smallest. Popping `k` times returns the `k` smallest, smallest first.
+
+**Complexity:** `O(n + k log n)` time: `O(n)` for `heapify` plus `k` pops. `O(n)` extra space for the copy.
+
+**Common mistakes:** calling `heapify(nums)` on the caller's list, which reorders it in place. Reading `heap[:k]` instead of popping: a heap is only partly ordered, so the first `k` slots aren't the `k` smallest in order. For a stream too big to hold, keep a size-`k` **max**-heap instead (negated values).
 
 </details>

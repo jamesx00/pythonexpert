@@ -1,21 +1,36 @@
+import heapq
+from collections import defaultdict
+
+
 class Twitter:
     def __init__(self):
-        self.tweets = []  # list of (time, user_id, tweet_id)
         self.time = 0
-        self.following = {}  # user_id -> set of followee_ids
+        self.tweets = defaultdict(list)  # user_id -> [(time, tweet_id), ...]
+        self.following = defaultdict(set)  # user_id -> followee_ids
 
     def post_tweet(self, user_id, tweet_id):
-        self.tweets.append((self.time, user_id, tweet_id))
+        self.tweets[user_id].append((self.time, tweet_id))
         self.time += 1
 
     def get_news_feed(self, user_id):
-        watching = self.following.get(user_id, set()) | {user_id}
-        feed = [t for t in self.tweets if t[1] in watching]
-        feed.sort(key=lambda t: t[0], reverse=True)
-        return [t[2] for t in feed[:10]]
+        heap = []  # newest unread tweet of each user: (-time, tweet_id, user, index)
+        for uid in self.following[user_id] | {user_id}:
+            tweets = self.tweets[uid]
+            if tweets:
+                time, tweet_id = tweets[-1]
+                heap.append((-time, tweet_id, uid, len(tweets) - 1))
+        heapq.heapify(heap)
+        feed = []
+        while heap and len(feed) < 10:
+            _, tweet_id, uid, i = heapq.heappop(heap)
+            feed.append(tweet_id)
+            if i > 0:
+                time, older_id = self.tweets[uid][i - 1]
+                heapq.heappush(heap, (-time, older_id, uid, i - 1))
+        return feed
 
     def follow(self, user_id, followee_id):
-        self.following.setdefault(user_id, set()).add(followee_id)
+        self.following[user_id].add(followee_id)
 
     def unfollow(self, user_id, followee_id):
-        self.following.setdefault(user_id, set()).discard(followee_id)
+        self.following[user_id].discard(followee_id)

@@ -2,7 +2,9 @@ import heapq
 
 
 def k_closest(points, k):
-    heap = [(x ** 2 + y ** 2, x, y) for x, y in points]
-    heapq.heapify(heap)
-    closest = heapq.nsmallest(k, heap)
-    return [[x, y] for d, x, y in closest]
+    heap = []  # max-heap of the k closest so far: (-distance, x, y)
+    for x, y in points:
+        heapq.heappush(heap, (-(x * x + y * y), x, y))
+        if len(heap) > k:
+            heapq.heappop(heap)  # drop the farthest
+    return [[x, y] for _, x, y in heap]

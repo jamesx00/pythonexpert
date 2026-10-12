@@ -3,6 +3,15 @@ lesson_name: K Closest Points to Origin
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n log k)
+  space: O(k)
+hints:
+  - "Comparing distances doesn't need the square root. And while scanning, which point would you throw out first if you could only keep `k`?"
+  - "Keep the `k` closest points so far in a **max**-heap keyed by squared distance, so the farthest of them is at the root (*Top-k with a size-k heap* and *Max-heap by negating* in *Heap / Priority Queue Basics*). A closer point pushes it out."
+  - "Template: for each `[x, y]`, `heappush(heap, (-(x * x + y * y), x, y))`, and `heappop` if `len(heap) > k`. Return `[[x, y] for _, x, y in heap]`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -45,7 +54,7 @@ For example, given `points = [[1, 1], [4, 4], [0, 1], [3, 3]]` and `k = 2`, the 
 <li id="test-2"><code>k_closest([[3, 3], [5, -1], [-2, 4]], 1)</code> should return <code>[[3, 3]]</code></li>
 <li id="test-3"><code>k_closest([[0, 0], [1, 0], [2, 0]], 2)</code> should return <code>[[0, 0], [1, 0]]</code> (any order)</li>
 <li id="test-4"><code>k_closest([[-5, 4], [-6, -1], [3, 1]], 3)</code> should return <code>[[-5, 4], [-6, -1], [3, 1]]</code> (any order)</li>
-<li id="test-5"><code>k_closest([[1, 2], [-1, -2], [1, -2], [-1, 2]], 2)</code> should return 2 points, each with squared distance <code>5</code></li>
+<li id="test-5"><code>k_closest([[1, 2], [-1, -2], [1, -2], [-1, 2]], 2)</code> should return any 2 of the points, since all 4 are at squared distance <code>5</code></li>
 <li id="test-6"><code>k_closest([[7, 7]], 1)</code> should return <code>[[7, 7]]</code></li>
 </ul>
 
@@ -57,10 +66,24 @@ import heapq
 
 
 def k_closest(points, k):
-    heap = [(x ** 2 + y ** 2, x, y) for x, y in points]
-    heapq.heapify(heap)
-    closest = heapq.nsmallest(k, heap)
-    return [[x, y] for d, x, y in closest]
+    heap = []  # max-heap of the k closest so far: (-distance, x, y)
+    for x, y in points:
+        heapq.heappush(heap, (-(x * x + y * y), x, y))
+        if len(heap) > k:
+            heapq.heappop(heap)  # drop the farthest
+    return [[x, y] for _, x, y in heap]
 ```
+
+**Brute force:** sort all points by `x * x + y * y` and take the first `k`. That's `O(n log n)` and passes here. `heapq.nsmallest(k, points, key=...)` is a one-line `O(n log k)` alternative.
+
+**Bottleneck:** sorting orders all `n` points, but only the `k` closest are needed.
+
+**Optimal idea:** scan the points and keep the `k` closest so far in a max-heap of size `k`. The root is the farthest of them, so it's the one to drop when a closer point comes along.
+
+**Why it's correct:** after each point, the heap holds the `k` closest points seen so far. A popped point has at least `k` points at least as close, so it can't be in the answer. After the scan, the heap holds the `k` closest overall. Squared distance keeps the same order as distance, so no square root is needed.
+
+**Complexity:** `O(n log k)` time: one push and at most one pop per point on a heap of size `k + 1`. `O(k)` space for the heap.
+
+**Common mistakes:** a min-heap of size `k` (no negation), which pops the *closest* point and keeps the farthest. Using `math.sqrt`, which is slower and can round. Returning tuples `(x, y)` instead of lists `[x, y]`.
 
 </details>

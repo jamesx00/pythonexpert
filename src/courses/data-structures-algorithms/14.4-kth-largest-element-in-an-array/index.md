@@ -3,6 +3,15 @@ lesson_name: Kth Largest Element in an Array
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n log k)
+  space: O(k)
+hints:
+  - "Do you need the whole list in order, or just to know which value is the smallest of the top `k`?"
+  - "Use a size-`k` **min**-heap (*Top-k with a size-k heap* in *Heap / Priority Queue Basics*). After every value is pushed and the heap is trimmed back to `k`, the root is the k-th largest."
+  - "Template: `heapq.nlargest(k, nums)[-1]`, or by hand: push each value, `heappop` whenever `len(heap) > k`, and return `heap[0]`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -59,5 +68,17 @@ import heapq
 def find_kth_largest(nums, k):
     return heapq.nlargest(k, nums)[-1]
 ```
+
+**Brute force:** `sorted(nums, reverse=True)[k - 1]`. That's `O(n log n)`, and it passes here. A slower brute force removes the maximum `k - 1` times, which is `O(n·k)`.
+
+**Bottleneck:** sorting orders the whole list, but only the top `k` values matter.
+
+**Optimal idea:** keep the `k` largest values in a min-heap. `heapq.nlargest(k, nums)` does exactly that and returns them largest first, so the last one is the k-th largest.
+
+**Why it's correct:** once `k` values are in the heap, a value that gets popped has at least `k` values greater than or equal to it, so it isn't the k-th largest. Duplicates are separate heap entries, so they take separate ranks, as the problem asks.
+
+**Complexity:** `O(n log k)` time, `O(k)` extra space. Quickselect gets `O(n)` time on average, but `O(n²)` in the worst case.
+
+**Common mistakes:** removing duplicates with `set(nums)`, which breaks `[2, 2, 2, 2]` with `k = 3`. Using `nlargest(k, nums)[0]`, which is the largest value, not the k-th. Off-by-one with `sorted(nums)[k]` instead of `sorted(nums)[-k]`.
 
 </details>
