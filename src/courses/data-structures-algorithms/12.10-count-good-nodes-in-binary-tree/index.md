@@ -3,6 +3,15 @@ lesson_name: Count Good Nodes in Binary Tree
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n)
+  space: O(h)
+hints:
+  - "To decide if one node is good, you only need one number about the path above it. Which one?"
+  - "Use *Passing info down* from *Trees Basics*: pass the largest value seen so far on the path into each recursive call."
+  - "Template: `dfs(node, max_so_far)`: return for `None`; if `node.val >= max_so_far`, count it and set `max_so_far = node.val`; recurse into both children with `max_so_far`. Start with `dfs(root, float('-inf'))`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -68,5 +77,17 @@ def good_nodes(root):
     dfs(root, float('-inf'))
     return count[0]
 ```
+
+**Brute force:** for every node, walk the path from the root down to it and check that nothing on it is bigger. With parent pointers or stored paths that's `O(n * h)` time: `O(n^2)` for a chain.
+
+**Bottleneck:** paths to sibling nodes share all their earlier nodes, so their maximum is computed again and again.
+
+**Optimal idea:** carry the maximum of the path so far down the recursion. Each node compares itself to one number and passes the updated maximum to its children.
+
+**Why it's correct:** when `dfs` reaches a node, `max_so_far` is the largest value on the path from the root to its parent. The node is good exactly when no earlier value is bigger, that is when `node.val >= max_so_far`. Starting from minus infinity makes the root good.
+
+**Complexity:** `O(n)` time, each node is visited once. `O(h)` extra space for the call stack.
+
+**Common mistakes:** using `>` instead of `>=`, which says a node equal to the path maximum isn't good (the `3` under `3 -> 1` in the example is good). Storing the maximum in a shared variable, so one branch's update leaks into its sibling.
 
 </details>

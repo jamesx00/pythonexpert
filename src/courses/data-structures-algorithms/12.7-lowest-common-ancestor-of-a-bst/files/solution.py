@@ -32,10 +32,6 @@ def build_tree(values):
 
 
 def lowest_common_ancestor(root, p, q):
-    return None
-
-
-def lowest_common_ancestor(root, p, q):
     node = root
     while node:
         if p.val < node.val and q.val < node.val:

@@ -32,18 +32,14 @@ def build_tree(values):
 
 
 def kth_smallest(root, k):
-    return None
-
-
-def kth_smallest(root, k):
-    order = []
-
-    def inorder(node):
-        if node is None:
-            return
-        inorder(node.left)
-        order.append(node.val)
-        inorder(node.right)
-
-    inorder(root)
-    return order[k - 1]
+    stack = []
+    node = root
+    while True:
+        while node:
+            stack.append(node)
+            node = node.left
+        node = stack.pop()
+        k -= 1
+        if k == 0:
+            return node.val
+        node = node.right

@@ -3,6 +3,15 @@ lesson_name: Balanced Binary Tree
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(n)
+  space: O(h)
+hints:
+  - "To check one node you need the heights of its two subtrees. Can the same recursion that computes heights also report \"not balanced\"?"
+  - "Use *Return one thing, track another* from *Trees Basics*: return the height, or a special value like `-1` once any node below is unbalanced."
+  - "Template: `height(node)`: `0` for `None`; get `left` and `right`, returning `-1` if either is `-1` or `abs(left - right) > 1`; otherwise return `1 + max(left, right)`. Answer: `height(root) != -1`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -69,5 +78,17 @@ def is_balanced(root):
 
     return height(root) != -1
 ```
+
+**Brute force:** at every node, call a separate `height` function on both children and compare. Each call walks a whole subtree, so on a deep tree that's `O(n^2)` time.
+
+**Bottleneck:** the heights are recomputed for every ancestor.
+
+**Optimal idea:** compute heights bottom-up once, and let `-1` mean "something below is unbalanced". Once a `-1` appears, it is passed straight up.
+
+**Why it's correct:** a tree is balanced when every node is. The recursion checks the height difference at every node as it returns, and any failure turns into `-1`, which every ancestor passes up unchanged. If no node fails, the root gets a real height.
+
+**Complexity:** `O(n)` time, each node is visited once (and the walk stops early on the first failure). `O(h)` extra space for the call stack.
+
+**Common mistakes:** only comparing the root's two subtree heights. `[1, 2, 2, 3, None, None, 3, 4, None, None, 4]` has subtrees of the same height under the root but is unbalanced below it. Forgetting to pass `-1` up, so it gets mixed into `1 + max(...)` like a real height.
 
 </details>

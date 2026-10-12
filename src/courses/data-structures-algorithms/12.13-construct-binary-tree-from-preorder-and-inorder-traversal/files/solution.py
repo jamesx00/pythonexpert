@@ -25,19 +25,16 @@ def tree_to_list(root):
 
 
 def build_tree_from_traversals(preorder, inorder):
-    return None
+    index = {val: i for i, val in enumerate(inorder)}
+    next_root = iter(preorder)
 
+    def build(lo, hi):
+        if lo > hi:
+            return None
+        root = TreeNode(next(next_root))
+        mid = index[root.val]
+        root.left = build(lo, mid - 1)
+        root.right = build(mid + 1, hi)
+        return root
 
-def build_tree_from_traversals(preorder, inorder):
-    if not preorder:
-        return None
-    root_val = preorder[0]
-    root = TreeNode(root_val)
-    idx = inorder.index(root_val)
-    left_inorder = inorder[:idx]
-    right_inorder = inorder[idx + 1:]
-    left_preorder = preorder[1:1 + len(left_inorder)]
-    right_preorder = preorder[1 + len(left_inorder):]
-    root.left = build_tree_from_traversals(left_preorder, left_inorder)
-    root.right = build_tree_from_traversals(right_preorder, right_inorder)
-    return root
+    return build(0, len(inorder) - 1)

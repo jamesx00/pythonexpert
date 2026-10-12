@@ -51,10 +51,6 @@ def tree_to_list(root):
 
 
 def invert_tree(root):
-    return None
-
-
-def invert_tree(root):
     if root is None:
         return None
     root.left, root.right = invert_tree(root.right), invert_tree(root.left)

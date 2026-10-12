@@ -51,14 +51,6 @@ def tree_to_list(root):
 
 
 def serialize(root):
-    return ""
-
-
-def deserialize(data):
-    return None
-
-
-def serialize(root):
     values = []
 
     def dfs(node):

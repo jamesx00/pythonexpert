@@ -1,50 +1,125 @@
 import sys
 import json
+import signal
 
 from unittest.mock import patch
 patch('builtins.print').start()
 
 import main
 
-def _same(a, b):
-    if a is None and b is None:
-        return True
-    if a is None or b is None:
-        return False
-    return a.val == b.val and _same(a.left, b.left) and _same(a.right, b.right)
-
-def test_is_subtree(root_values, sub_values):
-    root = main.build_tree(root_values)
-    sub_root = main.build_tree(sub_values)
-
-    def helper(node):
-        if node is None:
-            return False
-        if _same(node, sub_root):
-            return True
-        return helper(node.left) or helper(node.right)
-
-    return helper(root)
-
-inputs = [
-    ([3, 4, 5, 1, 2], [4, 1, 2]),
-    ([3, 4, 5, 1, 2, None, None, None, None, 0], [4, 1, 2]),
-    ([1, 2, 3], [1, 2, 3]),
-    ([1, 2, 3], [2]),
-    ([1, 2, 3], [4]),
-    ([], [1]),
-]
-
 results = {}
 
-for index, i in enumerate(inputs):
+
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
+def _show(value):
+    text = repr(value)
+    return text if len(text) <= 300 else text[:300] + "..."
+
+
+def check(test_id, call, expected, time_budget=None, normalize=None):
+    """Runs one test and records a rich result: got/expected as Python reprs,
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run). normalize, if given, is applied to both
+    values before comparing, for answers whose order doesn't matter."""
     try:
-        result = test_is_subtree(*i)
-        root = main.build_tree(i[0])
-        sub_root = main.build_tree(i[1])
-        assert main.is_subtree(root, sub_root) == result
-        results[index + 1] = True
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
+    except Exception as e:
+        results[test_id] = {
+            "passed": False,
+            "error": f"{type(e).__name__}: {e}",
+            "expected": _show(expected),
+        }
+        return
+    try:
+        if normalize is None:
+            passed = got == expected
+        else:
+            passed = normalize(got) == normalize(expected)
     except Exception:
-        results[index + 1] = False
+        passed = False
+    results[test_id] = {
+        "passed": bool(passed),
+        "got": _show(got),
+        "expected": _show(expected),
+    }
+
+
+from collections import deque
+
+
+def build(values):
+    """Builds a tree of main.TreeNode nodes from a level-order list, where
+    None marks a missing child."""
+    if not values or values[0] is None:
+        return None
+    root = main.TreeNode(values[0])
+    queue = deque([root])
+    i = 1
+    while queue and i < len(values):
+        node = queue.popleft()
+        if values[i] is not None:
+            node.left = main.TreeNode(values[i])
+            queue.append(node.left)
+        i += 1
+        if i < len(values) and values[i] is not None:
+            node.right = main.TreeNode(values[i])
+            queue.append(node.right)
+        i += 1
+    return root
+
+
+def to_list(root):
+    """Reads a tree back into a level-order list with None for missing
+    children, trailing Nones trimmed. A node reached twice is shown as
+    "<loop>" instead of being followed forever."""
+    values = []
+    seen = set()
+    queue = deque([root])
+    while queue:
+        node = queue.popleft()
+        if node is None:
+            values.append(None)
+        elif id(node) in seen:
+            values.append("<loop>")
+        else:
+            seen.add(id(node))
+            values.append(node.val)
+            queue.append(node.left)
+            queue.append(node.right)
+    while values and values[-1] is None:
+        values.pop()
+    return values
+
+
+cases = [
+    (([3, 4, 5, 1, 2], [4, 1, 2]), True),
+    (([3, 4, 5, 1, 2, None, None, None, None, 0], [4, 1, 2]), False),
+    (([1, 2, 3], [1, 2, 3]), True),
+    (([1, 2, 3], [2]), True),
+    (([1, 2, 3], [4]), False),
+    (([], [1]), False),
+]
+for index, ((root, sub_root), expected) in enumerate(cases):
+    check(index + 1, lambda: main.is_subtree(build(root), build(sub_root)), expected)
+
 
 sys.stdout.write(json.dumps(results))

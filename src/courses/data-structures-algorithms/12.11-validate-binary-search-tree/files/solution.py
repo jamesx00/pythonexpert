@@ -32,10 +32,6 @@ def build_tree(values):
 
 
 def is_valid_bst(root):
-    return None
-
-
-def is_valid_bst(root):
     def valid(node, low, high):
         if node is None:
             return True

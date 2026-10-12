@@ -3,6 +3,14 @@ lesson_name: "Warm-up: Minimum Depth with BFS"
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(n)
+  space: O(n)
+hints:
+  - "If you explore the tree one level at a time, which leaf do you reach first?"
+  - "Use *BFS level by level* from *Trees Basics*: a `deque` of `(node, depth)` pairs starting with `(root, 1)`. Pop from the left; return the depth of the first leaf; otherwise push the children with `depth + 1`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -38,8 +46,6 @@ For example, the tree `[3, 9, 20, None, None, 15, 7]` has minimum depth `2` (the
 
 Solve it with **breadth-first search**. BFS visits the tree level by level, so the first leaf it reaches is the closest one, and you can stop right there instead of exploring the whole tree.
 
-**Hint:** keep a `deque` of `(node, depth)` pairs, starting with `(root, 1)`. Pop from the left; if the node is a leaf, return its depth; otherwise push its children with `depth + 1`.
-
 ---
 
 ### Tests
@@ -73,6 +79,16 @@ def min_depth(root):
             queue.append((node.right, depth + 1))
 ```
 
-The queue hands out nodes in order of depth, so the first leaf popped is the shallowest. A DFS would have to explore every branch to be sure. Watch out for a common DFS bug: `1 + min(left, right)` is wrong when one child is missing, because the missing side reports depth `0` even though it isn't a leaf path. BFS avoids that entirely.
+**Brute force:** a DFS that finds the depth of every leaf and takes the smallest. It's `O(n)` too, but it always explores the whole tree, even when a leaf sits right below the root.
+
+**Bottleneck:** DFS can't know a leaf is the closest until it has seen all the others.
+
+**Optimal idea:** BFS hands out nodes in order of depth, so the first leaf it pops is the shallowest one, and you can stop there.
+
+**Why it's correct:** every node at depth `d` is popped before any node at depth `d + 1`. So when the first leaf is popped, no leaf at a smaller depth is left, and its depth is the minimum.
+
+**Complexity:** `O(n)` time in the worst case, but it stops at the first leaf. `O(n)` extra space for the queue, which can hold a whole level.
+
+**Common mistakes:** treating a node with one missing child as a leaf. The DFS version `1 + min(left, right)` has the same bug: the missing side reports depth `0` even though no path ends there. Using `list.pop(0)` instead of `deque.popleft()`, which costs `O(n)` per pop.
 
 </details>

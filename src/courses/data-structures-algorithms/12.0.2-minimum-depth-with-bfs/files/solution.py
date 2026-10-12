@@ -51,10 +51,6 @@ def tree_to_list(root):
         result.pop()
     return result
 
-def min_depth(root):
-    return 0
-
-
 from collections import deque
 
 def min_depth(root):

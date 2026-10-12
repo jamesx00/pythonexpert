@@ -3,6 +3,14 @@ lesson_name: "Warm-up: Preorder, Inorder & Postorder"
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(n)
+  space: O(h)
+hints:
+  - "All three orders visit the same nodes with the same recursion. What is the only thing that changes between them?"
+  - "Use *Recursive DFS: trust the recursion* from *Trees Basics*: a helper `dfs(node)` that stops at `None`, recurses left and right, and appends `node.val` before (pre), between (in) or after (post) the two calls."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -51,8 +59,6 @@ For the tree built from `[1, 2, 3, 4, 5]`:
 ```
 
 preorder is `[1, 2, 4, 5, 3]`, inorder is `[4, 2, 5, 1, 3]`, and postorder is `[4, 5, 2, 3, 1]`.
-
-**Hint:** write a recursive helper that appends to a shared `result` list. The three functions differ only in where the `append` line goes.
 
 ---
 
@@ -108,6 +114,14 @@ def postorder(root):
     return result
 ```
 
-All three share the same skeleton: stop at `None`, recurse left, recurse right. Moving the single `append` line changes the order. Remember the pattern by where the **node** goes: **pre** = before the children, **in** = between them, **post** = after them. Post-order is what most "compute something from my children" problems use.
+**Brute force:** there isn't a slower way worth writing. Every traversal has to visit every node once, so `O(n)` is the floor.
+
+**Key idea:** all three share one skeleton: stop at `None`, recurse left, recurse right. Moving the single `append` line changes the order. Remember it by where the **node** goes: **pre** = before the children, **in** = between them, **post** = after them.
+
+**Why it's correct:** the recursion visits every node exactly once and always handles a node's whole left subtree before its whole right subtree. The position of `append` decides whether the node's value lands before, between or after those two blocks.
+
+**Complexity:** `O(n)` time. `O(h)` extra space for the call stack, where `h` is the height of the tree: `O(log n)` when balanced, `O(n)` for a chain.
+
+**Common mistakes:** creating `result = []` inside `dfs`, so each call gets its own list and the values are lost. Forgetting the `None` check, which raises `AttributeError` on the first missing child. Post-order is the one most "compute something from my children" problems use, so it's worth knowing well.
 
 </details>

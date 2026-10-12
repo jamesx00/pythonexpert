@@ -32,10 +32,6 @@ def build_tree(values):
 
 
 def level_order(root):
-    return []
-
-
-def level_order(root):
     if root is None:
         return []
     result = []

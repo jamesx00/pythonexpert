@@ -3,6 +3,15 @@ lesson_name: Binary Tree Level Order Traversal
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n)
+  space: O(n)
+hints:
+  - "If you had all the nodes of one level in a list, how would you get all the nodes of the next level?"
+  - "Use *BFS level by level* from *Trees Basics*: keep the current level in a queue, read its values, and collect its children as the next level."
+  - "Template: if `root is None`, return `[]`. `queue = [root]`. While `queue`: append `[node.val for node in queue]` to the result, then set `queue` to the non-`None` children of those nodes, left to right."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -71,5 +80,15 @@ def level_order(root):
         queue = next_queue
     return result
 ```
+
+**Brute force:** a DFS that passes the depth down and appends each value to `result[depth]`. That's also `O(n)` and works, since a preorder walk visits each level left to right. It's the BFS shape that most later problems build on, though.
+
+**Key idea:** process the tree one level at a time. The children of one level, in order, are exactly the next level.
+
+**Why it's correct:** the root is level 0 on its own. If `queue` holds level `d` left to right, then walking it left to right and collecting each node's left child and then right child gives level `d + 1` left to right. Each round adds one level to the result.
+
+**Complexity:** `O(n)` time, each node is added and read once. `O(n)` extra space for the widest level and the result.
+
+**Common mistakes:** using a single queue without separating levels, which gives one flat list. Pushing `None` children into the queue and then reading `node.val` on them. Returning `[[]]` instead of `[]` for an empty tree.
 
 </details>

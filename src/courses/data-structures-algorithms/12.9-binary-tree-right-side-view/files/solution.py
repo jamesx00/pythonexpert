@@ -32,10 +32,6 @@ def build_tree(values):
 
 
 def right_side_view(root):
-    return []
-
-
-def right_side_view(root):
     if root is None:
         return []
     result = []

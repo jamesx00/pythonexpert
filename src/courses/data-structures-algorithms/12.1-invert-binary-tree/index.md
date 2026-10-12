@@ -3,6 +3,15 @@ lesson_name: Invert Binary Tree
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(n)
+  space: O(h)
+hints:
+  - "If the left and right subtrees were already inverted, what would be left to do at the root?"
+  - "Use *Recursive DFS: trust the recursion* from *Trees Basics*: invert both subtrees, then swap them."
+  - "Template: if `root is None`, return `None`. `root.left, root.right = invert_tree(root.right), invert_tree(root.left)`. Return `root`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -69,5 +78,17 @@ def invert_tree(root):
     root.left, root.right = invert_tree(root.right), invert_tree(root.left)
     return root
 ```
+
+**Brute force:** read the tree into a level-order list, reverse each level, and build a new tree. That's `O(n)` time but `O(n)` extra space, and it builds new nodes instead of mirroring the given tree.
+
+**Bottleneck:** the copy only exists because swapping "all the way down" sounds like it needs a view of the whole tree.
+
+**Optimal idea:** mirroring is local. At every node, swap its two children, and do the same inside each child.
+
+**Why it's correct:** by induction on the height. An empty tree is its own mirror. For any other node, the recursive calls return the mirrored subtrees, and putting the mirrored right subtree on the left (and the other way round) mirrors the whole tree.
+
+**Complexity:** `O(n)` time, each node is swapped once. `O(h)` extra space for the call stack.
+
+**Common mistakes:** writing `root.left = invert_tree(root.right)` and then `root.right = invert_tree(root.left)` on two lines: the second line reads the *new* left child, so both sides end up the same. The one-line tuple assignment evaluates both calls first. Forgetting to `return root`.
 
 </details>

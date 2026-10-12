@@ -32,10 +32,6 @@ def build_tree(values):
 
 
 def is_same_tree(p, q):
-    return None
-
-
-def is_same_tree(p, q):
     if p is None and q is None:
         return True
     if p is None or q is None:

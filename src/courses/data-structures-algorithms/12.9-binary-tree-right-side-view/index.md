@@ -3,6 +3,15 @@ lesson_name: Binary Tree Right Side View
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n)
+  space: O(n)
+hints:
+  - "Is the visible node on each level always a right child? What about a level where the rightmost node is a left child?"
+  - "Use *BFS level by level* from *Trees Basics*: walk the tree one level at a time and keep the last node of each level."
+  - "Template: same loop as level order traversal. For each level, append the value of the last node in it, then build the next level from the children."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -70,5 +79,15 @@ def right_side_view(root):
         queue = next_queue
     return result
 ```
+
+**Brute force:** follow `.right` pointers down from the root. It's `O(h)`, but wrong: in `[1, 2, 3, 4]` the bottom level's only node, `4`, hangs off the left side and is still visible.
+
+**Key idea:** the visible node on a level is simply the rightmost node on that level, whichever side of its parent it hangs from. BFS gives you each level in order.
+
+**Why it's correct:** each round of the loop has exactly one level in `queue`, left to right, so its last node is the rightmost one, which is what you see from the right. One value is taken per level, top to bottom.
+
+**Complexity:** `O(n)` time, each node is visited once. `O(n)` extra space for the widest level.
+
+**Common mistakes:** only following right children, as above. Taking the first node of each level instead of the last (that's the left side view). A DFS version also works if it visits right before left and records the first node seen at each new depth.
 
 </details>

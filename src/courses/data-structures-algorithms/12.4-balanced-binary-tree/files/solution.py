@@ -32,10 +32,6 @@ def build_tree(values):
 
 
 def is_balanced(root):
-    return None
-
-
-def is_balanced(root):
     def height(node):
         if node is None:
             return 0

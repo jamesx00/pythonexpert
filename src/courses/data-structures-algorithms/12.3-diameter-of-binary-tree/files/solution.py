@@ -32,10 +32,6 @@ def build_tree(values):
 
 
 def diameter_of_binary_tree(root):
-    return None
-
-
-def diameter_of_binary_tree(root):
     best = [0]
 
     def height(node):

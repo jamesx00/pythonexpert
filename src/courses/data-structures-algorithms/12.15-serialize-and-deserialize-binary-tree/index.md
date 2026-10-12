@@ -3,6 +3,15 @@ lesson_name: Serialize and Deserialize Binary Tree
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: hard
+target_complexity:
+  time: O(n)
+  space: O(n)
+hints:
+  - "A preorder list of values alone can't tell `[1, 2]` from `[1, None, 2]`. What extra information makes it unambiguous?"
+  - "Use a preorder walk (*Recursive DFS* in *Trees Basics*) that writes a marker like `#` for every missing child. Rebuild with the same walk, reading values from an iterator."
+  - "Template: `serialize`: `dfs(node)` appends `'#'` for `None`, else `str(node.val)` then recurses left and right; join with `,`. `deserialize`: `values = iter(data.split(','))`; `build()` reads one value, returns `None` for `'#'`, otherwise makes a node and builds its left then right child."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -34,7 +43,7 @@ file_groups:
 
 Implement two functions that are inverses of each other: `serialize(root)` should turn a binary tree into a single string, and `deserialize(data)` should take that string and rebuild the exact same tree structure (same shape, same values), returning its root.
 
-You get to design the string format yourself — a common approach is a preorder walk that writes a placeholder (like `"#"`) for missing children, separated by commas, e.g. `"1,2,#,#,3,4,#,#,5,#,#"` for the tree built from `[1, 2, None, None, 3, 4, None, None, 5]`. As long as `deserialize(serialize(root))` always reproduces `root`'s exact structure, any format works.
+You get to design the string format yourself — a common approach is a preorder walk that writes a placeholder (like `"#"`) for missing children, separated by commas, e.g. `"1,2,#,#,3,4,#,#,5,#,#"` for the tree built from `[1, 2, 3, None, None, 4, 5]`. As long as `deserialize(serialize(root))` always reproduces `root`'s exact structure, any format works.
 
 ---
 
@@ -82,5 +91,17 @@ def deserialize(data):
 
     return build()
 ```
+
+**Brute force:** store the level-order list with `None` for every missing child of a full tree of the same height. It works, but for a chain of `n` nodes the full tree has about `2^n` slots.
+
+**Bottleneck:** storing positions for children that don't exist.
+
+**Optimal idea:** write a marker only for the missing children of nodes that exist. A preorder walk with `#` markers gives `2n + 1` tokens, and the same walk can read them back.
+
+**Why it's correct:** in the string, each subtree is either a single `#` or a value followed by its left subtree's string and then its right subtree's string. `build` reads exactly one subtree per call, in that same order, so it consumes exactly the tokens `serialize` wrote for that subtree and rebuilds the same shape and values.
+
+**Complexity:** `O(n)` time for both functions. `O(n)` space for the string, plus `O(h)` for the call stack.
+
+**Common mistakes:** leaving out the `#` markers, which loses the shape. Joining values without a separator, so `12` can't be told apart from `1` and `2`. Forgetting `int(...)` when rebuilding, which gives string values. Restarting the token list in every `build` call instead of sharing one iterator.
 
 </details>

@@ -32,10 +32,6 @@ def build_tree(values):
 
 
 def max_path_sum(root):
-    return None
-
-
-def max_path_sum(root):
     best = [float('-inf')]
 
     def dfs(node):

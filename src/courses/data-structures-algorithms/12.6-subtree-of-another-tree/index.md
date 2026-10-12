@@ -3,6 +3,15 @@ lesson_name: Subtree of Another Tree
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(m * n)
+  space: O(h)
+hints:
+  - "If you already had `is_same_tree`, which nodes of `root` would you call it on?"
+  - "Use *Recursive DFS: trust the recursion* from *Trees Basics* twice: a `same(a, b)` check, and a walk over `root` that tries `same(node, sub_root)` at every node."
+  - "Template: if `root is None`, return `False`. If `same(root, sub_root)`, return `True`. Otherwise return `is_subtree(root.left, sub_root) or is_subtree(root.right, sub_root)`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -67,5 +76,17 @@ def is_subtree(root, sub_root):
         return True
     return is_subtree(root.left, sub_root) or is_subtree(root.right, sub_root)
 ```
+
+**Brute force:** this is it. For each of the `m` nodes of `root`, compare its subtree with `sub_root`, which costs up to `O(n)` for `n` nodes in `sub_root`. That's `O(m * n)` in the worst case, which is the target here.
+
+**Faster option:** serialize both trees with markers for missing children and search for one string inside the other, or hash every subtree. That's `O(m + n)` with a linear-time string search, but it's harder to get right.
+
+**Key idea:** "matches some node's entire subtree" splits into two jobs: walking `root`, and comparing two trees. Write each job as its own small recursion.
+
+**Why it's correct:** `sub_root` is a subtree of `root` exactly when some node of `root` is the root of an identical tree. The walk tries every node, and `same` compares the whole tree below it, so a match that only covers the top of a subtree is rejected.
+
+**Complexity:** `O(m * n)` time in the worst case, though `same` usually stops after a few nodes. `O(h)` extra space for the call stack.
+
+**Common mistakes:** checking only that the values of `sub_root` appear in `root` in the same order, which accepts `[4, 1]` inside `[3, 4, 5, 1, 2]`: the node `4` there also has a right child `2`. Returning `False` when the first `same` fails, instead of trying the children.
 
 </details>

@@ -50,18 +50,6 @@ def tree_to_list(root):
     return result
 
 def preorder(root):
-    return []
-
-
-def inorder(root):
-    return []
-
-
-def postorder(root):
-    return []
-
-
-def preorder(root):
     result = []
     def dfs(node):
         if not node:

@@ -32,10 +32,6 @@ def build_tree(values):
 
 
 def is_subtree(root, sub_root):
-    return None
-
-
-def is_subtree(root, sub_root):
     def same(a, b):
         if a is None and b is None:
             return True

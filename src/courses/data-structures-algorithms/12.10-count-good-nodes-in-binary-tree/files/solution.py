@@ -32,10 +32,6 @@ def build_tree(values):
 
 
 def good_nodes(root):
-    return 0
-
-
-def good_nodes(root):
     count = [0]
 
     def dfs(node, max_so_far):

@@ -3,6 +3,15 @@ lesson_name: Maximum Depth of Binary Tree
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(n)
+  space: O(h)
+hints:
+  - "If you knew the depth of the left and right subtrees, how would you get the depth of the whole tree?"
+  - "Use *Recursive DFS: trust the recursion* from *Trees Basics*: the depth of a tree is `1` for the root plus the deeper of its two subtrees."
+  - "Template: if `root is None`, return `0`. Return `1 + max(max_depth(root.left), max_depth(root.right))`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -58,5 +67,17 @@ def max_depth(root):
         return 0
     return 1 + max(max_depth(root.left), max_depth(root.right))
 ```
+
+**Brute force:** list every root-to-leaf path and take the longest. Copying the paths costs up to `O(n * h)` time and space.
+
+**Bottleneck:** the paths share most of their nodes, so building each one from scratch repeats work.
+
+**Optimal idea:** let each subtree report only its depth. The parent needs nothing else.
+
+**Why it's correct:** the longest path from the root goes through the root and then down one of its subtrees, so its length is `1` plus the larger subtree depth. An empty tree has depth `0`, which makes a leaf come out as `1`.
+
+**Complexity:** `O(n)` time, each node is visited once. `O(h)` extra space for the call stack.
+
+**Common mistakes:** returning `1` for an empty tree, which counts a missing child as a node. Counting edges instead of nodes: this problem counts the root as depth `1`.
 
 </details>
