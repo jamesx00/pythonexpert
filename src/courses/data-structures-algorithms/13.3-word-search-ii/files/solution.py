@@ -17,10 +17,6 @@ def build_trie(words):
 
 
 def find_words(board, words):
-    return []
-
-
-def find_words(board, words):
     if not board or not board[0]:
         return []
 
