@@ -1,6 +1,7 @@
 def max_subarray(nums):
-    max_sum = cur = nums[0]
-    for n in nums[1:]:
-        cur = max(n, cur + n)
-        max_sum = max(max_sum, cur)
-    return max_sum
+    best = nums[0]
+    cur = 0  # best sum of a run that ends on the current day
+    for n in nums:
+        cur = max(n, cur + n)  # extend the run, or start fresh at n
+        best = max(best, cur)
+    return best

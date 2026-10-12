@@ -3,6 +3,15 @@ lesson_name: Merge Triplets to Form Target Triplet
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n)
+  space: O(1)
+hints:
+  - "Merging takes the max, so values can only go up. Which triplets can you never merge without ruining the result?"
+  - "A triplet with any value above the target's is useless, since that value can't come down again. Every other triplet is safe to merge, so merge them all and see if you hit the target. This is the *Exchange argument* idea from *Greedy Basics*: adding a safe triplet never makes the result worse."
+  - "Template: `best = [0, 0, 0]`. For each `t` with `t[i] <= target[i]` for all three `i`, set `best[i] = max(best[i], t[i])`. Return `best == target`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -47,6 +56,7 @@ For example, `triplets = [[2, 5, 3], [1, 8, 4], [1, 7, 5]]` and `target = [2, 7,
 <li id="test-4"><code>merge_triplets([[3, 4, 5], [4, 5, 6]], [3, 2, 5])</code> should return <code>False</code></li>
 <li id="test-5"><code>merge_triplets([[1, 1, 1]], [2, 2, 2])</code> should return <code>False</code></li>
 <li id="test-6"><code>merge_triplets([[2, 2, 2], [1, 1, 1], [3, 3, 3]], [3, 3, 3])</code> should return <code>True</code></li>
+<li id="test-7">Performance: 10,000 triplets, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -60,5 +70,17 @@ def merge_triplets(triplets, target):
             best = [max(best[i], t[i]) for i in range(3)]
     return best == target
 ```
+
+**Brute force:** try every subset of triplets, merge it, and compare with `target`. That's `O(2^n)`, hopeless beyond about 20 triplets.
+
+**Bottleneck:** most subsets are pointless. A triplet is either always safe to use or never usable, so there's nothing to search.
+
+**Optimal idea:** skip every triplet that goes over the target in any position. Merge all the rest. The target is reachable exactly when that merge equals it.
+
+**Why it's correct:** merging uses `max`, so a value can only go up. A triplet with any value above the target's would push that position past the target for good, so no valid choice uses it. Every other triplet is *safe*: merging it keeps each position at or below the target. Now take any choice of triplets that reaches the target. It uses only safe triplets. Adding the remaining safe ones can't push anything above the target, and can't lower anything either. So merging all safe triplets gives the target too. If merging all of them doesn't reach it, no subset can.
+
+**Complexity:** `O(n)` time, one pass. `O(1)` extra space.
+
+**Common mistakes:** merging a triplet because it matches the target in one position, without checking that the other two positions aren't over. Only checking that each target value shows up somewhere in the list: in `[[3, 4, 5], [4, 5, 6]]` with target `[3, 2, 5]`, the values `3` and `5` appear, but the triplet that has them also has a `4` in the middle.
 
 </details>

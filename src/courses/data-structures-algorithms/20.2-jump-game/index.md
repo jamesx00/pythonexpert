@@ -3,6 +3,15 @@ lesson_name: Jump Game
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n)
+  space: O(1)
+hints:
+  - "If you can reach stone `5`, can you also reach stones `1` to `4`? What does that say about the set of stones you can reach?"
+  - "Use *Track the farthest reach* from *Greedy Basics*: the reachable stones are always `0` to `reach`. If you get to a stone past `reach`, you're stuck."
+  - "Template: `reach = 0`. For each `i, n`: if `i > reach`, return `False`, else `reach = max(reach, i + n)`. Return `True` after the loop."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -48,6 +57,7 @@ For example, `nums = [2, 3, 1, 1, 4]` lets you jump `0 -> 1 -> 4`, reaching the 
 <li id="test-5"><code>can_jump([3, 2, 1, 0, 4])</code> should return <code>False</code></li>
 <li id="test-6"><code>can_jump([1, 1, 1, 1])</code> should return <code>True</code></li>
 <li id="test-7"><code>can_jump([5, 0, 0, 0, 0, 0])</code> should return <code>True</code></li>
+<li id="test-8">Performance: 20,000 stones, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -62,5 +72,17 @@ def can_jump(nums):
         reach = max(reach, i + n)
     return True
 ```
+
+**Brute force:** keep a `reachable` list. For every reachable stone `i`, mark the stones `i + 1` to `i + nums[i]` as reachable. That's `O(n^2)` time when the leaps are long, and `O(n)` space. A recursive search that tries each leap without remembering stones is exponential.
+
+**Bottleneck:** the brute force marks the same stones over and over. It only needs to know how far right the marks go.
+
+**Optimal idea:** keep one number, `reach`: the farthest stone you can get to using the stones seen so far. Scan left to right and update it with `i + nums[i]`. If you hit a stone past `reach`, stop.
+
+**Why it's correct:** the reachable stones always form an unbroken block `0..reach`. If a leap from stone `k` can land on stone `j`, it can also land on every stone between `k` and `j`, so there are no gaps. So stone `i` is reachable exactly when `i <= reach`. If `i > reach`, no earlier stone gets to `i` or beyond, and the stones from `i` on can't help because you can't stand on them. So the answer is `False`. If the scan finishes, every stone, including the last one, was within reach.
+
+**Complexity:** `O(n)` time, one pass. `O(1)` extra space.
+
+**Common mistakes:** updating `reach` from a stone you can't stand on, by checking `i > reach` *after* the update. Picking the biggest single leap (`nums[i]`) instead of the farthest landing spot (`i + nums[i]`).
 
 </details>

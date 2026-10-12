@@ -3,6 +3,15 @@ lesson_name: Valid Parenthesis String
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n)
+  space: O(1)
+hints:
+  - "Without stars, you'd track one count of open brackets. With stars, the count isn't fixed. What range of counts is possible after each character?"
+  - "Use *Keep a range instead of one value* from *Greedy Basics*: `lo` is the fewest open brackets possible, `hi` the most. A `*` lowers `lo` and raises `hi`. If `hi < 0`, too many `)`. Never let `lo` go below `0`."
+  - "Template: `lo = hi = 0`. `(`: both `+1`. `)`: both `-1`. `*`: `lo -= 1`, `hi += 1`. After each character, return `False` if `hi < 0`, then `lo = max(lo, 0)`. Return `lo == 0`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -49,6 +58,7 @@ For example, `s = "(*))"` is valid because treating the `*` as `(` turns it into
 <li id="test-6"><code>check_valid_string(")(")</code> should return <code>False</code></li>
 <li id="test-7"><code>check_valid_string("*")</code> should return <code>True</code></li>
 <li id="test-8"><code>check_valid_string("((*)")</code> should return <code>True</code></li>
+<li id="test-9">Performance: a string of 18,000 characters, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -72,5 +82,17 @@ def check_valid_string(s):
         lo = max(lo, 0)
     return lo == 0
 ```
+
+**Brute force:** try all three choices for every `*` and check each resulting string. That's `O(3^k * n)` for `k` stars. Keeping a set of every possible open count instead is `O(n^2)`.
+
+**Bottleneck:** the set of possible open counts is always an unbroken range, so storing every value in it is wasted work.
+
+**Optimal idea:** keep just the range ends. `lo` is the fewest open brackets any choice of stars gives so far, `hi` the most. `(` raises both, `)` lowers both, `*` lowers `lo` and raises `hi`.
+
+**Why it's correct:** the possible counts form a range with no gaps. It starts as `{0}`. `(` and `)` shift every count by the same amount, and `*` turns each count `x` into `x - 1`, `x` and `x + 1`, which fills any gap. A count below `0` means a `)` with nothing to close, so that choice is dead. Clamping `lo` at `0` throws those choices away. If even `hi` goes below `0`, every choice is dead, so return `False`. At the end, some choice is balanced exactly when `0` is in the range, which is when `lo == 0`.
+
+**Complexity:** `O(n)` time, one pass. `O(1)` extra space.
+
+**Common mistakes:** not clamping `lo`, which lets a dead choice cancel a later `(`: `"*("` would return `True`. Returning `hi >= 0` or `lo <= 0 <= hi` without the clamp. Treating `*` as only `(` or only `)`.
 
 </details>
