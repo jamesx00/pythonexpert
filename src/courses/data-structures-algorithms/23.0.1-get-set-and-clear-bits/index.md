@@ -3,6 +3,14 @@ lesson_name: "Warm-up: Get, Set & Clear Bits"
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(1)
+  space: O(1)
+hints:
+  - "How do you build a number that has only bit `i` set? What do `&`, `|` and `~` do with it?"
+  - "Use the *Must-Know Tricks* from *Bit Manipulation Basics*: `(x >> i) & 1` reads bit `i`, `x | (1 << i)` sets it and `x & ~(1 << i)` clears it."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -42,8 +50,6 @@ Write three functions:
 
 For example, `get_bit(5, 1)` is `0`, `set_bit(5, 1)` is `7` (`0b111`), and `clear_bit(5, 0)` is `4` (`0b100`).
 
-**Hint:** `1 << i` builds a **mask** with only bit `i` set. Combine it with `&` (test), `|` (turn on) or `& ~` (turn off). Shifting `x` right by `i` moves bit `i` into position `0`.
-
 ---
 
 ### Tests
@@ -58,6 +64,9 @@ For example, `get_bit(5, 1)` is `0`, `set_bit(5, 1)` is `7` (`0b111`), and `clea
 <li id="test-7"><code>clear_bit(5, 0)</code> should return <code>4</code></li>
 <li id="test-8"><code>clear_bit(5, 1)</code> should return <code>5</code></li>
 <li id="test-9"><code>clear_bit(255, 7)</code> should return <code>127</code></li>
+<li id="test-10"><code>get_bit(8, 10)</code> should return <code>0</code></li>
+<li id="test-11"><code>set_bit(0, 40)</code> should return <code>1099511627776</code></li>
+<li id="test-12"><code>clear_bit(1099511627777, 40)</code> should return <code>1</code></li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -76,6 +85,16 @@ def clear_bit(x, i):
     return x & ~(1 << i)
 ```
 
-`(x >> i) & 1` slides bit `i` to the end and masks off everything else. OR-ing with the mask forces that bit to `1`. AND-ing with the **inverted** mask (`~(1 << i)` has every bit set except bit `i`) forces it to `0` and leaves the others alone. Setting a bit that's already on, or clearing one that's already off, leaves `x` unchanged. These three one-liners are the building blocks of every problem in this section.
+**Brute force:** convert `x` to a string with `bin(x)`, read or change the character for bit `i`, and convert back with `int(..., 2)`. It works, but it builds strings, and you have to count positions from the right end and pad with zeros when `i` is past the last digit.
+
+**Bottleneck:** the string is a detour. The bits are already in the integer.
+
+**Optimal idea:** `1 << i` is a **mask** with only bit `i` set. `(x >> i) & 1` slides bit `i` to position `0` and masks off everything else. OR-ing with the mask forces that bit to `1`. AND-ing with the inverted mask `~(1 << i)`, which has every bit set except bit `i`, forces it to `0`.
+
+**Why it's correct:** `|` and `&` work on each bit position on its own. At every position except `i`, the mask has a `0` for `|` (or a `1` for `& ~`), which leaves the bit of `x` unchanged. At position `i`, `| 1` gives `1` and `& 0` gives `0`, whatever the bit was before. So setting a bit that's already on, or clearing one that's already off, leaves `x` as it is.
+
+**Complexity:** `O(1)` time and space for the sizes used here. Python ints have no fixed width, so very large numbers cost time proportional to their length.
+
+**Common mistakes:** writing `x & 1 << i` and expecting `0` or `1`: it returns `0` or `2**i`. Clearing with `x ^ (1 << i)`, which *toggles* the bit and turns it on when it was off. Writing `x & 1 == 0` without parentheses, which means `x & (1 == 0)`.
 
 </details>
