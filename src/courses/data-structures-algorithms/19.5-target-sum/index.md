@@ -3,6 +3,15 @@ lesson_name: Target Sum
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n * sum)
+  space: O(n * sum)
+hints:
+  - "After choosing signs for the first `i` numbers, what's the only thing that matters for the rest? How many different values can that take?"
+  - "Only the running total matters. Let `dp(i, total)` be the number of ways to finish from index `i` with the current `total`: `dp(i + 1, total + nums[i]) + dp(i + 1, total - nums[i])`, and at the end `1` if `total == target` else `0`. A budget like this is the second dimension; memoize it as in *Top-down works too* in *2-D Dynamic Programming Basics*."
+  - "Template: inside `count_target_sums`, define `dp(i, total)` decorated with `@functools.cache`. Base case: `i == len(nums)`. Otherwise return the sum of the two recursive calls. Return `dp(0, 0)`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -47,6 +56,7 @@ For example, with `nums = [1, 1, 1, 1, 1]` and `target = 3`, one valid assignmen
 <li id="test-4"><code>count_target_sums([0, 0, 0, 0, 0, 0, 0, 0, 1], 1)</code> should return <code>256</code></li>
 <li id="test-5"><code>count_target_sums([2, 3, 1, 4], 2)</code> should return <code>2</code></li>
 <li id="test-6"><code>count_target_sums([1, 2, 1], 0)</code> should return <code>2</code></li>
+<li id="test-7">Performance: 40 numbers and target 10, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -69,5 +79,17 @@ def count_target_sums(nums, target):
     dp.cache_clear()
     return result
 ```
+
+**Brute force:** try every sign pattern. Each number gets `+` or `-`, so there are `2^n` patterns. With 40 numbers that's about a trillion, which never finishes.
+
+**Bottleneck:** many different sign choices for the first `i` numbers give the same running total, and from there the rest behaves exactly the same. The brute force keeps them apart.
+
+**Optimal idea:** the state is `(i, total)`: the next index and the sum so far. The running total always lies between `-s` and `s`, where `s = sum(nums)`, so there are at most `(n + 1) * (2s + 1)` states. Memoize the recursion over them.
+
+**Why it's correct:** every sign pattern goes through exactly one state at each index, so counting the ways out of each state and adding the two choices counts every pattern once. Two prefixes that reach the same `(i, total)` have the same number of ways to finish, so sharing that answer changes nothing.
+
+**Complexity:** `O(n * sum)` time and space, where `sum` is `sum(nums)`: each state is computed once with constant work. There's also a neat rewrite: if `P` is the sum of the `+` numbers, then `P = (sum + target) / 2`, so the question becomes "how many subsets sum to `P`", a 1-D counting table like *Coin Change II* with each number used once.
+
+**Common mistakes:** caching on `i` alone instead of `(i, total)`. Passing `nums` itself to a `@cache` function: lists can't be hashed, so it raises `TypeError`; keep `nums` outside, as here. Skipping zeros: a `0` can take either sign, so it doubles the count (test 4 has eight zeros, so the answer is `2^8 = 256`).
 
 </details>

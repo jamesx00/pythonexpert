@@ -1,46 +1,86 @@
 import sys
 import json
+import signal
 
 from unittest.mock import patch
 patch('builtins.print').start()
 
 import main
 
-from functools import lru_cache
-
-def test_is_match(s, p):
-    n, m = len(s), len(p)
-
-    @lru_cache(maxsize=None)
-    def dp(i, j):
-        if j == m:
-            return i == n
-        first = i < n and (p[j] == s[i] or p[j] == '.')
-        if j + 1 < m and p[j + 1] == '*':
-            return dp(i, j + 2) or (first and dp(i + 1, j))
-        return first and dp(i + 1, j + 1)
-
-    result = dp(0, 0)
-    dp.cache_clear()
-    return result
-
-inputs = [
-    ("zzab", "z*a*b"),
-    ("greengrass", "gre*n.*s"),
-    ("abc", "abc"),
-    ("", "a*"),
-    ("ab", ".*"),
-    ("abcd", "abc"),
-]
-
 results = {}
 
-for index, i in enumerate(inputs):
+
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
+def _show(value):
+    text = repr(value)
+    return text if len(text) <= 300 else text[:300] + "..."
+
+
+def check(test_id, call, expected, time_budget=None, normalize=None):
+    """Runs one test and records a rich result: got/expected as Python reprs,
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run). normalize, if given, is applied to both
+    values before comparing, for answers whose order doesn't matter."""
     try:
-        result = test_is_match(*i)
-        assert main.is_match(*i) == result
-        results[index + 1] = True
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
+    except Exception as e:
+        results[test_id] = {
+            "passed": False,
+            "error": f"{type(e).__name__}: {e}",
+            "expected": _show(expected),
+        }
+        return
+    try:
+        if normalize is None:
+            passed = got == expected
+        else:
+            passed = normalize(got) == normalize(expected)
     except Exception:
-        results[index + 1] = False
+        passed = False
+    results[test_id] = {
+        "passed": bool(passed),
+        "got": _show(got),
+        "expected": _show(expected),
+    }
+
+
+cases = [
+    (("zzab", "z*a*b"), True),
+    (("greengrass", "gre*n.*s"), True),
+    (("abc", "abc"), True),
+    (("", "a*"), True),
+    (("ab", ".*"), True),
+    (("abcd", "abc"), False),
+    (("ab", ".*c"), False),
+    (("aab", "c*a*b"), True),
+]
+for index, ((s, p), expected) in enumerate(cases):
+    check(index + 1, lambda: main.is_match(s, p), expected)
+
+# Performance test: s is 100 "a"s, p is "a*" 50 times then "b".
+# The "b" never matches, so every way of sharing the "a"s fails.
+# Budget: 1.0s. Execution service: memoized recursion ~0.004s;
+# recursion without a memo is interrupted at the budget.
+check(9, lambda: main.is_match("a" * 100, "a*" * 50 + "b"), False, time_budget=1.0)
+
 
 sys.stdout.write(json.dumps(results))

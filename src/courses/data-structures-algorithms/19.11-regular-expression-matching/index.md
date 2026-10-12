@@ -3,6 +3,15 @@ lesson_name: Regular Expression Matching
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: hard
+target_complexity:
+  time: O(n * m)
+  space: O(n * m)
+hints:
+  - "Match from the front. If the next pattern character is followed by `*`, what are the two things that `x*` can do right now?"
+  - "Let `dp(i, j)` mean `s[i:]` matches `p[j:]`. Let `first` be whether `s[i]` matches `p[j]` (equal, or `p[j]` is `.`). If `p[j + 1] == '*'`: `dp(i, j + 2)` (use `x*` zero times) or `first and dp(i + 1, j)` (use it once more). Otherwise: `first and dp(i + 1, j + 1)`. Memoize it, as in *Top-down works too* in *2-D Dynamic Programming Basics*."
+  - "Template: inside `is_match`, `@functools.cache def dp(i, j)`. If `j == len(p)`, return `i == len(s)`. Compute `first = i < len(s) and p[j] in (s[i], '.')`, then apply the two cases. Return `dp(0, 0)`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -47,6 +56,9 @@ For example, the pattern `"z*a*b"` matches `"zzab"` because `z*` can absorb both
 <li id="test-4"><code>is_match("", "a*")</code> should return <code>True</code></li>
 <li id="test-5"><code>is_match("ab", ".*")</code> should return <code>True</code></li>
 <li id="test-6"><code>is_match("abcd", "abc")</code> should return <code>False</code></li>
+<li id="test-7"><code>is_match("ab", ".*c")</code> should return <code>False</code></li>
+<li id="test-8"><code>is_match("aab", "c*a*b")</code> should return <code>True</code></li>
+<li id="test-9">Performance: <code>s</code> of 100 <code>"a"</code>s and pattern <code>"a*"</code> 50 times then <code>"b"</code>, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -72,5 +84,17 @@ def is_match(s, p):
     dp.cache_clear()
     return result
 ```
+
+**Brute force:** the same recursion without a memo. Each `x*` can stop now or eat one more character, so it branches at every step. With 100 `"a"`s and `"a*"` 50 times then `"b"`, it tries every way of sharing the `"a"`s among the 50 stars before failing on the `"b"`, which never finishes.
+
+**Bottleneck:** whatever choices came before, the rest of the question is only "does `s[i:]` match `p[j:]`?". There are `(n + 1) * (m + 1)` such pairs, and the brute force answers each many times.
+
+**Optimal idea:** memoize `dp(i, j)`. The pattern is read from the front. A character followed by `*` is handled as a unit: either skip `x*` entirely (`j + 2`), or, if `s[i]` matches `x`, consume `s[i]` and stay on `x*` (`i + 1`, same `j`). Any other character must match `s[i]` and both move on.
+
+**Why it's correct:** `x*` matches zero or more `x`s. Zero is `dp(i, j + 2)`. One or more means the first character matches `x` and the rest of `s` still matches `x*` followed by the rest of the pattern, which is `dp(i + 1, j)`. These two cases cover every way `x*` can match. A plain character or `.` matches exactly one character. When the pattern runs out, the match succeeds only if `s` has run out too.
+
+**Complexity:** `O(n * m)` time and space for `s` of length `n` and `p` of length `m`: each `(i, j)` is computed once with constant work. A bottom-up table filled from the ends works the same way.
+
+**Common mistakes:** treating `*` on its own instead of together with the character before it. Checking `first` before the `*` case, which wrongly fails `x*` when `s` is empty or doesn't start with `x`. Returning `True` when the pattern ends but `s` doesn't (the match must cover all of `s`). Using `re.fullmatch`, which works but skips the exercise.
 
 </details>

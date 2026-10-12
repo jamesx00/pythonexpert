@@ -3,6 +3,15 @@ lesson_name: Edit Distance
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n * m)
+  space: O(n * m)
+hints:
+  - "Compare the last characters of the two strings. If they're equal, do they need any edit? If not, what are the three things the last edit could be?"
+  - "Let `dp[i][j]` be the edit distance between `a[:i]` and `b[:j]`. If `a[i - 1] == b[j - 1]`, it's `dp[i - 1][j - 1]`. Otherwise it's `1 + min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1])` for delete, insert and replace. `dp[i][0] = i` and `dp[0][j] = j`. *Top-down works too* in *2-D Dynamic Programming Basics* shows the same recurrence written top-down."
+  - "Template: an `(n + 1) x (m + 1)` table. Fill row `0` with `0..m` and column `0` with `0..n`. For `i` from `1` to `n`, for `j` from `1` to `m`: apply the rule. Return `dp[n][m]`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -47,6 +56,7 @@ For example, turning `"plane"` into `"plant"` only needs one substitution — sw
 <li id="test-4"><code>edit_distance("draft", "crate")</code> should return <code>3</code></li>
 <li id="test-5"><code>edit_distance("sunday", "saturday")</code> should return <code>3</code></li>
 <li id="test-6"><code>edit_distance("a", "b")</code> should return <code>1</code></li>
+<li id="test-7">Performance: two strings of 150 characters, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -68,5 +78,17 @@ def edit_distance(a, b):
                 dp[i][j] = 1 + min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1])
     return dp[n][m]
 ```
+
+**Brute force:** recurse on `(i, j)`: if the characters match, move both on; otherwise try delete, insert and replace and keep the cheapest plus one. Without a memo, every mismatch splits into three calls, so the work grows exponentially. Two 150-character strings never finish.
+
+**Bottleneck:** the cost to fix `a[i:]` into `b[j:]` depends only on `(i, j)`, and there are only `(n + 1) * (m + 1)` pairs. The brute force reaches the same pair along a huge number of edit orders.
+
+**Optimal idea:** let `dp[i][j]` be the fewest edits to turn `a[:i]` into `b[:j]`. Turning a prefix into the empty string takes `i` deletions, and building `b[:j]` from nothing takes `j` insertions. Fill the rest row by row.
+
+**Why it's correct:** look at the last characters. If `a[i - 1] == b[j - 1]`, keeping them costs nothing, and no solution does better than `dp[i - 1][j - 1]`. Otherwise the last edit fixes the end of the string in one of three ways: delete `a[i - 1]` (then solve `a[:i - 1]` to `b[:j]`), insert `b[j - 1]` (then solve `a[:i]` to `b[:j - 1]`), or replace `a[i - 1]` with `b[j - 1]` (then solve `a[:i - 1]` to `b[:j - 1]`). The best is one more than the cheapest of the three.
+
+**Complexity:** `O(n * m)` time and space for strings of length `n` and `m`. Two rows are enough for `O(m)` space.
+
+**Common mistakes:** filling row `0` and column `0` with `0` instead of `j` and `i`. Adding `1` even when the characters match. Mixing up which neighbour is insert and which is delete (it doesn't change the answer, but it confuses the reasoning). Using the `i`, `j` indices on the strings without the `- 1` shift.
 
 </details>

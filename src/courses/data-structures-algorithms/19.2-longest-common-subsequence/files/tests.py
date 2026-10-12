@@ -1,39 +1,85 @@
 import sys
 import json
+import signal
 
 from unittest.mock import patch
 patch('builtins.print').start()
 
 import main
 
-def test_longest_common_subsequence(a, b):
-    n, m = len(a), len(b)
-    dp = [[0] * (m + 1) for _ in range(n + 1)]
-    for i in range(1, n + 1):
-        for j in range(1, m + 1):
-            if a[i - 1] == b[j - 1]:
-                dp[i][j] = dp[i - 1][j - 1] + 1
-            else:
-                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
-    return dp[n][m]
-
-inputs = [
-    ("abcde", "ace"),
-    ("abc", "abc"),
-    ("abc", "def"),
-    ("", "abc"),
-    ("bsbininm", "jmjkbkjkv"),
-    ("oxcpqrsvwf", "shmtulqrypy"),
-]
-
 results = {}
 
-for index, i in enumerate(inputs):
+
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
+def _show(value):
+    text = repr(value)
+    return text if len(text) <= 300 else text[:300] + "..."
+
+
+def check(test_id, call, expected, time_budget=None, normalize=None):
+    """Runs one test and records a rich result: got/expected as Python reprs,
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run). normalize, if given, is applied to both
+    values before comparing, for answers whose order doesn't matter."""
     try:
-        result = test_longest_common_subsequence(*i)
-        assert main.longest_common_subsequence(*i) == result
-        results[index + 1] = True
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
+    except Exception as e:
+        results[test_id] = {
+            "passed": False,
+            "error": f"{type(e).__name__}: {e}",
+            "expected": _show(expected),
+        }
+        return
+    try:
+        if normalize is None:
+            passed = got == expected
+        else:
+            passed = normalize(got) == normalize(expected)
     except Exception:
-        results[index + 1] = False
+        passed = False
+    results[test_id] = {
+        "passed": bool(passed),
+        "got": _show(got),
+        "expected": _show(expected),
+    }
+
+
+cases = [
+    (("abcde", "ace"), 3),
+    (("abc", "abc"), 3),
+    (("abc", "def"), 0),
+    (("", "abc"), 0),
+    (("bsbininm", "jmjkbkjkv"), 1),
+    (("oxcpqrsvwf", "shmtulqrypy"), 2),
+]
+for index, ((a, b), expected) in enumerate(cases):
+    check(index + 1, lambda: main.longest_common_subsequence(a, b), expected)
+
+# Performance test: two 150-character strings over "abcd".
+# Budget: 1.0s. Execution service: bottom-up table ~0.009s; memoized
+# recursion ~0.012s; recursion without a memo is interrupted at the budget.
+a = "".join("abcd"[i * 7 % 11 % 4] for i in range(150))
+b = "".join("abcd"[i * 5 % 13 % 4] for i in range(150))
+check(7, lambda: main.longest_common_subsequence(a, b), 73, time_budget=1.0)
+
 
 sys.stdout.write(json.dumps(results))

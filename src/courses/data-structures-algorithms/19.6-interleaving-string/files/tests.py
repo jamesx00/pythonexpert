@@ -1,46 +1,85 @@
 import sys
 import json
+import signal
 
 from unittest.mock import patch
 patch('builtins.print').start()
 
 import main
 
-def test_is_interleave(s1, s2, s3):
-    n, m = len(s1), len(s2)
-    if n + m != len(s3):
-        return False
-    dp = [[False] * (m + 1) for _ in range(n + 1)]
-    dp[0][0] = True
-    for i in range(n + 1):
-        for j in range(m + 1):
-            if i == 0 and j == 0:
-                continue
-            ok = False
-            if i > 0 and dp[i - 1][j] and s1[i - 1] == s3[i + j - 1]:
-                ok = True
-            if not ok and j > 0 and dp[i][j - 1] and s2[j - 1] == s3[i + j - 1]:
-                ok = True
-            dp[i][j] = ok
-    return dp[n][m]
-
-inputs = [
-    ("abc", "def", "adbcef"),
-    ("abc", "def", "abdecf"),
-    ("", "", ""),
-    ("abc", "", "abc"),
-    ("aabcc", "dbbca", "aadbbbaccc"),
-    ("ab", "bc", "babc"),
-]
-
 results = {}
 
-for index, i in enumerate(inputs):
+
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
+def _show(value):
+    text = repr(value)
+    return text if len(text) <= 300 else text[:300] + "..."
+
+
+def check(test_id, call, expected, time_budget=None, normalize=None):
+    """Runs one test and records a rich result: got/expected as Python reprs,
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run). normalize, if given, is applied to both
+    values before comparing, for answers whose order doesn't matter."""
     try:
-        result = test_is_interleave(*i)
-        assert main.is_interleave(*i) == result
-        results[index + 1] = True
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
+    except Exception as e:
+        results[test_id] = {
+            "passed": False,
+            "error": f"{type(e).__name__}: {e}",
+            "expected": _show(expected),
+        }
+        return
+    try:
+        if normalize is None:
+            passed = got == expected
+        else:
+            passed = normalize(got) == normalize(expected)
     except Exception:
-        results[index + 1] = False
+        passed = False
+    results[test_id] = {
+        "passed": bool(passed),
+        "got": _show(got),
+        "expected": _show(expected),
+    }
+
+
+cases = [
+    (("abc", "def", "adbcef"), True),
+    (("abc", "def", "abdecf"), True),
+    (("", "", ""), True),
+    (("abc", "", "abc"), True),
+    (("aabcc", "dbbca", "aadbbbaccc"), False),
+    (("ab", "bc", "babc"), True),
+    (("ab", "ac", "acab"), True),
+]
+for index, ((s1, s2, s3), expected) in enumerate(cases):
+    check(index + 1, lambda: main.is_interleave(s1, s2, s3), expected)
+
+# Performance test: s1 and s2 are 100 "a"s each, s3 is 199 "a"s then a "b".
+# Every way of interleaving the "a"s fails only at the last character.
+# Budget: 1.0s. Execution service: bottom-up table ~0.003s; memoized
+# recursion ~0.008s; recursion without a memo is interrupted at the budget.
+check(8, lambda: main.is_interleave("a" * 100, "a" * 100, "a" * 199 + "b"), False, time_budget=1.0)
+
 
 sys.stdout.write(json.dumps(results))

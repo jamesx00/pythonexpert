@@ -3,6 +3,14 @@ lesson_name: "Warm-up: Minimum Path Sum"
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(m * n)
+  space: O(m * n)
+hints:
+  - "A path can only enter cell `(r, c)` from above or from the left. If you knew the cheapest cost to reach both of those cells, what would the cheapest cost to reach `(r, c)` be?"
+  - "Let `dp[r][c]` be the cheapest cost to reach `(r, c)`. Then `dp[r][c] = grid[r][c] + min(dp[r - 1][c], dp[r][c - 1])`. The first row and first column have only one way in, so fill them first. It's the same table as *Grid paths* in *2-D Dynamic Programming Basics*, with `min` and `+` instead of a count."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -42,8 +50,6 @@ min_path_sum([[1, 3, 1],
               [4, 2, 1]])   # -> 7  (1 -> 3 -> 1 -> 1 -> 1)
 ```
 
-**Hint:** let `dp[r][c]` be the cheapest cost to reach cell `(r, c)`. The only ways in are from above or from the left, so `dp[r][c] = grid[r][c] + min(dp[r - 1][c], dp[r][c - 1])`. The first row and first column have only one way in, so fill them first.
-
 ---
 
 ### Tests
@@ -55,6 +61,7 @@ min_path_sum([[1, 3, 1],
 <li id="test-4"><code>min_path_sum([[1], [2], [3]])</code> should return <code>6</code></li>
 <li id="test-5"><code>min_path_sum([[1, 2, 3], [4, 5, 6]])</code> should return <code>12</code></li>
 <li id="test-6"><code>min_path_sum([[0, 9, 9, 9], [0, 0, 9, 9], [9, 0, 0, 0], [9, 9, 9, 0]])</code> should return <code>0</code></li>
+<li id="test-7">Performance: a 100 x 100 grid, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -77,6 +84,16 @@ def min_path_sum(grid):
     return dp[-1][-1]
 ```
 
-Looping row by row, left to right, guarantees the cells above and to the left are filled before they're needed. The table is created with a list comprehension, because `[[0] * cols] * rows` would make every row the same list. Each row only reads the previous row, so you could shrink the space to one row of size `cols`.
+**Brute force:** recurse from the start: the cost from `(r, c)` is `grid[r][c]` plus the cheaper of going right or going down. With no memo, this follows every path separately. A `100 x 100` grid has about `10^58` paths, so it never finishes.
+
+**Bottleneck:** many paths pass through the same cell, and the cheapest way on from that cell is the same every time. The brute force works it out again for each path.
+
+**Optimal idea:** there are only `m * n` different questions, one per cell. Let `dp[r][c]` be the cheapest cost to reach `(r, c)` from the top-left. Fill the table row by row, so the cell above and the cell to the left are always done first.
+
+**Why it's correct:** the last step into `(r, c)` comes from above or from the left. The path up to that cell must itself be the cheapest way there, or swapping in a cheaper one would lower the total. So taking the cheaper of the two neighbours and adding `grid[r][c]` gives the best cost. The first row can only be reached from the left, and the first column only from above.
+
+**Complexity:** `O(m * n)` time for an `m x n` grid: each cell is filled once with constant work. `O(m * n)` space for the table. You can keep only one row, or write the costs into `grid` itself, to get `O(n)` or `O(1)` extra space.
+
+**Common mistakes:** treating the first row and column like the rest, so they read `dp[-1][c]` (the last row in Python) or start from `0`. Forgetting to add the starting cell. Going greedy (always step to the cheaper neighbour), which can walk into an expensive area later.
 
 </details>

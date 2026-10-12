@@ -1,48 +1,84 @@
 import sys
 import json
-import copy
+import signal
 
 from unittest.mock import patch
 patch('builtins.print').start()
 
 import main
-from main import *
-
-def min_path_sum(grid):
-    rows, cols = len(grid), len(grid[0])
-    dp = [[0] * cols for _ in range(rows)]
-    for r in range(rows):
-        for c in range(cols):
-            if r == 0 and c == 0:
-                dp[r][c] = grid[r][c]
-            elif r == 0:
-                dp[r][c] = dp[r][c - 1] + grid[r][c]
-            elif c == 0:
-                dp[r][c] = dp[r - 1][c] + grid[r][c]
-            else:
-                dp[r][c] = grid[r][c] + min(dp[r - 1][c], dp[r][c - 1])
-    return dp[-1][-1]
-
-def check(fn, *args):
-    return fn(*args)
-
-cases = [
-    ('min_path_sum', ([[1, 3, 1], [1, 5, 1], [4, 2, 1]],)),
-    ('min_path_sum', ([[5]],)),
-    ('min_path_sum', ([[1, 2, 3]],)),
-    ('min_path_sum', ([[1], [2], [3]],)),
-    ('min_path_sum', ([[1, 2, 3], [4, 5, 6]],)),
-    ('min_path_sum', ([[0, 9, 9, 9], [0, 0, 9, 9], [9, 0, 0, 0], [9, 9, 9, 0]],)),
-]
 
 results = {}
 
-for index, (name, args) in enumerate(cases):
+
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
+def _show(value):
+    text = repr(value)
+    return text if len(text) <= 300 else text[:300] + "..."
+
+
+def check(test_id, call, expected, time_budget=None, normalize=None):
+    """Runs one test and records a rich result: got/expected as Python reprs,
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run). normalize, if given, is applied to both
+    values before comparing, for answers whose order doesn't matter."""
     try:
-        expected = check(globals()[name], *copy.deepcopy(args))
-        assert check(getattr(main, name), *copy.deepcopy(args)) == expected
-        results[index + 1] = True
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
+    except Exception as e:
+        results[test_id] = {
+            "passed": False,
+            "error": f"{type(e).__name__}: {e}",
+            "expected": _show(expected),
+        }
+        return
+    try:
+        if normalize is None:
+            passed = got == expected
+        else:
+            passed = normalize(got) == normalize(expected)
     except Exception:
-        results[index + 1] = False
+        passed = False
+    results[test_id] = {
+        "passed": bool(passed),
+        "got": _show(got),
+        "expected": _show(expected),
+    }
+
+
+cases = [
+    ([[1, 3, 1], [1, 5, 1], [4, 2, 1]], 7),
+    ([[5]], 5),
+    ([[1, 2, 3]], 6),
+    ([[1], [2], [3]], 6),
+    ([[1, 2, 3], [4, 5, 6]], 12),
+    ([[0, 9, 9, 9], [0, 0, 9, 9], [9, 0, 0, 0], [9, 9, 9, 0]], 0),
+]
+for index, (grid, expected) in enumerate(cases):
+    check(index + 1, lambda: main.min_path_sum(grid), expected)
+
+# Performance test: a 100 x 100 grid, cell (r, c) = (r * 37 + c * 91) % 10.
+# Budget: 1.0s. Execution service: bottom-up table ~0.004s; memoized
+# recursion ~0.011s; recursion without a memo is interrupted at the budget.
+big = [[(r * 37 + c * 91) % 10 for c in range(100)] for r in range(100)]
+check(7, lambda: main.min_path_sum(big), 457, time_budget=1.0)
+
 
 sys.stdout.write(json.dumps(results))

@@ -3,6 +3,15 @@ lesson_name: Interleaving String
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n * m)
+  space: O(n * m)
+hints:
+  - "Suppose you've used the first `i` characters of `s1` and the first `j` of `s2`. Which character of `s3` must come next, and where can it come from?"
+  - "Let `dp[i][j]` mean `s1[:i]` and `s2[:j]` can interleave into `s3[:i + j]`. It's true if `dp[i - 1][j]` is true and `s1[i - 1] == s3[i + j - 1]`, or if `dp[i][j - 1]` is true and `s2[j - 1] == s3[i + j - 1]`. It's the two-strings table from *2-D Dynamic Programming Basics*, with `dp[0][0] = True`."
+  - "Template: if `len(s1) + len(s2) != len(s3)`, return `False`. Build an `(n + 1) x (m + 1)` table of `False`, set `dp[0][0] = True`, fill every other cell with the rule above in row order, and return `dp[n][m]`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -47,6 +56,8 @@ For example, `s1 = "abc"` and `s2 = "def"` can interleave into `s3 = "adbcef"` (
 <li id="test-4"><code>is_interleave("abc", "", "abc")</code> should return <code>True</code></li>
 <li id="test-5"><code>is_interleave("aabcc", "dbbca", "aadbbbaccc")</code> should return <code>False</code></li>
 <li id="test-6"><code>is_interleave("ab", "bc", "babc")</code> should return <code>True</code></li>
+<li id="test-7"><code>is_interleave("ab", "ac", "acab")</code> should return <code>True</code></li>
+<li id="test-8">Performance: two strings of 100 <code>"a"</code>s against 199 <code>"a"</code>s and a <code>"b"</code>, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -71,5 +82,17 @@ def is_interleave(s1, s2, s3):
             dp[i][j] = ok
     return dp[n][m]
 ```
+
+**Brute force:** walk along `s3`. At each character, try taking it from `s1` if it matches there, and from `s2` if it matches there, and recurse. When both strings start with the same letter, each step branches in two. For `"a" * 100` and `"a" * 100` against 199 `"a"`s and a `"b"`, every one of the huge number of orders fails only at the end, so it never finishes.
+
+**Bottleneck:** the position in `s3` is always `i + j`, so the state is just `(i, j)`. Many different orders reach the same `(i, j)`, and the brute force redoes the rest of the work for each.
+
+**Optimal idea:** fill a table with one cell per `(i, j)`. `dp[i][j]` says whether `s1[:i]` and `s2[:j]` can interleave into `s3[:i + j]`. `dp[0][0]` is true (three empty strings). Each other cell checks its two possible last moves.
+
+**Why it's correct:** in any valid interleaving of `s1[:i]` and `s2[:j]`, the last character of `s3[:i + j]` is either `s1[i - 1]` or `s2[j - 1]`. If it's `s1[i - 1]`, the rest must be a valid interleaving of `s1[:i - 1]` and `s2[:j]`, which is `dp[i - 1][j]`. The other case is the same with `s2`. So the cell is true exactly when one of the two cases works.
+
+**Complexity:** `O(n * m)` time and space for `s1` and `s2` of lengths `n` and `m`. One row is enough for `O(m)` space.
+
+**Common mistakes:** skipping the length check, so a too-short `s3` is accepted or the indexing runs off the end. Using `s3[i + j]` instead of `s3[i + j - 1]` with the shifted table. A greedy two-pointer scan that always takes from `s1` first: it fails on `("ab", "ac", "acab")`, where the first `a` must come from `s2`.
 
 </details>
