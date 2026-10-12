@@ -3,6 +3,15 @@ lesson_name: Maximum Product Subarray
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n)
+  space: O(1)
+hints:
+  - "With sums, a bad prefix is just dropped. With products, a very negative running product can become the best one after another negative. What do you need to remember besides the largest product?"
+  - "Track both the largest and the smallest product of a subarray ending at the current position (the *Track min and max* shape in *Common 1-D Shapes* in *1-D Dynamic Programming Basics*). The new value is one of `n`, `cur_max * n` or `cur_min * n`."
+  - "Template: start `res = cur_max = cur_min = nums[0]`. For each later `n`: `candidates = (n, cur_max * n, cur_min * n)`, `cur_max = max(candidates)`, `cur_min = min(candidates)`, `res = max(res, cur_max)`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -48,6 +57,7 @@ For example, given `nums = [2, 3, -2, 4]`, the best contiguous run is `[2, 3]`, 
 <li id="test-5"><code>max_product_subarray([-3])</code> should return <code>-3</code></li>
 <li id="test-6"><code>max_product_subarray([2, -5, -2, -4, 3])</code> should return <code>24</code></li>
 <li id="test-7"><code>max_product_subarray([0, 2, -3, 4, -1, 0])</code> should return <code>24</code></li>
+<li id="test-8">Performance: 10,000 numbers, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -64,5 +74,17 @@ def max_product_subarray(nums):
         res = max(res, cur_max)
     return res
 ```
+
+**Brute force:** for each start `i`, multiply forward to every end `j` and keep the largest product. That's `O(n^2)`: 50 million steps for 10,000 numbers.
+
+**Bottleneck:** the products of subarrays ending at `j` can be built from those ending at `j - 1`, but only if you know the right ones to extend.
+
+**Optimal idea:** for each position, keep the largest and the smallest product of a subarray ending there. A new number `n` either starts fresh, extends the largest, or extends the smallest. When `n` is negative, the smallest (most negative) product times `n` becomes the largest.
+
+**Why it's correct:** a subarray ending at `j` is either `[nums[j]]` or a subarray ending at `j - 1` extended by `nums[j]`. Multiplying by `nums[j]` keeps the order of products when it's positive and reverses it when it's negative. So the best and worst products ending at `j` always come from the best or worst ending at `j - 1`, or from `nums[j]` alone. A `0` resets both to `0`, and the next number starts fresh.
+
+**Complexity:** `O(n)` time. `O(1)` extra space.
+
+**Common mistakes:** tracking only the maximum, which fails on `[-2, 3, -4]` (the answer `24` needs the `-6`). Updating `cur_max` first and then using the *new* value to compute `cur_min`: compute the candidates once. Starting `res` at `0`, which is wrong for `[-3]`.
 
 </details>

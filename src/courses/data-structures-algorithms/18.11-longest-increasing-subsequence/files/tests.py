@@ -1,40 +1,86 @@
 import sys
 import json
-import bisect
+import signal
 
 from unittest.mock import patch
 patch('builtins.print').start()
 
 import main
 
-def test_length_of_lis(nums):
-    tails = []
-    for n in nums:
-        i = bisect.bisect_left(tails, n)
-        if i == len(tails):
-            tails.append(n)
-        else:
-            tails[i] = n
-    return len(tails)
-
-inputs = [
-    ([0, 3, 1, 6, 2, 2, 7],),
-    ([7, 7, 7, 7],),
-    ([4, 10, 4, 3, 8, 9],),
-    ([5],),
-    ([1, 2, 3, 4, 5],),
-    ([5, 4, 3, 2, 1],),
-    ([9, 1, 4, 2, 3, 3, 7],),
-]
-
 results = {}
 
-for index, i in enumerate(inputs):
+
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
+def _show(value):
+    text = repr(value)
+    return text if len(text) <= 300 else text[:300] + "..."
+
+
+def check(test_id, call, expected, time_budget=None, normalize=None):
+    """Runs one test and records a rich result: got/expected as Python reprs,
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run). normalize, if given, is applied to both
+    values before comparing, for answers whose order doesn't matter."""
     try:
-        result = test_length_of_lis(*i)
-        assert main.length_of_lis(*i) == result
-        results[index + 1] = True
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
+    except Exception as e:
+        results[test_id] = {
+            "passed": False,
+            "error": f"{type(e).__name__}: {e}",
+            "expected": _show(expected),
+        }
+        return
+    try:
+        if normalize is None:
+            passed = got == expected
+        else:
+            passed = normalize(got) == normalize(expected)
     except Exception:
-        results[index + 1] = False
+        passed = False
+    results[test_id] = {
+        "passed": bool(passed),
+        "got": _show(got),
+        "expected": _show(expected),
+    }
+
+
+
+
+cases = [
+    ([0, 3, 1, 6, 2, 2, 7], 4),
+    ([7, 7, 7, 7], 1),
+    ([4, 10, 4, 3, 8, 9], 3),
+    ([5], 1),
+    ([1, 2, 3, 4, 5], 5),
+    ([5, 4, 3, 2, 1], 1),
+    ([9, 1, 4, 2, 3, 3, 7], 4),
+]
+for index, (nums, expected) in enumerate(cases):
+    check(index + 1, lambda: main.length_of_lis(nums), expected)
+
+# Performance test: 20,000 numbers (i * 7919) % 10007.
+# Budget: 1.0s. Execution service: patience sorting with bisect ~0.007s; the
+# O(n^2) "look at every earlier j" table is interrupted at the budget.
+big = [(i * 7919) % 10007 for i in range(20_000)]
+check(8, lambda: main.length_of_lis(big), 178, time_budget=1.0)
 
 sys.stdout.write(json.dumps(results))

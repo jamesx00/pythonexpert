@@ -3,6 +3,14 @@ lesson_name: "Warm-up: Fibonacci with Memoization"
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(n)
+  space: O(n)
+hints:
+  - "Draw the calls for `fib(5)`. How many times is `fib(2)` computed? What if you wrote each answer down the first time?"
+  - "Use *Top-down: recursion + memo* from *1-D Dynamic Programming Basics*: a dict `memo` inside `fib` and an inner `f(i)`. Return `memo[i]` if it's there; otherwise compute it, save it in `memo[i]`, and return it."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -36,8 +44,6 @@ The Fibonacci numbers are `fib(0) = 0`, `fib(1) = 1`, and `fib(n) = fib(n - 1) +
 
 The direct recursive version recomputes the same values again and again, taking roughly `2ⁿ` calls. `fib(40)` alone needs hundreds of millions of calls. Write a function `fib(n)` that is fast even for `n = 90` by **memoizing**: store each answer the first time you compute it and reuse it afterwards.
 
-**Hint:** keep a dictionary `memo` inside `fib` and write an inner recursive function `f(i)`. At the start of `f`, `if i in memo: return memo[i]`. Before returning, save the result in `memo[i]`. (Python's `@functools.cache` decorator does the same thing for you; try writing it by hand first.)
-
 ---
 
 ### Tests
@@ -69,6 +75,16 @@ def fib(n):
     return f(n)
 ```
 
-With the memo, each `f(i)` is computed once, so the work drops from `O(2ⁿ)` to `O(n)`. This is **top-down DP**: write the plain recursion first, then add a cache. You'll use this exact move, recursion + memo, in many DP problems.
+**Brute force:** the plain recursion `fib(n - 1) + fib(n - 2)`. Each call makes two more, so it takes about `2^n` calls. `fib(30)` is already over a million calls, and `fib(90)` would never finish.
+
+**Bottleneck:** the same values are computed again and again. `fib(n - 2)` is computed once by `fib(n)` and again inside `fib(n - 1)`, and the repeats multiply further down.
+
+**Optimal idea:** there are only `n + 1` different questions, `fib(0)` to `fib(n)`. Save each answer in `memo` the first time it is computed, and look it up every time after that.
+
+**Why it's correct:** memoizing doesn't change what is computed, only how often. `fib(i)` always has the same value, so a saved answer is as good as a fresh one.
+
+**Complexity:** `O(n)` time: each `f(i)` does real work once, and every other call is a dict lookup. `O(n)` space for `memo` and the call stack.
+
+**Common mistakes:** creating `memo` inside `f`, so every call starts with an empty dict and nothing is reused. Checking the memo but forgetting to store the result. A default argument `memo={}` works, but the dict is shared across calls of `fib`, which surprises people. Python's `@functools.cache` does all of this for you.
 
 </details>

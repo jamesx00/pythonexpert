@@ -3,6 +3,14 @@ lesson_name: "Warm-up: Tribonacci Bottom-Up"
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(n)
+  space: O(1)
+hints:
+  - "To get `t(5)`, which values do you need? Which order lets you have them ready before you need them?"
+  - "Use *Bottom-up: fill a table* and *Space optimisation* from *1-D Dynamic Programming Basics*: start from `t(0), t(1), t(2)` and move forward. Each value needs only the last three, so keep three variables and shift them: `a, b, c = b, c, a + b + c`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -38,8 +46,6 @@ Write a function `tribonacci(n)` using **bottom-up** DP: no recursion. Fill in a
 
 For example, `tribonacci(4)` returns `4` (`0, 1, 1, 2, 4`).
 
-**Hint:** you could fill a list `dp` of size `n + 1`. But each value only depends on the last three, so three variables are enough: on each step, `a, b, c = b, c, a + b + c`.
-
 ---
 
 ### Tests
@@ -68,6 +74,16 @@ def tribonacci(n):
     return c
 ```
 
-Bottom-up DP solves subproblems in an order where everything you need is already computed, so there's no recursion and no memo. Keeping only the last three values reduces space from `O(n)` to `O(1)`. *Climbing Stairs*, *House Robber* and *Min Cost Climbing Stairs* all compress this way.
+**Brute force:** the plain recursion `t(n - 1) + t(n - 2) + t(n - 3)`. Each call makes three more, so the number of calls grows exponentially. `tribonacci(37)` would take billions of calls.
+
+**Bottleneck:** the recursion asks for the same small values over and over.
+
+**Optimal idea:** go the other way. Start from the base cases and compute `t(3)`, `t(4)`, ... in order, so every value you need is already known. Only the last three values are ever used, so keep just those three in `a`, `b` and `c`.
+
+**Why it's correct:** before each step, `a, b, c` hold `t(i - 3), t(i - 2), t(i - 1)`. The step computes `t(i) = a + b + c` and shifts the window by one. After `n - 2` steps, `c` holds `t(n)`.
+
+**Complexity:** `O(n)` time, one addition per step. `O(1)` extra space.
+
+**Common mistakes:** updating the variables one at a time (`a = b`, then `b = c`, then `c = a + b + c`), which uses the new `a` and `b` in the sum. The tuple assignment computes the right side first. Running the loop `n` times instead of `n - 2` and going past the answer. Forgetting the cases `n = 0`, `1` and `2`.
 
 </details>

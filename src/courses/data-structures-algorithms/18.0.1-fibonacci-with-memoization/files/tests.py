@@ -1,46 +1,85 @@
 import sys
 import json
-import copy
+import signal
 
 from unittest.mock import patch
 patch('builtins.print').start()
 
 import main
-from main import *
-
-def fib(n):
-    memo = {}
-
-    def f(i):
-        if i < 2:
-            return i
-        if i in memo:
-            return memo[i]
-        memo[i] = f(i - 1) + f(i - 2)
-        return memo[i]
-
-    return f(n)
-
-def check(fn, *args):
-    return fn(*args)
-
-cases = [
-    ('fib', (0,)),
-    ('fib', (1,)),
-    ('fib', (2,)),
-    ('fib', (10,)),
-    ('fib', (30,)),
-    ('fib', (90,)),
-]
 
 results = {}
 
-for index, (name, args) in enumerate(cases):
+
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
+def _show(value):
+    text = repr(value)
+    return text if len(text) <= 300 else text[:300] + "..."
+
+
+def check(test_id, call, expected, time_budget=None, normalize=None):
+    """Runs one test and records a rich result: got/expected as Python reprs,
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run). normalize, if given, is applied to both
+    values before comparing, for answers whose order doesn't matter."""
     try:
-        expected = check(globals()[name], *copy.deepcopy(args))
-        assert check(getattr(main, name), *copy.deepcopy(args)) == expected
-        results[index + 1] = True
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
+    except Exception as e:
+        results[test_id] = {
+            "passed": False,
+            "error": f"{type(e).__name__}: {e}",
+            "expected": _show(expected),
+        }
+        return
+    try:
+        if normalize is None:
+            passed = got == expected
+        else:
+            passed = normalize(got) == normalize(expected)
     except Exception:
-        results[index + 1] = False
+        passed = False
+    results[test_id] = {
+        "passed": bool(passed),
+        "got": _show(got),
+        "expected": _show(expected),
+    }
+
+
+
+
+cases = [
+    (0, 0),
+    (1, 1),
+    (2, 1),
+    (10, 55),
+    (30, 832040),
+    (90, 2880067194370816120),
+]
+for index, (n, expected) in enumerate(cases):
+    # Test 6 asks for fib(90). Plain recursion would make about 10^19 calls
+    # and never finish, so every test gets the same budget: a missing memo is
+    # reported as too slow instead of the whole run being killed.
+    # Budget: 1.0s. Execution service: memoized fib(90) under 0.001s;
+    # plain recursion takes ~0.3s on test 5 and is interrupted at the budget
+    # on test 6.
+    check(index + 1, lambda: main.fib(n), expected, time_budget=1.0)
 
 sys.stdout.write(json.dumps(results))

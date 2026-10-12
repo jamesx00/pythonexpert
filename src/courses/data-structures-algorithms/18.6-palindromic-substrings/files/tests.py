@@ -1,46 +1,98 @@
 import sys
 import json
+import signal
 
 from unittest.mock import patch
 patch('builtins.print').start()
 
 import main
 
-def test_count_palindromic_substrings(s):
-    n = len(s)
-    count = 0
-
-    def expand(l, r):
-        c = 0
-        while l >= 0 and r < n and s[l] == s[r]:
-            c += 1
-            l -= 1
-            r += 1
-        return c
-
-    for i in range(n):
-        count += expand(i, i)
-        count += expand(i, i + 1)
-    return count
-
-inputs = [
-    ("aaa",),
-    ("abc",),
-    ("",),
-    ("aba",),
-    ("abba",),
-    ("racecar",),
-    ("z",),
-]
-
 results = {}
 
-for index, i in enumerate(inputs):
+
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
+def _show(value):
+    text = repr(value)
+    return text if len(text) <= 300 else text[:300] + "..."
+
+
+def check(test_id, call, expected, time_budget=None, normalize=None):
+    """Runs one test and records a rich result: got/expected as Python reprs,
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run). normalize, if given, is applied to both
+    values before comparing, for answers whose order doesn't matter."""
     try:
-        result = test_count_palindromic_substrings(*i)
-        assert main.count_palindromic_substrings(*i) == result
-        results[index + 1] = True
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
+    except Exception as e:
+        results[test_id] = {
+            "passed": False,
+            "error": f"{type(e).__name__}: {e}",
+            "expected": _show(expected),
+        }
+        return
+    try:
+        if normalize is None:
+            passed = got == expected
+        else:
+            passed = normalize(got) == normalize(expected)
     except Exception:
-        results[index + 1] = False
+        passed = False
+    results[test_id] = {
+        "passed": bool(passed),
+        "got": _show(got),
+        "expected": _show(expected),
+    }
+
+
+
+
+def noise(n, letters, seed):
+    """n letters from a fixed pseudo-random sequence, so the input is the
+    same on every run."""
+    x = seed
+    out = []
+    for _ in range(n):
+        x = (x * 1103515245 + 12345) % 2**31
+        out.append(letters[(x >> 16) % len(letters)])
+    return "".join(out)
+
+
+cases = [
+    ("aaa", 6),
+    ("abc", 3),
+    ("", 0),
+    ("aba", 4),
+    ("abba", 6),
+    ("racecar", 10),
+    ("z", 1),
+]
+for index, (s, expected) in enumerate(cases):
+    check(index + 1, lambda: main.count_palindromic_substrings(s), expected)
+
+# Performance test: 2,000 pseudo-random "a"/"b" letters.
+# Budget: 1.0s. Execution service: expand around centers ~0.002s; an n x n
+# palindrome table ~0.35s; checking every substring (O(n^3)) is interrupted
+# at the budget.
+big = noise(2_000, "ab", 6)
+check(8, lambda: main.count_palindromic_substrings(big), 6043, time_budget=1.0)
 
 sys.stdout.write(json.dumps(results))
