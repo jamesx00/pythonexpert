@@ -3,6 +3,15 @@ lesson_name: Course Schedule
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(V + E)
+  space: O(V + E)
+hints:
+  - "Draw each prerequisite as an edge between two courses. What shape in that graph makes it impossible to take every course?"
+  - "Use the directed cycle check from *Tips & Gotchas* in *Graphs Basics*: run a DFS from every course with three states. A course is *visiting* while you explore its prerequisites and *done* afterwards. Reaching a *visiting* course again means there's a cycle."
+  - "Template: `state = {}`. `dfs(node)`: if `state.get(node) == 0` (visiting), return `False`; if it's `1` (done), return `True`. Set `state[node] = 0`, return `False` if `dfs` fails for any prerequisite, then set `state[node] = 1` and return `True`. Return `True` only if `dfs` succeeds for every course."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -48,6 +57,9 @@ For example, with `num_courses = 2` and `prerequisites = [[1, 0]]`, course `1` r
 <li id="test-5"><code>can_finish(1, [])</code> should return <code>True</code></li>
 <li id="test-6"><code>can_finish(5, [[1, 0], [2, 0], [3, 1], [3, 2]])</code> should return <code>True</code></li>
 <li id="test-7"><code>can_finish(2, [])</code> should return <code>True</code></li>
+<li id="test-8"><code>can_finish(1, [[0, 0]])</code> should return <code>False</code></li>
+<li id="test-9"><code>can_finish(5, [[1, 0], [2, 1], [4, 3], [3, 4]])</code> should return <code>False</code></li>
+<li id="test-10">Performance: 20,000 courses in 50 chains of 400, where each course needs the next two in its chain, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -80,5 +92,19 @@ def can_finish(num_courses, prerequisites):
             return False
     return True
 ```
+
+Here `V` is `num_courses` and `E` is the number of prerequisite pairs.
+
+**Brute force:** take courses in passes. On each pass over all the courses, take every course whose prerequisites are all taken, and stop when a pass takes nothing. A pass costs `O(V + E)` and there can be `V` passes: `O(V * (V + E))`. In test 10 each chain needs 400 passes over 20,000 courses. A DFS that only tracks the current path, without a *done* state, is even worse: it explores a shared prerequisite again for every path that reaches it, which grows exponentially.
+
+**Bottleneck:** re-checking courses that haven't changed, or re-exploring courses already known to be fine.
+
+**Optimal idea:** every course can be taken exactly when the prerequisite graph has no cycle. Look for cycles with one DFS that uses three states: unvisited, *visiting* (on the current DFS path) and *done*. Each course is explored once.
+
+**Why it's correct:** if the DFS reaches a *visiting* course, the current path leads back to it, which is a cycle, so no order exists. A *done* course has already been fully explored without finding a cycle, so it's safe to skip. If no DFS finds a cycle, the courses can be taken in the order they became *done*, which always puts prerequisites first.
+
+**Complexity:** `O(V + E)` time and space.
+
+**Common mistakes:** using a plain `visited` set, which can't tell a cycle from a course reached twice along different paths (test 6 reaches course `0` through both `1` and `2`). Starting the DFS only from course `0`: a cycle can sit in a separate part of the graph (test 9). Kahn's algorithm from *Topological Sort* works too: the answer is `True` exactly when it places all `num_courses` courses.
 
 </details>

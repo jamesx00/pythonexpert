@@ -3,6 +3,15 @@ lesson_name: Number of Islands
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(m * n)
+  space: O(m * n)
+hints:
+  - "When you find a land cell you haven't seen before, you've found a new island. How do you make sure the rest of that island isn't counted again?"
+  - "Use the component-counting tip from *Tips & Gotchas* in *Graphs Basics*: loop over every cell, and each time you find unvisited land, count an island and run a DFS or BFS that marks every land cell connected to it. The number of traversals you start is the answer."
+  - "Template: `visited = set()`, `count = 0`. For each cell `(r, c)` that is `1` and not in `visited`: add `1` to `count`, then traverse from it with a stack, adding each in-bounds, unvisited land neighbour to `visited` and to the stack. Return `count`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -56,6 +65,7 @@ the top-left `1`s form one connected island, and the lone `1` in the bottom-righ
 <li id="test-5"><code>num_islands([[1]])</code> should return <code>1</code></li>
 <li id="test-6"><code>num_islands([[0]])</code> should return <code>0</code></li>
 <li id="test-7"><code>num_islands([[1, 0], [0, 1], [1, 0]])</code> should return <code>3</code></li>
+<li id="test-8"><code>num_islands([[1, 1, 1, 1], [0, 0, 0, 1], [1, 1, 0, 1], [1, 0, 0, 1], [1, 1, 1, 1]])</code> should return <code>1</code></li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -86,5 +96,19 @@ def num_islands(grid):
                 count += 1
     return count
 ```
+
+Here `m` and `n` are the number of rows and columns.
+
+**Brute force:** give every land cell its own label, then keep passing over the grid, copying the smaller label from any land neighbour, until nothing changes. Count the different labels at the end. On a winding island a label can need one pass per cell to spread, so that's `O((m * n)²)`.
+
+**Bottleneck:** each pass looks at every cell, though only a few labels change.
+
+**Optimal idea:** an island is a connected component of land cells. Scan the grid, and the first time you meet an unvisited land cell, traverse its whole island and mark every cell. The island's other cells are then already marked when the scan reaches them, so each island is counted once.
+
+**Why it's correct:** a traversal from a land cell marks exactly the land cells connected to it, which is its whole island. A new traversal only starts from an unmarked land cell, which belongs to an island not seen yet, and the scan reaches a cell of every island. So the count goes up exactly once per island.
+
+**Complexity:** `O(m * n)` time: each cell is scanned once and pushed at most once. `O(m * n)` extra space for `visited` and the stack.
+
+**Common mistakes:** counting diagonal neighbours as connected. Looking only at the up and left neighbours, which splits a U-shaped island in two (test 8). Marking cells when they're popped instead of when they're pushed, which can push a cell several times. A recursive DFS works too, but on a large all-land grid it can pass Python's recursion limit of about 1,000; the explicit stack here doesn't have that problem.
 
 </details>

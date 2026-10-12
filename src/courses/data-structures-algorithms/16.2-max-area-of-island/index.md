@@ -3,6 +3,15 @@ lesson_name: Max Area of Island
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(m * n)
+  space: O(m * n)
+hints:
+  - "If you can find all the cells of one island, how do you get its area? And which islands do you need to measure?"
+  - "This is *Number of Islands* with a counter. Use the component-counting tip from *Tips & Gotchas* in *Graphs Basics*: loop over every cell, and from each unvisited land cell run a traversal that marks the island and counts the cells it pops. Keep the largest count."
+  - "Template: `best = 0`. For each unvisited land cell, mark it, push it on a stack and set `area = 0`. While the stack isn't empty, pop a cell, add `1` to `area`, and mark and push its unvisited land neighbours. Then `best = max(best, area)`. Return `best`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -88,5 +97,19 @@ def max_area_of_island(grid):
                 best = max(best, bfs(r, c))
     return best
 ```
+
+Here `m` and `n` are the number of rows and columns.
+
+**Brute force:** for every land cell, run a fresh traversal of its island and record the size. An island of size `k` is traversed `k` times, so one big island costs `O((m * n)²)`.
+
+**Bottleneck:** the same island is measured again from each of its cells.
+
+**Optimal idea:** measure each island once. Share one `visited` set across the whole scan, and only start a traversal from land that isn't visited yet.
+
+**Why it's correct:** each traversal starts at an unvisited land cell and pops every cell of that island exactly once, so `area` is the island's size. Every island gets exactly one traversal, so the largest `area` is the largest island. A grid with no land starts no traversal and returns `0`.
+
+**Complexity:** `O(m * n)` time, `O(m * n)` extra space.
+
+**Common mistakes:** counting a cell both when it's pushed and when it's popped. Starting a new `visited` set for each traversal, which brings back the brute force. Returning `-1` or `None` when there's no land: the answer is `0`.
 
 </details>

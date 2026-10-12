@@ -3,6 +3,14 @@ lesson_name: "Warm-up: Flood Fill (Grid DFS)"
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(m * n)
+  space: O(m * n)
+hints:
+  - "Which cells should change colour? Once a cell has the new colour, how can you tell you've already been there?"
+  - "Use a grid DFS from *Representing a Graph* and *DFS: Go Deep First* in *Graphs Basics*: save `original = grid[r][c]` and return right away if it equals `color`. Then `fill(r, c)` returns if `(r, c)` is off the grid or isn't `original`, and otherwise recolours the cell and calls itself on the 4 neighbours."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -47,8 +55,6 @@ flood_fill([[1, 1, 0],
 #     [2, 2, 2]]
 ```
 
-**Hint:** remember `original = grid[r][c]`. If it already equals `color`, return right away; otherwise recolouring never makes progress and the DFS loops forever. Then write `fill(r, c)` that returns immediately if `(r, c)` is out of bounds or isn't `original`, else recolours the cell and calls itself on the 4 neighbours.
-
 ---
 
 ### Tests
@@ -86,6 +92,18 @@ def flood_fill(grid, r, c, color):
     return grid
 ```
 
-Recolouring a cell also marks it as visited, because it no longer equals `original`, so no separate visited set is needed. The bounds check comes first, which keeps every neighbour call safe. *Number of Islands*, *Max Area of Island* and *Surrounded Regions* all use this "check, mark, recurse into 4 neighbours" shape. The cost is `O(rows × cols)`.
+Here `m` and `n` are the number of rows and columns.
+
+**Brute force:** pass over the whole grid again and again, recolouring any `original` cell next to a recoloured one, until a pass changes nothing. Along a winding region that can take one pass per cell: `O((m * n)²)`.
+
+**Bottleneck:** each pass rescans cells that can't change.
+
+**Optimal idea:** DFS from `(r, c)`: recolour a cell, then visit its 4 neighbours. Recolouring also marks the cell as visited, because it no longer equals `original`, so no separate visited set is needed.
+
+**Why it's correct:** the DFS reaches exactly the cells connected to `(r, c)` through cells equal to `original`, and it recolours each of them once. If `original == color`, recoloured cells would still look unvisited and the DFS would never stop, which is why that case returns early.
+
+**Complexity:** `O(m * n)` time. `O(m * n)` extra space for the call stack in the worst case.
+
+**Common mistakes:** forgetting the `original == color` check. Reading `grid[r][c]` before the bounds check, which raises `IndexError`, or wraps around with negative indexes. *Number of Islands*, *Max Area of Island* and *Surrounded Regions* all use this "check, mark, visit the 4 neighbours" shape.
 
 </details>

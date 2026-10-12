@@ -3,6 +3,14 @@ lesson_name: "Warm-up: Shortest Path with BFS"
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(V + E)
+  space: O(V)
+hints:
+  - "BFS reaches nodes in order of their distance from `start`. What extra number do you need to keep for each node to answer the question?"
+  - "Use `bfs_distances` from *BFS: Go Wide First* in *Graphs Basics*: keep `dist = {start: 0}`, and when you discover a neighbour, set `dist[neighbor] = dist[node] + 1`. Return `dist[end]` when you pop `end`, or `-1` if the queue runs out."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -35,8 +43,6 @@ file_groups:
 Write a function `shortest_path(n, edges, start, end)` that returns the **fewest number of edges** needed to travel from `start` to `end` in an undirected graph with nodes `0` to `n - 1`. Return `0` if `start == end`, and `-1` if `end` can't be reached.
 
 For example, with `edges = [[0, 1], [1, 2], [2, 3], [0, 3]]`, `shortest_path(4, edges, 0, 2)` returns `2` (either `0 -> 1 -> 2` or `0 -> 3 -> 2`).
-
-**Hint:** run BFS from `start`, but instead of a visited set, keep a `dist` dictionary: `dist[start] = 0`, and when you discover a neighbour, `dist[neighbor] = dist[node] + 1`. Since BFS reaches nodes in order of distance, the first time you see `end` is along a shortest path.
 
 ---
 
@@ -76,6 +82,16 @@ def shortest_path(n, edges, start, end):
     return -1
 ```
 
-`dist` works as both the visited set and the answer table. DFS would **not** work here: it finds *a* path, not necessarily the shortest one. This exact loop shows up in *Word Ladder*, *Rotting Oranges* and every "minimum number of moves" problem. Only the definition of "neighbour" changes.
+**Brute force:** use DFS to walk every path from `start` to `end` that doesn't repeat a node, and keep the shortest. The number of such paths can grow exponentially with the size of the graph.
+
+**Bottleneck:** DFS finds *a* path, not the shortest one, so it has to try them all.
+
+**Optimal idea:** BFS. It reaches every node 1 edge away before any node 2 edges away, so the first time it reaches `end` is along a shortest path. `dist` works as both the visited set and the answer table.
+
+**Why it's correct:** by induction on the distance. While the nodes at distance `d` are popped, they discover exactly the new nodes at distance `d + 1`. A node gets its `dist` the first time it's discovered, from a node one step closer to `start`, so the value is its true distance.
+
+**Complexity:** `O(V + E)` time, `O(V)` extra space.
+
+**Common mistakes:** returning `-1` or `1` when `start == end`: the answer is `0`, which the code gets by checking `end` when it's popped. Using DFS, which can return a longer path. This exact loop shows up in *Word Ladder*, *Rotting Oranges* and every "minimum number of moves" problem. Only the definition of "neighbour" changes.
 
 </details>

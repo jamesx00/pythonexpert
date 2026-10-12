@@ -3,6 +3,14 @@ lesson_name: "Warm-up: Shortest Path in a Grid (Grid BFS)"
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(m * n)
+  space: O(m * n)
+hints:
+  - "Each cell is a node, and its open up/down/left/right cells are its neighbours. Which traversal finds the fewest moves?"
+  - "Use *BFS: Go Wide First* from *Graphs Basics* on the grid, as in *Representing a Graph*: queue `(0, 0)` with distance `0`, and get the neighbours with `for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]`. Check bounds, walls and `dist` before you enqueue. Return `-1` straight away if the start or the end is a wall."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -40,13 +48,6 @@ For example:
 grid_shortest_path([[0, 0, 0],
                     [1, 1, 0],
                     [0, 0, 0]])   # -> 4
-```
-
-**Hint:** this is BFS from the previous exercise on an implicit graph. Put `(0, 0)` in the queue with distance `0`, and generate neighbours with a directions list:
-
-```python
-for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-    nr, nc = r + dr, c + dc
 ```
 
 ---
@@ -87,6 +88,18 @@ def grid_shortest_path(grid):
     return -1
 ```
 
-The only differences from graph BFS are that nodes are `(row, col)` tuples and neighbours are computed rather than looked up. Tuples are hashable, so they work as dictionary keys. For problems that start from many cells at once, like *Rotting Oranges* or *Walls and Gates*, put **all** starting cells in the queue before the loop (multi-source BFS).
+Here `m` and `n` are the number of rows and columns.
+
+**Brute force:** use DFS to walk every path from the top-left to the bottom-right and keep the shortest. The number of paths through an open grid grows exponentially.
+
+**Bottleneck:** DFS can't tell a short path from a long one until it has tried them all.
+
+**Optimal idea:** BFS from `(0, 0)`. The only differences from graph BFS are that nodes are `(row, col)` tuples and neighbours are computed rather than looked up. Tuples are hashable, so they work as `dist` keys.
+
+**Why it's correct:** as in any BFS, cells come out in order of distance, so the first `dist` the bottom-right cell gets is the fewest moves. Walls are never enqueued, so no path goes through one.
+
+**Complexity:** `O(m * n)` time and space.
+
+**Common mistakes:** forgetting to check whether the start or end cell is a wall. Returning `1` for a `1x1` grid: no moves are needed. For problems that start from many cells at once, like *Rotting Oranges* or *Walls and Gates*, put **all** starting cells in the queue before the loop (multi-source BFS).
 
 </details>

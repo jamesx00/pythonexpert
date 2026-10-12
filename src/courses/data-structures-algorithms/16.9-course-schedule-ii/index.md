@@ -3,6 +3,15 @@ lesson_name: Course Schedule II
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(V + E)
+  space: O(V + E)
+hints:
+  - "*Course Schedule* told you whether an order exists. When a DFS finishes a course, what do you know about all of that course's prerequisites?"
+  - "Use *Topological Sort* from *Graphs Basics*: the three-state DFS from *Course Schedule*, plus a list. Append a course when it becomes *done*: all of its prerequisites were appended before it. If a DFS finds a cycle, return `[]`. (Kahn's algorithm gives an order directly, too.)"
+  - "Template: `dfs(node)` as in *Course Schedule*, with `order.append(node)` right after `state[node] = 1`. Call it on every course, return `[]` as soon as one call finds a cycle, and return `order` at the end."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -47,6 +56,9 @@ For example, with `num_courses = 3` and `prerequisites = [[1, 0], [2, 1]]`, cour
 <li id="test-4"><code>find_order(1, [])</code> should return a valid order such as <code>[0]</code></li>
 <li id="test-5"><code>find_order(4, [[1, 0], [2, 0], [3, 1], [3, 2]])</code> should return a valid order such as <code>[0, 1, 2, 3]</code></li>
 <li id="test-6"><code>find_order(3, [])</code> should return a valid order such as <code>[0, 1, 2]</code> (any order)</li>
+<li id="test-7"><code>find_order(4, [[0, 3], [3, 1], [1, 2]])</code> should return <code>[2, 1, 3, 0]</code></li>
+<li id="test-8"><code>find_order(5, [[1, 0], [2, 1], [4, 3], [3, 4]])</code> should return <code>[]</code></li>
+<li id="test-9">Performance: 20,000 courses in 50 chains of 400, where each course needs the next two in its chain, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -81,5 +93,19 @@ def find_order(num_courses, prerequisites):
             return []
     return order
 ```
+
+Here `V` is `num_courses` and `E` is the number of prerequisite pairs.
+
+**Brute force:** take courses in passes. Each pass over all the courses takes every course whose prerequisites are all taken. When the prerequisite chains are long, that's `O(V * (V + E))`: test 9 needs 400 passes over 20,000 courses.
+
+**Bottleneck:** each pass re-checks courses whose prerequisites haven't changed.
+
+**Optimal idea:** in a DFS that follows course -> prerequisite edges, a course finishes only after all of its prerequisites have finished. So the finishing order (post-order) is a valid order. The three states catch cycles, as in *Course Schedule*.
+
+**Why it's correct:** when a course is appended, every prerequisite has already been fully explored and appended, by this DFS or an earlier one. So each prerequisite comes before its course in `order`. The outer loop starts a DFS from every course, so each course is appended exactly once. A cycle makes `dfs` return `False`, and the answer is `[]`.
+
+**Complexity:** `O(V + E)` time and space.
+
+**Common mistakes:** building the edges as prerequisite -> course and then forgetting to reverse the post-order, which puts every course before its prerequisites. Returning the partial order when there's a cycle (test 8). Kahn's algorithm from *Topological Sort* gives a valid order directly, with no reversing.
 
 </details>

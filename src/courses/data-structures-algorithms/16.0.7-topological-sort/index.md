@@ -3,6 +3,14 @@ lesson_name: "Warm-up: Topological Sort"
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(V + E)
+  space: O(V + E)
+hints:
+  - "Which nodes can safely go first? After you place one, how do you find out which nodes are now free to go?"
+  - "Use Kahn's algorithm from *Topological Sort* in *Graphs Basics*: count each node's in-degree (edges pointing into it) and queue every node whose in-degree is `0`. Pop a node, add it to the order, and lower the in-degree of each node it points to, queuing any that reach `0`. If fewer than `n` nodes were placed, the rest are stuck in a cycle: return `[]`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -37,13 +45,6 @@ A **directed** edge `[a, b]` means "`a` must come before `b`" (for example, cour
 Write a function `topo_sort(n, edges)` for nodes `0` to `n - 1` that returns **any** valid topological order as a list. If the graph has a cycle, no order exists, so return `[]`.
 
 For example, `topo_sort(4, [[0, 1], [0, 2], [1, 3], [2, 3]])` could return `[0, 1, 2, 3]` or `[0, 2, 1, 3]`. Both are accepted.
-
-**Hint (Kahn's algorithm):**
-
-1. Count each node's **in-degree**: how many edges point *into* it.
-2. Put every node with in-degree `0` (no prerequisites) in a queue.
-3. Pop a node, add it to the order, and decrement the in-degree of everything it points to. Any node that hits `0` joins the queue.
-4. If the order has fewer than `n` nodes at the end, some nodes were stuck in a cycle.
 
 ---
 
@@ -83,6 +84,16 @@ def topo_sort(n, edges):
     return order if len(order) == n else []
 ```
 
-A node only enters the queue once all of its prerequisites are already in `order`, so every edge points forward. Nodes on a cycle wait for each other forever, their in-degree never reaches `0`, and they never get added, which is why `len(order) < n` detects a cycle. This is the engine behind *Course Schedule I & II* and *Alien Dictionary*. The DFS alternative is to append each node **after** visiting all its descendants (post-order), then reverse.
+**Brute force:** scan all nodes for one whose incoming edges all come from nodes already placed, place it, and repeat. Each scan is `O(V + E)` and there are up to `V` of them: `O(V * (V + E))`.
+
+**Bottleneck:** every scan re-checks nodes whose situation hasn't changed.
+
+**Optimal idea:** keep a count of unplaced prerequisites (the in-degree) for each node. Placing a node only changes the counts of the nodes it points to, and a node is ready the moment its count reaches `0`, so queue it then.
+
+**Why it's correct:** a node only enters the queue once all of its prerequisites are already in `order`, so every edge points forward. Nodes on a cycle wait for each other forever: their in-degree never reaches `0`, so they're never added, and `len(order) < n` detects the cycle.
+
+**Complexity:** `O(V + E)` time and space.
+
+**Common mistakes:** counting the in-degree on the wrong end: `[a, b]` points into `b`. Returning the partial order instead of `[]` when there's a cycle. The DFS alternative is to append each node **after** visiting all the nodes it points to (post-order), then reverse the list. This is the engine behind *Course Schedule I & II* and *Alien Dictionary*.
 
 </details>

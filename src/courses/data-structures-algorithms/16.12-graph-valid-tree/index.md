@@ -3,6 +3,15 @@ lesson_name: Graph Valid Tree
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n log n)
+  space: O(n)
+hints:
+  - "A tree with `n` nodes always has the same number of edges. Once the edge count is right, what else must be true?"
+  - "Use *Union-Find* from *Graphs Basics*: a valid tree has exactly `n - 1` edges and no cycle. Check the count first, then `union` every edge. If an edge's ends already share a root, it closes a cycle."
+  - "Template: if `len(edges) != n - 1`, return `False`. `parent = list(range(n))`. For each `[a, b]`: if `find(a) == find(b)`, return `False`; otherwise link the roots. At the end, return whether every node has the same root."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -48,6 +57,8 @@ For example, with `n = 4` and `edges = [[0, 1], [1, 2], [2, 3]]`, every node is 
 <li id="test-5"><code>valid_tree(3, [[0, 1], [1, 2], [0, 2]])</code> should return <code>False</code></li>
 <li id="test-6"><code>valid_tree(2, [[0, 1]])</code> should return <code>True</code></li>
 <li id="test-7"><code>valid_tree(2, [])</code> should return <code>False</code></li>
+<li id="test-8"><code>valid_tree(4, [[0, 1], [1, 2], [2, 0]])</code> should return <code>False</code></li>
+<li id="test-9"><code>valid_tree(5, [[0, 1], [0, 2], [0, 3], [1, 4]])</code> should return <code>True</code></li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -73,5 +84,19 @@ def valid_tree(n, edges):
 
     return len({find(x) for x in range(n)}) == 1
 ```
+
+Here `n` (also called `V`) is the number of nodes and `E` the number of edges.
+
+**Brute force:** for each edge, remove it and check with a DFS whether its two ends are still connected, which would mean a cycle. Then run one more DFS to check that every node is reachable. That's `O(E * (V + E))`.
+
+**Bottleneck:** each check walks over the whole graph again.
+
+**Optimal idea:** a graph with `n` nodes is a tree exactly when it has `n - 1` edges and no cycle. The count costs nothing, and union-find spots a cycle as the edges are added.
+
+**Why it's correct:** with no cycle, each edge merges two different groups, so `n - 1` edges merge the `n` starting groups into one. The graph is then connected with no cycle, which is a tree. If an edge joins two nodes already in the same group, it closes a cycle, and the graph isn't a tree. A graph with any other number of edges can't be a tree either.
+
+**Complexity:** `O(n log n)` time, amortized, with path compression. `O(n)` space.
+
+**Common mistakes:** checking only for cycles: `valid_tree(5, [[0, 1], [2, 3]])` has none but isn't connected. Checking only the edge count: test 8 has `n - 1` edges, but they form a cycle and leave node `3` alone. Forgetting that a single node with no edges is a valid tree.
 
 </details>

@@ -1,47 +1,89 @@
 import sys
 import json
+import signal
 
 from unittest.mock import patch
 patch('builtins.print').start()
 
 import main
 
-def test_find_redundant_connection(edges):
-    parent = {}
-
-    def find(x):
-        while parent[x] != x:
-            parent[x] = parent[parent[x]]
-            x = parent[x]
-        return x
-
-    for a, b in edges:
-        parent.setdefault(a, a)
-        parent.setdefault(b, b)
-
-    for a, b in edges:
-        ra, rb = find(a), find(b)
-        if ra == rb:
-            return [a, b]
-        parent[ra] = rb
-    return []
-
-inputs = [
-    ([[1, 2], [1, 3], [2, 3]],),
-    ([[1, 2], [2, 3], [3, 4], [1, 4], [1, 5]],),
-    ([[1, 2], [1, 3], [1, 4], [3, 4]],),
-    ([[1, 4], [3, 4], [1, 3], [1, 2]],),
-    ([[1, 2], [2, 3], [1, 3]],),
-]
-
 results = {}
 
-for index, i in enumerate(inputs):
+
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
+def _show(value):
+    text = repr(value)
+    return text if len(text) <= 300 else text[:300] + "..."
+
+
+def check(test_id, call, expected, time_budget=None, normalize=None):
+    """Runs one test and records a rich result: got/expected as Python reprs,
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run). normalize, if given, is applied to both
+    values before comparing, for answers whose order doesn't matter."""
     try:
-        result = test_find_redundant_connection(*i)
-        assert main.find_redundant_connection(*i) == result
-        results[index + 1] = True
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
+    except Exception as e:
+        results[test_id] = {
+            "passed": False,
+            "error": f"{type(e).__name__}: {e}",
+            "expected": _show(expected),
+        }
+        return
+    try:
+        if normalize is None:
+            passed = got == expected
+        else:
+            passed = normalize(got) == normalize(expected)
     except Exception:
-        results[index + 1] = False
+        passed = False
+    results[test_id] = {
+        "passed": bool(passed),
+        "got": _show(got),
+        "expected": _show(expected),
+    }
+
+
+cases = [
+    ([[1, 2], [1, 3], [2, 3]], [2, 3]),
+    ([[1, 2], [2, 3], [3, 4], [1, 4], [1, 5]], [1, 4]),
+    ([[1, 2], [1, 3], [1, 4], [3, 4]], [3, 4]),
+    ([[1, 4], [3, 4], [1, 3], [1, 2]], [1, 3]),
+    ([[1, 2], [2, 3], [1, 3]], [1, 3]),
+    ([[3, 4], [1, 2], [2, 4], [3, 5], [2, 5]], [2, 5]),
+]
+for index, (edges, expected) in enumerate(cases):
+    check(index + 1, lambda: main.find_redundant_connection(edges), expected)
+
+# Performance test: 8,000 nodes in a star around node 1. The edges are
+# [1, 2], [1, 3], ..., [1, 4001], then [4000, 4001], which closes the only
+# cycle, then [1, 4002], ..., [1, 8000].
+# Budget: 1.0s. Execution service: union-find ~0.003s; before adding each
+# edge, searching the graph built so far for a path between its two ends is
+# interrupted at the budget, and so is removing one edge at a time from the
+# end and checking whether the rest is a tree.
+n = 8_000
+half = n // 2
+big = [[1, k] for k in range(2, half + 2)] + [[half, half + 1]] + [[1, k] for k in range(half + 2, n + 1)]
+check(7, lambda: main.find_redundant_connection(big), [half, half + 1], time_budget=1.0)
 
 sys.stdout.write(json.dumps(results))

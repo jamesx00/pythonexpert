@@ -3,6 +3,14 @@ lesson_name: "Warm-up: Depth-First Search"
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(V + E)
+  space: O(V)
+hints:
+  - "After you visit a node, which node should you visit next? What stops you from walking back and forth between two connected nodes forever?"
+  - "Use *DFS: Go Deep First* from *Graphs Basics*: build the adjacency list, then write a recursive `visit(node)` that adds `node` to `visited`, appends it to the result, and calls `visit` on each neighbour that isn't in `visited` yet."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -37,8 +45,6 @@ Write a function `dfs_order(n, edges, start)` that runs a **depth-first search**
 To make the order predictable, build the adjacency list with neighbours in edge order (like the previous exercise), and always explore neighbours in that order.
 
 For example, with `edges = [[0, 1], [0, 2], [1, 3]]` and `start = 0`, DFS goes `0 -> 1 -> 3`, backs up to `0`, then visits `2`, so the answer is `[0, 1, 3, 2]`. Nodes that can't be reached from `start` are not included.
-
-**Hint:** use a recursive helper `visit(node)` that marks `node` as visited, appends it to the result, and then calls `visit` on each **unvisited** neighbour. The visited set is what stops you from going back and forth between two connected nodes forever.
 
 ---
 
@@ -77,8 +83,14 @@ def dfs_order(n, edges, start):
     return order
 ```
 
-Each call goes as deep as it can before returning, and returning **is** the backtracking step: the call stack remembers where to continue. Every node is visited once and every edge is checked twice (once from each end), so the cost is `O(V + E)`.
+**Brute force:** there isn't a slower way worth writing. A traversal has to look at every node and edge once, so `O(V + E)` is the floor. Without a `visited` set, though, DFS on a graph with a cycle (like `0-1-2-0` in test 3) never stops.
 
-You can also write DFS iteratively with your own stack (`stack.pop()` instead of recursion). That avoids Python's recursion limit on very large graphs, but the visiting order can differ slightly unless you push neighbours in reverse.
+**Key idea:** each call goes as deep as it can before returning, and returning **is** the backing-up step: the call stack remembers where to continue. A node is marked visited as soon as it's entered, so no path can come back to it.
+
+**Why it's correct:** a node is appended the first time `visit` reaches it and never again, because it's in `visited` from then on. Neighbours are tried in edge order, and each call finishes everything reachable through its first neighbour before it tries the second. That's depth-first order. Nodes not connected to `start` are never reached, so they're left out.
+
+**Complexity:** `O(V + E)` time: every node is visited once and every edge is checked twice, once from each end. `O(V)` extra space for `visited` and the call stack.
+
+**Common mistakes:** appending a node before checking `visited`, which lists it twice. Building the adjacency list one way only. You can also write DFS with your own stack (`stack.pop()` instead of recursion), which avoids Python's recursion limit on very large graphs, but the order differs unless you push the neighbours in reverse.
 
 </details>

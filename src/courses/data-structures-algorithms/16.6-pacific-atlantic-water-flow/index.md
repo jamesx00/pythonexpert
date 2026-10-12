@@ -3,6 +3,15 @@ lesson_name: Pacific Atlantic Water Flow
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(m * n)
+  space: O(m * n)
+hints:
+  - "Following the water downhill from every cell repeats a lot of work. What if you walked backwards instead, from each ocean inland?"
+  - "Reverse the flow and use *DFS: Go Deep First* from *Graphs Basics*: start a DFS from every Pacific edge cell and only move to neighbours that are at least as high. That marks every cell whose water reaches the Pacific. Do the same from the Atlantic edge, and return the cells that are in both sets."
+  - "Template: `dfs(r, c, visited, prev)` returns if `(r, c)` is out of bounds, already in `visited`, or `heights[r][c] < prev`; otherwise it adds `(r, c)` and calls itself on the 4 neighbours with `heights[r][c]`. Run it from the top row and left column into `pac`, and from the bottom row and right column into `atl`. Return the cells in `pac & atl` as lists."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -55,6 +64,8 @@ the cell at row 2, col 2 has the highest elevation in its neighborhood and can d
 <li id="test-4"><code>pacific_atlantic([[1, 2, 3]])</code> should return <code>[[0, 0], [0, 1], [0, 2]]</code> (order does not matter)</li>
 <li id="test-5"><code>pacific_atlantic([[3], [2], [1]])</code> should return <code>[[0, 0], [1, 0], [2, 0]]</code> (order does not matter)</li>
 <li id="test-6"><code>pacific_atlantic([])</code> should return <code>[]</code></li>
+<li id="test-7"><code>pacific_atlantic([[1, 1, 1], [1, 0, 1], [1, 1, 1]])</code> should return <code>[[0, 0], [0, 1], [0, 2], [1, 0], [1, 2], [2, 0], [2, 1], [2, 2]]</code> (order does not matter)</li>
+<li id="test-8">Performance: a 100x100 grid where cell <code>(r, c)</code> has height <code>r + c</code>, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -84,5 +95,19 @@ def pacific_atlantic(heights):
 
     return [list(x) for x in (pac & atl)]
 ```
+
+Here `m` and `n` are the number of rows and columns.
+
+**Brute force:** from every cell, search downhill to see whether its water reaches both oceans. Each search can cover the whole grid, so that's `O((m * n)²)`. In test 8, water from cell `(r, c)` can reach every cell above and to the left of it, so most of the searches are large.
+
+**Bottleneck:** neighbouring cells repeat almost the same search.
+
+**Optimal idea:** turn the question around. Water flows from a cell to a neighbour that is not higher. So walking backwards from the ocean, you may step to a neighbour that is **at least as high**. One search from all the Pacific edge cells marks every cell that drains into the Pacific, and one from the Atlantic edge does the same for the Atlantic. The answer is the cells in both sets.
+
+**Why it's correct:** water from a cell reaches the Pacific exactly when there's a path from that cell to a Pacific edge cell where each step goes to a cell that's not higher. Read backwards, that's a path from the edge cell where each step goes to a cell that's not lower, which is what the reverse DFS follows. So `pac` holds exactly the cells that drain into the Pacific, and `atl` the ones that drain into the Atlantic.
+
+**Complexity:** `O(m * n)` time: each cell is added to each set at most once. `O(m * n)` extra space for the sets and the call stack.
+
+**Common mistakes:** using the downhill comparison in the reverse walk: going inland, the next cell must be *higher or equal*. Forgetting that the top-right and bottom-left corners touch both oceans. On a big flat grid the recursive DFS can pass Python's recursion limit; an explicit stack avoids that.
 
 </details>

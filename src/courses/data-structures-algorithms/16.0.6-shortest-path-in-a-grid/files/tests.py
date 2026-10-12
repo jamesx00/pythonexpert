@@ -1,52 +1,77 @@
 import sys
 import json
-import copy
-from collections import deque
+import signal
 
 from unittest.mock import patch
 patch('builtins.print').start()
 
 import main
-from main import *
-
-def grid_shortest_path(grid):
-    rows, cols = len(grid), len(grid[0])
-    if grid[0][0] == 1 or grid[rows - 1][cols - 1] == 1:
-        return -1
-    dist = {(0, 0): 0}
-    queue = deque([(0, 0)])
-    while queue:
-        r, c = queue.popleft()
-        if (r, c) == (rows - 1, cols - 1):
-            return dist[(r, c)]
-        for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-            nr, nc = r + dr, c + dc
-            if (0 <= nr < rows and 0 <= nc < cols
-                    and grid[nr][nc] == 0 and (nr, nc) not in dist):
-                dist[(nr, nc)] = dist[(r, c)] + 1
-                queue.append((nr, nc))
-    return -1
-
-def check(fn, *args):
-    return fn(*args)
-
-cases = [
-    ('grid_shortest_path', ([[0, 0, 0], [1, 1, 0], [0, 0, 0]],)),
-    ('grid_shortest_path', ([[0]],)),
-    ('grid_shortest_path', ([[0, 1], [1, 0]],)),
-    ('grid_shortest_path', ([[1, 0], [0, 0]],)),
-    ('grid_shortest_path', ([[0, 0, 0, 0], [1, 1, 1, 0], [0, 0, 0, 0], [0, 1, 1, 1], [0, 0, 0, 0]],)),
-    ('grid_shortest_path', ([[0, 0], [0, 0]],)),
-]
 
 results = {}
 
-for index, (name, args) in enumerate(cases):
+
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
+def _show(value):
+    text = repr(value)
+    return text if len(text) <= 300 else text[:300] + "..."
+
+
+def check(test_id, call, expected, time_budget=None, normalize=None):
+    """Runs one test and records a rich result: got/expected as Python reprs,
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run). normalize, if given, is applied to both
+    values before comparing, for answers whose order doesn't matter."""
     try:
-        expected = check(globals()[name], *copy.deepcopy(args))
-        assert check(getattr(main, name), *copy.deepcopy(args)) == expected
-        results[index + 1] = True
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
+    except Exception as e:
+        results[test_id] = {
+            "passed": False,
+            "error": f"{type(e).__name__}: {e}",
+            "expected": _show(expected),
+        }
+        return
+    try:
+        if normalize is None:
+            passed = got == expected
+        else:
+            passed = normalize(got) == normalize(expected)
     except Exception:
-        results[index + 1] = False
+        passed = False
+    results[test_id] = {
+        "passed": bool(passed),
+        "got": _show(got),
+        "expected": _show(expected),
+    }
+
+
+cases = [
+    ([[0, 0, 0], [1, 1, 0], [0, 0, 0]], 4),
+    ([[0]], 0),
+    ([[0, 1], [1, 0]], -1),
+    ([[1, 0], [0, 0]], -1),
+    ([[0, 0, 0, 0], [1, 1, 1, 0], [0, 0, 0, 0], [0, 1, 1, 1], [0, 0, 0, 0]], 13),
+    ([[0, 0], [0, 0]], 2),
+]
+for index, (grid, expected) in enumerate(cases):
+    check(index + 1, lambda: main.grid_shortest_path([row[:] for row in grid]), expected)
 
 sys.stdout.write(json.dumps(results))
