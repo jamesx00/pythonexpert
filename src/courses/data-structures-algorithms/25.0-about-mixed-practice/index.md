@@ -15,7 +15,7 @@ Mixed Practice is for learners who want to practise the step the earlier section
 ## How It Works &#x1F9ED;
 
 - **The problems aren't labelled by pattern,** and they're mixed so that neighbouring problems use different techniques.
-- **Every problem appeared earlier in the course.** These are the same problems, with the same tests, from the Arrays & Hashing, Two Pointers, Sliding Window, Stack, Binary Search, Linked List, Trees, Tries, Heap / Priority Queue, Backtracking, Graphs, Advanced Graphs, 1-D Dynamic Programming, 2-D Dynamic Programming, Greedy and Intervals sections. If you remember one, that's fine: say which pattern it uses and why before you write any code, then solve it again from scratch.
+- **Every problem appeared earlier in the course.** These are the same problems, with the same tests, from the Arrays & Hashing, Two Pointers, Sliding Window, Stack, Binary Search, Linked List, Trees, Tries, Heap / Priority Queue, Backtracking, Graphs, Advanced Graphs, 1-D Dynamic Programming, 2-D Dynamic Programming, Greedy, Intervals, Math & Geometry and Bit Manipulation sections. If you remember one, that's fine: say which pattern it uses and why before you write any code, then solve it again from scratch.
 - **The first hint names the pattern.** Make your guess first, then reveal hint 1 to check it. The hints after that are the same as in the original lesson.
 
 ## Before You Start &#x1F4CC;
