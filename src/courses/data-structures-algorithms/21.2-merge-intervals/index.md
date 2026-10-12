@@ -3,6 +3,15 @@ lesson_name: Merge Intervals
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n log n)
+  space: O(n)
+hints:
+  - "If the intervals were sorted by start, which interval could the next one possibly overlap?"
+  - "After sorting by start, an interval can only overlap the last interval you've built so far: check `start <= last_end` (see *Merge* in *Intervals Basics*)."
+  - "Template: sort by start, start the result with a copy of the first interval, then for each `[start, end]`: if `start <= result[-1][1]`, set `result[-1][1] = max(result[-1][1], end)`, else append `[start, end]`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -48,6 +57,7 @@ For example, given `intervals = [[8, 10], [1, 3], [2, 6]]`, the intervals `[1, 3
 <li id="test-5"><code>merge_intervals([[1, 2], [3, 4], [5, 6]])</code> should return <code>[[1, 2], [3, 4], [5, 6]]</code></li>
 <li id="test-6"><code>merge_intervals([[5, 7]])</code> should return <code>[[5, 7]]</code></li>
 <li id="test-7"><code>merge_intervals([[1, 10], [2, 3], [4, 5], [6, 7]])</code> should return <code>[[1, 10]]</code></li>
+<li id="test-8">Performance: 100,000 shuffled intervals that merge in pairs into 50,000, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -66,5 +76,17 @@ def merge_intervals(intervals):
             result.append([start, end])
     return result
 ```
+
+**Brute force:** look for any two intervals that overlap, replace them with their union, and start over. Stop when no pair overlaps. Every pass compares pairs, so it's `O(n^2)` per merge and `O(n^3)` in the worst case.
+
+**Bottleneck:** in an unsorted list, any interval might overlap any other, so every pair has to be compared.
+
+**Optimal idea:** sort by start. Then sweep once, keeping the merged intervals in `result`. Each new interval either overlaps the last one in `result` (extend its end) or starts after it (append it).
+
+**Why it's correct:** after sorting, every interval later in the list starts at or after the current one. So if the current interval doesn't reach the last merged interval, nothing earlier in `result` can reach it either, since those end even sooner. Intervals that touch (`[1, 4]` and `[4, 5]`) merge because the check is `<=`.
+
+**Complexity:** `O(n log n)` time for the sort, then `O(n)` for the sweep. `O(n)` space for the sorted copy and the result.
+
+**Common mistakes:** setting the end to `end` instead of `max(result[-1][1], end)`, which shrinks `[1, 10]` when `[2, 3]` comes next. Using `<` instead of `<=`, which leaves touching intervals apart. Appending the input's lists into `result` and then changing them, which changes the caller's intervals: copy them first.
 
 </details>

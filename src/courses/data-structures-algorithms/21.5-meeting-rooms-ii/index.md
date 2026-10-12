@@ -3,6 +3,15 @@ lesson_name: Meeting Rooms II
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(n log n)
+  space: O(n)
+hints:
+  - "The number of rooms is the largest number of meetings running at the same moment. When does that number go up, and when does it go down?"
+  - "It goes up at each start and down at each end. Sort the start times and the end times separately and sweep them together (see *Count simultaneous intervals (meeting rooms)* in *Intervals Basics*)."
+  - "Template: `starts` and `ends` sorted, pointers `s` and `e`. If `starts[s] < ends[e]`, a meeting begins: `rooms += 1`, `s += 1`, update the best. Else one ends: `rooms -= 1`, `e += 1`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -48,6 +57,7 @@ For example, given `intervals = [[0, 30], [5, 10], [15, 20]]`, the meeting `[0, 
 <li id="test-5"><code>min_meeting_rooms([[1, 10], [2, 6], [3, 8], [4, 7]])</code> should return <code>4</code></li>
 <li id="test-6"><code>min_meeting_rooms([[1, 5], [5, 8], [2, 4]])</code> should return <code>2</code></li>
 <li id="test-7"><code>min_meeting_rooms([[1, 4], [2, 5], [7, 9], [8, 10]])</code> should return <code>2</code></li>
+<li id="test-8">Performance: 100,000 shuffled meetings <code>[i, i + 100]</code>, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -74,5 +84,17 @@ def min_meeting_rooms(intervals):
             e_ptr += 1
     return max_rooms
 ```
+
+**Brute force:** the busiest moment is always some meeting's start. So for each meeting, count how many meetings are running at its start time, and return the largest count. That's `O(n^2)`.
+
+**Bottleneck:** each count scans every meeting again, though the count only changes by one at each start or end.
+
+**Optimal idea:** treat starts and ends as events. Sort the start times and the end times separately, then sweep both lists in time order. A start adds a room, an end frees one, and the answer is the largest count seen. Which meeting an end belongs to doesn't matter, only how many are running.
+
+**Why it's correct:** at any time, the number of meetings running is the number of starts so far minus the number of ends so far. The sweep visits the events in time order, so `rooms` is exactly that count. When a start and an end happen at the same time, the end is processed first (`starts[s] < ends[e]` is false), so a room freed at `t` can be reused at `t`.
+
+**Complexity:** `O(n log n)` time for the two sorts, `O(n)` for the sweep. `O(n)` space for the two lists. A min-heap of end times also works in `O(n log n)`.
+
+**Common mistakes:** using `<=`, which opens a new room for `[5, 8]` while `[1, 5]` is just ending. Sorting the meetings by start and only comparing neighbours, which works for *Meeting Rooms* but undercounts here. Returning the final `rooms` (always `0` after the sweep ends) instead of the largest value it reached.
 
 </details>

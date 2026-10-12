@@ -3,6 +3,15 @@ lesson_name: Minimum Interval to Include Each Query
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: hard
+target_complexity:
+  time: O(n log n + m log m)
+  space: O(n + m)
+hints:
+  - "If you answer the queries from smallest to largest, how does the set of intervals that could contain the query change from one query to the next?"
+  - "Intervals only join (once their start is passed) or expire (once their end is passed). Keep the joined ones in a min-heap by size, and drop expired ones from the top (see *Queries over intervals* in *Tips & Gotchas* in *Intervals Basics*)."
+  - "Template: sort the intervals by start and the query indexes by value. For each query `q`, push `(size, end)` for every interval with `start <= q`, pop while `heap[0][1] < q`, and answer `heap[0][0]` or `-1`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -47,6 +56,7 @@ For example, given `intervals = [[1, 4], [2, 4], [3, 6], [4, 4]]` and `queries =
 <li id="test-4"><code>min_interval_for_queries([], [1, 2, 3])</code> should return <code>[-1, -1, -1]</code></li>
 <li id="test-5"><code>min_interval_for_queries([[1, 10], [1, 3], [4, 10]], [1, 4, 10])</code> should return <code>[3, 7, 7]</code></li>
 <li id="test-6"><code>min_interval_for_queries([[1, 1], [2, 2], [3, 3]], [1, 2, 3, 4])</code> should return <code>[1, 1, 1, -1]</code></li>
+<li id="test-7">Performance: 50,001 intervals and 50,000 queries, within 1 second</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -55,12 +65,13 @@ For example, given `intervals = [[1, 4], [2, 4], [3, 6], [4, 4]]` and `queries =
 ```python
 import heapq
 
+
 def min_interval_for_queries(intervals, queries):
     ordered = sorted(intervals, key=lambda iv: iv[0])
     answer = [-1] * len(queries)
     order = sorted(range(len(queries)), key=lambda i: queries[i])
 
-    heap = []
+    heap = []  # (size, end) of intervals that start at or before q
     idx = 0
     for qi in order:
         q = queries[qi]
@@ -69,11 +80,25 @@ def min_interval_for_queries(intervals, queries):
             heapq.heappush(heap, (end - start + 1, end))
             idx += 1
         while heap and heap[0][1] < q:
-            heapq.heappop(heap)
+            heapq.heappop(heap)  # ended before q, and later queries are larger
         if heap:
             answer[qi] = heap[0][0]
 
     return answer
 ```
+
+Here `n` is `len(intervals)` and `m` is `len(queries)`.
+
+**Brute force:** for each query, check every interval and keep the smallest one that contains it. That's `O(n * m)`.
+
+**Bottleneck:** every query looks at every interval again, even though nearby queries are covered by mostly the same intervals.
+
+**Optimal idea:** answer the queries in sorted order, and remember where each one goes in the answer. Sort the intervals by start too. As the query grows, push every interval that has now started onto a min-heap keyed by size. Before reading the top, pop intervals that ended before the query. The top is then the smallest interval that contains it.
+
+**Why it's correct:** every interval in the heap has `start <= q`. Popping the top while its end is below `q` leaves a top that also has `end >= q`, so it contains `q`, and nothing smaller in the heap was skipped. Expired intervals deeper in the heap are harmless: they're popped as soon as they reach the top. And the queries only grow, so an interval that ended before one query is never needed again.
+
+**Complexity:** `O(n log n + m log m)` time: the two sorts, and each interval is pushed and popped at most once. `O(n + m)` space for the heap, the sorted copies and the answer.
+
+**Common mistakes:** answering the queries in sorted order but writing the answers in that order too, instead of back at each query's original index. Popping with `<=`, which drops an interval whose end equals the query. Sizing an interval as `end - start` instead of `end - start + 1`.
 
 </details>

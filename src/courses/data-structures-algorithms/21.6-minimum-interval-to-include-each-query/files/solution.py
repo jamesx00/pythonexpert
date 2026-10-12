@@ -1,11 +1,12 @@
 import heapq
 
+
 def min_interval_for_queries(intervals, queries):
     ordered = sorted(intervals, key=lambda iv: iv[0])
     answer = [-1] * len(queries)
     order = sorted(range(len(queries)), key=lambda i: queries[i])
 
-    heap = []
+    heap = []  # (size, end) of intervals that start at or before q
     idx = 0
     for qi in order:
         q = queries[qi]
@@ -14,7 +15,7 @@ def min_interval_for_queries(intervals, queries):
             heapq.heappush(heap, (end - start + 1, end))
             idx += 1
         while heap and heap[0][1] < q:
-            heapq.heappop(heap)
+            heapq.heappop(heap)  # ended before q, and later queries are larger
         if heap:
             answer[qi] = heap[0][0]
 
