@@ -3,6 +3,14 @@ lesson_name: "Warm-up: Generate Binary Strings"
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(2ⁿ · n)
+  space: O(n)
+hints:
+  - "At each of the `n` positions you pick `\"0\"` or `\"1\"`. How do you try one, explore everything after it, and then try the other?"
+  - "Use *The Template* from *Backtracking Basics*: keep a `path` list, and when `len(path) == n` record `\"\".join(path)`. Otherwise loop over `\"01\"`: append, recurse, pop. Trying `\"0\"` before `\"1\"` gives ascending order for free."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -44,8 +52,6 @@ backtrack()        # explore
 path.pop()         # un-choose
 ```
 
-**Hint:** keep a `path` list. When `len(path) == n`, add `"".join(path)` to the results. Trying `"0"` before `"1"` gives ascending order automatically.
-
 ---
 
 ### Tests
@@ -78,6 +84,16 @@ def binary_strings(n):
     return result
 ```
 
-The recursion forms a decision tree with depth `n` and 2 branches per level, so it produces `2ⁿ` strings. The `pop()` after each recursive call restores `path` so the next choice starts from a clean state. Forgetting it is the most common backtracking bug.
+**Brute force:** count from `0` to `2ⁿ - 1` and format each number as an `n`-digit binary string with `format(i, f"0{n}b")`. That's also `O(2ⁿ · n)`, and it's a fine answer, but it skips the backtracking rhythm this warm-up is for.
+
+**Bottleneck:** there isn't a faster way. The output itself has `2ⁿ` strings of length `n`, so any solution takes at least `O(2ⁿ · n)`.
+
+**Optimal idea:** build the string one position at a time. At each position, choose `"0"`, explore every string that starts that way, un-choose it, then do the same with `"1"`.
+
+**Why it's correct:** every string is one sequence of `n` choices, and the recursion tries every choice at every position, so each string is recorded exactly once. Because `"0"` is tried before `"1"` at every position, the strings come out in ascending order.
+
+**Complexity:** `O(2ⁿ · n)` time: `2ⁿ` results, each joined in `O(n)`. `O(n)` extra space for `path` and the recursion, not counting the output.
+
+**Common mistakes:** forgetting `path.pop()`, so the path keeps growing. Returning `[]` instead of `[""]` for `n = 0`: there's exactly one string of length 0.
 
 </details>

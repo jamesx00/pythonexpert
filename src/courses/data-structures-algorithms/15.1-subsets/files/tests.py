@@ -1,37 +1,86 @@
 import sys
 import json
+import signal
 
 from unittest.mock import patch
 patch('builtins.print').start()
 
 import main
 
-def test_subsets(nums):
-    result = [[]]
-    for n in nums:
-        result += [subset + [n] for subset in result]
-    return result
-
-def normalize(subsets_list):
-    return sorted(sorted(subset) for subset in subsets_list)
-
-inputs = [
-    ([1, 2, 3],),
-    ([],),
-    ([5],),
-    ([4, 7],),
-    ([0, -1],),
-    ([1, 2, 3, 4],),
-]
-
 results = {}
 
-for index, i in enumerate(inputs):
+
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
+def _show(value):
+    text = repr(value)
+    return text if len(text) <= 300 else text[:300] + "..."
+
+
+def check(test_id, call, expected, time_budget=None, normalize=None):
+    """Runs one test and records a rich result: got/expected as Python reprs,
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run). normalize, if given, is applied to both
+    values before comparing, for answers whose order doesn't matter."""
     try:
-        result = normalize(test_subsets(*i))
-        assert normalize(main.subsets(*i)) == result
-        results[index + 1] = True
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
+    except Exception as e:
+        results[test_id] = {
+            "passed": False,
+            "error": f"{type(e).__name__}: {e}",
+            "expected": _show(expected),
+        }
+        return
+    try:
+        if normalize is None:
+            passed = got == expected
+        else:
+            passed = normalize(got) == normalize(expected)
     except Exception:
-        results[index + 1] = False
+        passed = False
+    results[test_id] = {
+        "passed": bool(passed),
+        "got": _show(got),
+        "expected": _show(expected),
+    }
+
+
+def normalize(subsets):
+    return sorted(sorted(subset) for subset in subsets)
+
+
+cases = [
+    ([1, 2, 3], [[], [1], [2], [3], [1, 2], [1, 3], [2, 3], [1, 2, 3]]),
+    ([], [[]]),
+    ([5], [[], [5]]),
+    ([4, 7], [[], [4], [7], [4, 7]]),
+    ([0, -1], [[], [0], [-1], [0, -1]]),
+    ([1, 2, 3, 4], [
+        [], [1], [2], [3], [4],
+        [1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4],
+        [1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4],
+        [1, 2, 3, 4],
+    ]),
+]
+for index, (nums, expected) in enumerate(cases):
+    check(index + 1, lambda: main.subsets(nums), expected, normalize=normalize)
 
 sys.stdout.write(json.dumps(results))

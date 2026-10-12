@@ -3,6 +3,14 @@ lesson_name: "Warm-up: Combinations"
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: easy
+target_complexity:
+  time: O(C(n, k) · k)
+  space: O(k)
+hints:
+  - "`[1, 2]` and `[2, 1]` are the same combination. How can you make sure you only ever build it in one order?"
+  - "Use *The Template* from *Backtracking Basics* with a `start` argument: loop `num` from `start` to `n`, append it, recurse with `backtrack(num + 1)`, then pop. When `len(path) == k`, record a copy, `path[:]`."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -35,8 +43,6 @@ file_groups:
 Write a function `combine(n, k)` that returns every way to choose `k` distinct numbers from `1` to `n`. Each combination should be a list in ascending order, and the combinations themselves should be in ascending (lexicographic) order.
 
 For example, `combine(4, 2)` returns `[[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]]`.
-
-**Hint:** pass a `start` number into your backtracking function so each call only picks numbers **larger** than the last one. That's what stops `[2, 1]` from appearing as a duplicate of `[1, 2]`. When you record a finished combination, append a **copy** (`path[:]`).
 
 ---
 
@@ -72,8 +78,16 @@ def combine(n, k):
     return result
 ```
 
-`backtrack(num + 1)` moves the start forward, so numbers only ever increase along a path and every combination is generated once. Appending `path[:]` matters: `path` itself is emptied again by later `pop()` calls, so appending it directly would leave you with a list of empty lists.
+**Brute force:** generate all `2ⁿ` subsets of `1..n` and keep the ones of size `k`. It works, but for `combine(20, 2)` it builds about a million subsets to find 190 answers.
 
-An optional pruning step: if there aren't enough numbers left to fill the path (`n - num + 1 < k - len(path)`), stop the loop early.
+**Bottleneck:** most subsets have the wrong size, and building them is wasted work.
+
+**Optimal idea:** build each combination in ascending order. After picking `num`, the next pick must come from `num + 1` to `n`. Stop as soon as the path has `k` numbers.
+
+**Why it's correct:** every combination has exactly one ascending order, and the `start` argument only allows ascending paths, so each combination is built exactly once. Trying smaller numbers first at every position gives lexicographic order.
+
+**Complexity:** `O(C(n, k) · k)` time for the `C(n, k)` results, each copied in `O(k)`. `O(k)` extra space for `path` and the recursion, not counting the output.
+
+**Common mistakes:** appending `path` instead of `path[:]`, so every result is the same list, emptied by the time you return. Recursing with `backtrack(start + 1)` instead of `backtrack(num + 1)`, which allows numbers to repeat and go backwards.
 
 </details>

@@ -3,6 +3,15 @@ lesson_name: Letter Combinations of a Phone Number
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(4ⁿ · n)
+  space: O(n)
+hints:
+  - "Each digit adds one letter, chosen from 3 or 4 options. How is that like *Generate Binary Strings*, with a different set of choices per position?"
+  - "Use *The Template* from *Backtracking Basics*: the recursion goes one digit deeper per level, and the loop tries each letter for that digit. When the path has one letter per digit, record `\"\".join(path)`."
+  - "Template: if `digits` is empty, return `[]`. `def backtrack(index)`: if `index == len(digits)`, record `\"\".join(path)`. For each `letter` in `digit_map[digits[index]]`: append, `backtrack(index + 1)`, pop."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -46,7 +55,7 @@ For example, `digits = "23"` should produce every combination of one letter from
 <li id="test-3"><code>letter_combinations("2")</code> should return <code>["a", "b", "c"]</code> (any order)</li>
 <li id="test-4"><code>letter_combinations("7")</code> should return <code>["p", "q", "r", "s"]</code> (any order)</li>
 <li id="test-5"><code>letter_combinations("9")</code> should return <code>["w", "x", "y", "z"]</code> (any order)</li>
-<li id="test-6"><code>letter_combinations("79")</code> should return 16 two-letter combinations from <code>"pqrs"</code> and <code>"wxyz"</code> (any order)</li>
+<li id="test-6"><code>letter_combinations("79")</code> should return <code>["pw", "px", "py", "pz", "qw", "qx", "qy", "qz", "rw", "rx", "ry", "rz", "sw", "sx", "sy", "sz"]</code> (any order)</li>
 </ul>
 
 <details class="border border-red-500 px-4 cursor-pointer">
@@ -80,5 +89,19 @@ def letter_combinations(digits):
     backtrack(0, [])
     return result
 ```
+
+Here `n` is the number of digits.
+
+**Brute force:** there isn't a faster idea. With up to 4 letters per digit there can be `4ⁿ` combinations of length `n`, and they all have to be returned, so `O(4ⁿ · n)` is the best possible. Nested loops would work for a fixed number of digits, but not for any length.
+
+**Bottleneck:** the number of loops depends on the input, so they can't be written out by hand.
+
+**Optimal idea:** let recursion stand in for the nested loops. Level `index` loops over the letters of `digits[index]` and recurses into the next digit, so the recursion is as deep as the input is long.
+
+**Why it's correct:** each combination is one letter for each digit, in order. Every level tries every letter for its digit, so each combination is built exactly once.
+
+**Complexity:** `O(4ⁿ · n)` time: at most `4ⁿ` results, each joined in `O(n)`. `O(n)` extra space for the path and recursion, not counting the output.
+
+**Common mistakes:** returning `[""]` for empty input instead of `[]`, which this problem asks for (unlike *Generate Binary Strings* with `n = 0`). Building strings with `path + letter` is fine too, but then there's nothing to pop.
 
 </details>

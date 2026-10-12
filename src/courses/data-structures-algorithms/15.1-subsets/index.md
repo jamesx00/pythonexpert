@@ -3,6 +3,15 @@ lesson_name: Subsets
 code_editor: True
 code_execution: True
 adding_file_allowed: False
+difficulty: medium
+target_complexity:
+  time: O(2ⁿ · n)
+  space: O(n)
+hints:
+  - "Each element is either in a subset or not. How many subsets does that give, and how can you build them one decision at a time?"
+  - "Use the *Include / exclude form* from *Backtracking Basics*: at index `i`, include `nums[i]` and recurse, pop it, then recurse without it. Record a copy of `path` when `i == len(nums)`."
+  - "Template: `def dfs(i)`: if `i == len(nums)`, append `path[:]` and return. Otherwise `path.append(nums[i]); dfs(i + 1); path.pop(); dfs(i + 1)`. Or, without recursion: start from `[[]]` and for each `n`, add `subset + [n]` for every subset so far."
+rich_test_results: true
 file_groups:
   - common: false
     files:
@@ -41,11 +50,11 @@ For example, given `[1, 2, 3]`, a valid return value would be `[[], [1], [2], [3
 ### Tests
 
 <ul>
-<li id="test-1"><code>subsets([1, 2, 3])</code> should return all 8 subsets of <code>[1, 2, 3]</code> (any order)</li>
+<li id="test-1"><code>subsets([1, 2, 3])</code> should return <code>[[], [1], [2], [3], [1, 2], [1, 3], [2, 3], [1, 2, 3]]</code> (any order)</li>
 <li id="test-2"><code>subsets([])</code> should return <code>[[]]</code></li>
 <li id="test-3"><code>subsets([5])</code> should return <code>[[], [5]]</code> (any order)</li>
-<li id="test-4"><code>subsets([4, 7])</code> should return all 4 subsets of <code>[4, 7]</code> (any order)</li>
-<li id="test-5"><code>subsets([0, -1])</code> should return all 4 subsets of <code>[0, -1]</code> (any order)</li>
+<li id="test-4"><code>subsets([4, 7])</code> should return <code>[[], [4], [7], [4, 7]]</code> (any order)</li>
+<li id="test-5"><code>subsets([0, -1])</code> should return <code>[[], [0], [-1], [0, -1]]</code> (any order)</li>
 <li id="test-6"><code>subsets([1, 2, 3, 4])</code> should return all 16 subsets of <code>[1, 2, 3, 4]</code> (any order)</li>
 </ul>
 
@@ -59,5 +68,17 @@ def subsets(nums):
         result += [subset + [n] for subset in result]
     return result
 ```
+
+**Brute force:** there isn't a faster idea to beat. The answer itself has `2ⁿ` subsets with up to `n` elements each, so every correct solution takes `O(2ⁿ · n)`. The question is only how to generate them cleanly.
+
+**Bottleneck:** making sure every subset appears exactly once, without generating duplicates and removing them afterwards.
+
+**Optimal idea:** decide element by element. Before looking at `n`, `result` holds every subset of the elements seen so far. Each of those either leaves `n` out (it's already in `result`) or takes it (`subset + [n]`). So adding a copy of each subset with `n` appended gives every subset of one more element. The recursive *Include / exclude* backtracking makes the same two choices per element.
+
+**Why it's correct:** by induction, after processing the first `i` elements, `result` holds each of their `2ⁱ` subsets once. Every new subset either contains the next element or doesn't, and the two halves can't overlap. Since the elements are distinct, no two subsets are equal.
+
+**Complexity:** `O(2ⁿ · n)` time: `2ⁿ` subsets, each built by copying up to `n` elements. `O(n)` extra space apart from the output (`O(n)` for the recursion depth in the backtracking version).
+
+**Common mistakes:** writing `for subset in result: result.append(subset + [n])`, which loops forever because `result` keeps growing. The list comprehension builds the new subsets first, then adds them. In the backtracking version, appending `path` instead of `path[:]`.
 
 </details>

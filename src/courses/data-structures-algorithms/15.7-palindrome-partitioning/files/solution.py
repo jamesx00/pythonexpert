@@ -1,21 +1,17 @@
 def partition_palindromes(s):
     result = []
+    path = []
 
-    def is_palindrome(sub):
-        return sub == sub[::-1]
-
-    def backtrack(start, path):
+    def backtrack(start):
         if start == len(s):
-            result.append(list(path))
+            result.append(path[:])
             return
         for end in range(start + 1, len(s) + 1):
             piece = s[start:end]
-            if is_palindrome(piece):
+            if piece == piece[::-1]:
                 path.append(piece)
-                backtrack(end, path)
+                backtrack(end)
                 path.pop()
 
-    if s == "":
-        return [[]]
-    backtrack(0, [])
+    backtrack(0)
     return result

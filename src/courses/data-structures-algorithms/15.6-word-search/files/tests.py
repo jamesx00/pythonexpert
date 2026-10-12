@@ -1,55 +1,88 @@
 import sys
 import json
+import signal
 
 from unittest.mock import patch
 patch('builtins.print').start()
 
 import main
 
-def test_word_search(board, word):
-    rows, cols = len(board), len(board[0])
-
-    def backtrack(r, c, i, visited):
-        if i == len(word):
-            return True
-        if r < 0 or r >= rows or c < 0 or c >= cols:
-            return False
-        if (r, c) in visited or board[r][c] != word[i]:
-            return False
-        visited.add((r, c))
-        found = (
-            backtrack(r + 1, c, i + 1, visited)
-            or backtrack(r - 1, c, i + 1, visited)
-            or backtrack(r, c + 1, i + 1, visited)
-            or backtrack(r, c - 1, i + 1, visited)
-        )
-        visited.remove((r, c))
-        return found
-
-    for r in range(rows):
-        for c in range(cols):
-            if backtrack(r, c, 0, set()):
-                return True
-    return False
-
-inputs = [
-    ([["C", "A", "T"], ["B", "R", "E"], ["D", "O", "G"]], "CARE"),
-    ([["C", "A", "T"], ["B", "R", "E"], ["D", "O", "G"]], "DOT"),
-    ([["A", "B"], ["C", "D"]], "ABDC"),
-    ([["A", "B"], ["C", "D"]], "ABCD"),
-    ([["X"]], "X"),
-    ([["X"]], "XX"),
-    ([["A", "A", "A"], ["A", "A", "A"]], "AAAAA"),
-]
-
 results = {}
 
-for index, i in enumerate(inputs):
+
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
+def _show(value):
+    text = repr(value)
+    return text if len(text) <= 300 else text[:300] + "..."
+
+
+def check(test_id, call, expected, time_budget=None, normalize=None):
+    """Runs one test and records a rich result: got/expected as Python reprs,
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run). normalize, if given, is applied to both
+    values before comparing, for answers whose order doesn't matter."""
     try:
-        result = test_word_search(*i)
-        assert main.word_search(*i) == result
-        results[index + 1] = True
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
+    except Exception as e:
+        results[test_id] = {
+            "passed": False,
+            "error": f"{type(e).__name__}: {e}",
+            "expected": _show(expected),
+        }
+        return
+    try:
+        if normalize is None:
+            passed = got == expected
+        else:
+            passed = normalize(got) == normalize(expected)
     except Exception:
-        results[index + 1] = False
+        passed = False
+    results[test_id] = {
+        "passed": bool(passed),
+        "got": _show(got),
+        "expected": _show(expected),
+    }
+
+
+cases = [
+    (([["C", "A", "T"], ["B", "R", "E"], ["D", "O", "G"]], "CARE"), True),
+    (([["C", "A", "T"], ["B", "R", "E"], ["D", "O", "G"]], "DOT"), False),
+    (([["A", "B"], ["C", "D"]], "ABDC"), True),
+    (([["A", "B"], ["C", "D"]], "ABCD"), False),
+    (([["X"]], "X"), True),
+    (([["X"]], "XX"), False),
+    (([["A", "A", "A"], ["A", "A", "A"]], "AAAAA"), True),
+]
+for index, (args, expected) in enumerate(cases):
+    check(index + 1, lambda: main.word_search(*args), expected)
+
+# Performance test: a 30x30 board where cell (r, c) holds letter
+# (7 * r + 3 * c) % 26, so each step right moves 3 letters on and each step
+# down 7. The 14-letter word follows 13 cells to the right, then needs an "X",
+# which never sits next to a "K". So the word isn't on the board.
+# Budget: 1.0s. Execution service: backtracking that stops at the first
+# wrong letter ~0.001s; walking every 14-cell path and comparing at the end
+# is interrupted at the budget.
+board = [[chr(65 + (7 * r + 3 * c) % 26) for c in range(30)] for r in range(30)]
+check(8, lambda: main.word_search(board, "ADGJMPSVYBEHKX"), False, time_budget=1.0)
 
 sys.stdout.write(json.dumps(results))

@@ -1,59 +1,80 @@
 import sys
 import json
+import signal
 
 from unittest.mock import patch
 patch('builtins.print').start()
 
 import main
 
-DIGIT_MAP = {
-    "2": "abc",
-    "3": "def",
-    "4": "ghi",
-    "5": "jkl",
-    "6": "mno",
-    "7": "pqrs",
-    "8": "tuv",
-    "9": "wxyz",
-}
-
-def test_letter_combinations(digits):
-    if not digits:
-        return []
-    result = []
-
-    def backtrack(index, path):
-        if index == len(digits):
-            result.append("".join(path))
-            return
-        for letter in DIGIT_MAP[digits[index]]:
-            path.append(letter)
-            backtrack(index + 1, path)
-            path.pop()
-
-    backtrack(0, [])
-    return result
-
-def normalize(combos):
-    return sorted(combos)
-
-inputs = [
-    ("23",),
-    ("",),
-    ("2",),
-    ("7",),
-    ("9",),
-    ("79",),
-]
-
 results = {}
 
-for index, i in enumerate(inputs):
+
+class TimeBudgetExceeded(BaseException):
+    """BaseException, so a learner's `except Exception` can't swallow it."""
+
+
+def _on_alarm(signum, frame):
+    raise TimeBudgetExceeded()
+
+
+signal.signal(signal.SIGALRM, _on_alarm)
+
+
+def _show(value):
+    text = repr(value)
+    return text if len(text) <= 300 else text[:300] + "..."
+
+
+def check(test_id, call, expected, time_budget=None, normalize=None):
+    """Runs one test and records a rich result: got/expected as Python reprs,
+    the exception if the learner's code raised, or timed_out if the call is
+    still running after time_budget seconds (it is interrupted, so the
+    remaining tests still run). normalize, if given, is applied to both
+    values before comparing, for answers whose order doesn't matter."""
     try:
-        result = normalize(test_letter_combinations(*i))
-        assert normalize(main.letter_combinations(*i)) == result
-        results[index + 1] = True
+        if time_budget is not None:
+            signal.setitimer(signal.ITIMER_REAL, time_budget)
+        try:
+            got = call()
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+    except TimeBudgetExceeded:
+        results[test_id] = {"passed": False, "timed_out": True}
+        return
+    except Exception as e:
+        results[test_id] = {
+            "passed": False,
+            "error": f"{type(e).__name__}: {e}",
+            "expected": _show(expected),
+        }
+        return
+    try:
+        if normalize is None:
+            passed = got == expected
+        else:
+            passed = normalize(got) == normalize(expected)
     except Exception:
-        results[index + 1] = False
+        passed = False
+    results[test_id] = {
+        "passed": bool(passed),
+        "got": _show(got),
+        "expected": _show(expected),
+    }
+
+
+cases = [
+    ("23", ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"]),
+    ("", []),
+    ("2", ["a", "b", "c"]),
+    ("7", ["p", "q", "r", "s"]),
+    ("9", ["w", "x", "y", "z"]),
+    ("79", [
+        "pw", "px", "py", "pz", "qw", "qx", "qy", "qz",
+        "rw", "rx", "ry", "rz", "sw", "sx", "sy", "sz",
+    ]),
+]
+for index, (digits, expected) in enumerate(cases):
+    check(index + 1, lambda: main.letter_combinations(digits), expected, normalize=sorted)
 
 sys.stdout.write(json.dumps(results))
