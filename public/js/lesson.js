@@ -213,66 +213,32 @@ if (runCodeButton !== null) {
 }
 
 function checkExerciseOutput(element, output) {
-	let checkExerciseWithJson = false;
-	let testResult = null;
-
-	try {
-		testResult = JSON.parse(output.run.stdout);
-		checkExerciseWithJson = true;
-	} catch (e) {}
-
-	if (!checkExerciseWithJson) {
-		const executionOutput = {
-			run: {
-				stdout: `##### Exercise #####\n${output.run.stdout}`,
-				stderr: output.run.stderr,
-				signal: output.run.signal,
-			},
-		};
-
-		const passedExercise =
-			executionOutput.run.signal !== "SIGKILL" &&
-			executionOutput.run.stderr === "";
-
-		state["passedExercise"] = passedExercise;
-		updateExecutionOutput(element, executionOutput);
-	} else {
-		const testCases = document.querySelectorAll("[id^=test-]");
-		const passedTestClassName = "list-image-checked";
-		const failedTestClassName = "list-image-crossed";
-		let passedTests = 0;
-		let failedTests = 0;
-
-		for (const testCase of testCases) {
-			const testId = parseInt(testCase.id.split("test-")[1]);
-			const passedTestCase = testResult[testId] === true;
-			const testCaseListItem = document.getElementById(`test-${testId}`);
-			if (testCaseListItem === null) continue;
-			if (passedTestCase) {
-				testCaseListItem.classList.add(passedTestClassName);
-				testCaseListItem.classList.remove(failedTestClassName);
-				passedTests += 1;
-			} else {
-				testCaseListItem.classList.add(failedTestClassName);
-				testCaseListItem.classList.remove(passedTestClassName);
-				failedTests += 1;
-			}
+	const testCaseListItems = [];
+	for (const testCase of document.querySelectorAll("[id^=test-]")) {
+		const testId = parseInt(testCase.id.split("test-")[1]);
+		const testCaseListItem = document.getElementById(`test-${testId}`);
+		if (testCaseListItem !== null) {
+			testCaseListItems.push({ testId, testCaseListItem });
 		}
-
-		const executionOutput = {
-			run: {
-				stdout: `##### Tests #####\nTest Result: ${passedTests}/${
-					failedTests + passedTests
-				}\n`,
-				stderr: "",
-				signal: null,
-			},
-		};
-
-		const isPassingTests = output.run.signal !== "SIGKILL" && failedTests === 0;
-		state["passedExercise"] = isPassingTests;
-		updateExecutionOutput(element, executionOutput);
 	}
+
+	const display = testResults.interpretTestRun(
+		output,
+		testCaseListItems.map(({ testId }) => testId),
+		{ richResults: document.getElementById("rich_test_results") !== null }
+	);
+
+	if (display.mode === "tests") {
+		display.tests.forEach((test, index) => {
+			renderTestCase(testCaseListItems[index].testCaseListItem, test);
+		});
+	}
+
+	state["passedExercise"] = display.passed;
+	element.innerHTML = hljs.highlight(display.panelText, {
+		language: "shell",
+	}).value;
+
 	state["passedExercise"] && showCompleteAndNextForm();
 	!state["passedExercise"] && hideCompleteAndNextForm();
 	if (state["passedExercise"] && completeAndNextFormContainers) {
@@ -281,25 +247,32 @@ function checkExerciseOutput(element, output) {
 	}
 }
 
+function renderTestCase(testCaseListItem, test) {
+	const passedTestClassName = "list-image-checked";
+	const failedTestClassName = "list-image-crossed";
+	const passed = test.status === "passed";
+	testCaseListItem.classList.add(passed ? passedTestClassName : failedTestClassName);
+	testCaseListItem.classList.remove(passed ? failedTestClassName : passedTestClassName);
+
+	testCaseListItem.querySelector(".test-feedback")?.remove();
+	const lines = [];
+	if (test.status === "timed_out") {
+		lines.push("Too slow: took longer than the time limit for this test.");
+	}
+	if (test.error !== undefined) lines.push(`Error: ${test.error}`);
+	if (test.got !== undefined) lines.push(`Got: ${test.got}`);
+	if (test.expected !== undefined) lines.push(`Expected: ${test.expected}`);
+	if (lines.length === 0) return;
+
+	const feedback = document.createElement("pre");
+	feedback.className =
+		"test-feedback not-prose mt-1 whitespace-pre-wrap break-words bg-slate-800 p-2 font-victor-mono text-xs text-term-text";
+	feedback.textContent = lines.join("\n");
+	testCaseListItem.appendChild(feedback);
+}
+
 function updateExecutionOutput(element, output) {
-	let outputText = "";
-	if (output.run.signal === "SIGKILL") {
-		outputText = "Code execution failed";
-		if (output.run.stdout !== "") {
-			outputText += ` with output: \n\n${output.run.stdout}`;
-		}
-	} else {
-		outputText = output.run.stdout + output.run.stderr;
-	}
-	outputText = outputText.replace(/\/piston\/jobs\/[0-9a-zA-Z-].*?'/g, "'"); // replace piston path ends with job id
-	outputText = outputText.replace(/\/piston\/jobs\/[0-9a-zA-Z-].*?\//g, ""); // replace piston path following by slash
-	outputText = outputText.replace(/\/piston\/jobs\/[0-9a-zA-Z-].*/g, ""); // replace piston path to current job
-	outputText = outputText.replace(/\/piston\/packages/g, "");
-
-	if (outputText === "") {
-		outputText = "No output";
-	}
-
+	const outputText = testResults.formatOutputText(output.run);
 	element.innerHTML = hljs.highlight(outputText, { language: "shell" }).value;
 }
 

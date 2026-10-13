@@ -1,0 +1,8 @@
+{# Expects `difficulty` (easy|medium|hard) in scope. #}
+{%- if difficulty == "easy" -%}
+    <span class="difficulty-badge border border-term-green/60 px-1.5 text-xs text-term-green">Easy</span>
+{%- elif difficulty == "medium" -%}
+    <span class="difficulty-badge border border-term-yellow/60 px-1.5 text-xs text-term-yellow">Medium</span>
+{%- elif difficulty == "hard" -%}
+    <span class="difficulty-badge border border-term-red/60 px-1.5 text-xs text-term-red">Hard</span>
+{%- endif -%}

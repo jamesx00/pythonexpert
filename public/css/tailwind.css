@@ -1383,6 +1383,10 @@ a {
   top: 100%;
 }
 
+.isolate {
+  isolation: isolate;
+}
+
 .z-10 {
   z-index: 10;
 }
@@ -1408,6 +1412,11 @@ a {
 .my-3 {
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
+}
+
+.my-6 {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .-mr-2 {
@@ -1667,6 +1676,10 @@ a {
   flex-shrink: 1;
 }
 
+.shrink {
+  flex-shrink: 1;
+}
+
 .shrink-0 {
   flex-shrink: 0;
 }
@@ -1843,6 +1856,10 @@ a {
   white-space: pre-wrap;
 }
 
+.break-words {
+  overflow-wrap: break-word;
+}
+
 .rounded {
   border-radius: 0.25rem;
 }
@@ -1886,6 +1903,10 @@ a {
   border-color: rgb(137 180 250 / var(--tw-border-opacity));
 }
 
+.border-term-accent\/60 {
+  border-color: rgb(137 180 250 / 0.6);
+}
+
 .border-term-border {
   --tw-border-opacity: 1;
   border-color: rgb(51 54 77 / var(--tw-border-opacity));
@@ -1896,9 +1917,21 @@ a {
   border-color: rgb(166 227 161 / var(--tw-border-opacity));
 }
 
+.border-term-green\/60 {
+  border-color: rgb(166 227 161 / 0.6);
+}
+
+.border-term-red\/60 {
+  border-color: rgb(243 139 168 / 0.6);
+}
+
 .border-term-yellow {
   --tw-border-opacity: 1;
   border-color: rgb(249 226 175 / var(--tw-border-opacity));
+}
+
+.border-term-yellow\/60 {
+  border-color: rgb(249 226 175 / 0.6);
 }
 
 .border-transparent {
@@ -2155,6 +2188,11 @@ a {
   line-height: 1.5rem;
 }
 
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
 .text-sm {
   font-size: 0.875rem;
   line-height: 1.25rem;
@@ -2340,6 +2378,18 @@ a {
 
 .ease-out {
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
+.\[a\:b\] {
+  a: b;
+}
+
+.\[i\:j\] {
+  i: j;
+}
+
+.\[j\:i\] {
+  j: i;
 }
 
 .\[start\:end\] {
@@ -3356,6 +3406,10 @@ code {
   background-color: rgb(34 36 58 / var(--tw-bg-opacity));
 }
 
+.hover\:bg-term-yellow\/10:hover {
+  background-color: rgb(249 226 175 / 0.1);
+}
+
 .hover\:text-term-accent:hover {
   --tw-text-opacity: 1;
   color: rgb(137 180 250 / var(--tw-text-opacity));
@@ -3419,6 +3473,10 @@ code {
 
 .focus\:ring-offset-2:focus {
   --tw-ring-offset-width: 2px;
+}
+
+.disabled\:opacity-50:disabled {
+  opacity: 0.5;
 }
 
 .group:hover .group-hover\:max-h-none {

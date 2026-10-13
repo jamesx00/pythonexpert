@@ -14,7 +14,9 @@
 		"benchmark": "DEBUG=Eleventy:Benchmark* npx @11ty/eleventy",
 		"s3:sync": "aws s3 sync _site/ s3://pythonexpert-web/static --delete",
 		"cloudfront:clearCache": "aws cloudfront create-invalidation --distribution-id E1WZICBZJ43601 --path \"/*\"",
-		"deploy": "rm -rf _site && npm run build && npm run s3:sync && npm run cloudfront:clearCache"
+		"deploy": "rm -rf _site && npm run build && npm run s3:sync && npm run cloudfront:clearCache",
+		"test": "node --test tests/",
+		"check-content": "node scripts/check-content.js"
 	},
 	"author": {
 		"name": "Data Advantage Co.,Ltd.",
@@ -39,6 +41,7 @@
 		"dotenv": "^16.4.7",
 		"esbuild": "0.24.2",
 		"hotkeys-js": "^3.13.7",
+		"js-yaml": "^3.14.1",
 		"image-size": "^1.1.1",
 		"luxon": "^3.3.0",
 		"markdown-it-anchor": "^8.6.7",

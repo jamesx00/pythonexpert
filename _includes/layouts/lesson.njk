@@ -30,8 +30,20 @@ layout: layouts/base.njk
                             </a>
                         {% endif %}
                     </p>
+                    {% if difficulty or checkpoint %}
+                        <div class="lesson-meta mb-4 flex flex-wrap items-center gap-2 text-xs text-term-muted">
+                            {% include "difficulty-badge.njk" %}
+                            {% if checkpoint %}
+                                <span class="border border-term-accent/60 px-1.5 text-term-accent">Checkpoint: no hints</span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    {%- set targetHtml %}{% if target_complexity %}
+<p class="target-complexity"><strong>Target complexity:</strong> <code>{{ target_complexity.time }}</code> time{% if target_complexity.space %}, <code>{{ target_complexity.space }}</code> space{% endif %}.</p>
+{% endif %}{% endset %}
+                    {% set hintsHtml %}{% if hints %}{% include "lesson-hints.njk" %}{% endif %}{% endset %}
                     <div id="lesson-content" class="prose">
-                        {{ content|safe }}
+                        {{ content | insertBeforeTests(targetHtml) | insertBeforeSolution(hintsHtml) | safe }}
                     </div>
                 </div>
                 <!-- This is a very confusing part for mobile. Thing is, when there's no code editor, the complete and next button
@@ -303,6 +315,10 @@ layout: layouts/base.njk
                                             <a href="{{ lesson.url }}" class="{% if page.url == lesson.url %}text-primary-700 font-medium currentLesson{% endif %}">
                                                 {{ lesson.data.lesson_name }}
                                             </a>
+                                            {% if lesson.data.difficulty %}
+                                                {% set difficulty = lesson.data.difficulty %}
+                                                {% include "difficulty-badge.njk" %}
+                                            {% endif %}
                                         </div>
                                         {% if loop.last %}
                                         </div>
@@ -318,6 +334,9 @@ layout: layouts/base.njk
 </div>
 {% if adding_file_allowed %}
     <div id="adding_file_allowed" class="hidden">true</div>
+{% endif %}
+{% if rich_test_results %}
+    <div id="rich_test_results" class="hidden"></div>
 {% endif %}
 {% if code_editor %}
     <div id="file_groups" class="hidden">
@@ -341,5 +360,6 @@ layout: layouts/base.njk
 {% if code_editor %}
     <script src="/js/pe-monaco-editor.js"></script>
     <script src="/js/expected-runtimes.js"></script>
+    <script src="/js/test-results.js"></script>
     <script src="/js/lesson.js"></script>
 {% endif %}
