@@ -10,7 +10,7 @@ section: Big-O Analysis
 
 Two solutions can both return the right answer and still be wildly different: one finishes instantly on a million elements, the other runs for hours. **Big-O notation** is how we describe that difference without timing anything. It tells you how the work a function does **grows** as its input grows.
 
-Every problem in this course states a target complexity, such as `O(n)` time and `O(1)` space. This section teaches you to work out the complexity of your own code, so you know whether you've hit the target before you press Run.
+Every problem in this course has stated a target complexity, such as `O(n)` time and `O(1)` space. This section teaches you to work out the complexity of your own code, so you know whether you've hit the target before you press Run.
 
 ## The Core Idea &#x1F50D;
 

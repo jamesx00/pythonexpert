@@ -8,7 +8,7 @@ section: Getting Started
 
 ## Course Summary &#x1F4D7;
 
-This course teaches the patterns behind coding interview problems, one hands-on exercise at a time. Instead of grinding through problems at random, you'll start with Big-O analysis, then move through 18 pattern categories in order, from array and hash-map tricks up through graphs and dynamic programming — the same rough progression used by popular pattern-based interview roadmaps. After the patterns, three sections go under the hood: recursion, sorting, and building core data structures yourself.
+This course teaches the patterns behind coding interview problems, one hands-on exercise at a time. Instead of grinding through problems at random, you'll move through 18 pattern categories in order, from array and hash-map tricks up through graphs and dynamic programming — the same rough progression used by popular pattern-based interview roadmaps. After the patterns, four sections go under the hood: Big-O analysis, recursion, sorting, and building core data structures yourself.
 
 ## How This Course Works &#x1F6E0;&#xFE0F;
 
@@ -22,7 +22,6 @@ Every exercise gives you a short problem statement and a Python starter file wit
 
 ## What You'll Cover &#x1F9ED;
 
-- **Big-O Analysis** — how to work out your code's time and space complexity, so you know whether you've hit a problem's target before you press Run.
 - **Arrays, Hashing, Two Pointers & Sliding Window** — the bread-and-butter techniques for scanning and searching sequences efficiently.
 - **Stacks & Binary Search** — structuring computation and cutting search spaces in half.
 - **Linked Lists & Trees** — pointer manipulation and recursive traversal.
@@ -30,6 +29,7 @@ Every exercise gives you a short problem statement and a Python starter file wit
 - **Backtracking & Graphs** — exploring all possibilities and traversing networks (including weighted/advanced graphs).
 - **Dynamic Programming (1-D and 2-D) & Greedy** — building solutions from subproblems, and knowing when a greedy choice is provably optimal.
 - **Intervals, Math & Geometry, Bit Manipulation** — the smaller but frequently-tested categories that round out most interview loops.
+- **Big-O Analysis** — how to work out your code's time and space complexity, so you can check a problem's target before you press Run.
 - **Recursion, Sorting & Build-It-Yourself Data Structures** — how to think recursively, how merge sort and quicksort work, and what `list`, `dict`, `heapq` and binary search trees do under the hood.
 - **Approaching New Problems** — a step-by-step routine for a problem when nobody tells you its pattern: restate it, try small examples, write the brute force, find the bottleneck, pick a pattern, and check edge cases.
 - **Mixed Practice (optional)** — problems from earlier sections in a mixed order without their section names, so you practise working out which pattern each one needs.
