@@ -8,7 +8,7 @@ section: Sorting
 
 ## Why This Matters &#x1F4A1;
 
-You'll call `sorted()` in many problems, and it's almost always the right choice in real code. But knowing how sorting works teaches you two ideas you'll reuse everywhere: **divide and conquer** (merge sort) and **partitioning** (quicksort). Partitioning is exactly what *Quickselect* and the *Kth Largest* problems use later on.
+You've called `sorted()` in many problems, and it's almost always the right choice in real code. But knowing how sorting works teaches you two ideas you'll reuse everywhere: **divide and conquer** (merge sort) and **partitioning** (quicksort). Partitioning is the core of *Quickselect*, the average-`O(n)` alternative mentioned in *Kth Largest Element in an Array*.
 
 ## Why `O(n log n)`? &#x1F9EE;
 

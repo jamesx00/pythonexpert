@@ -28,7 +28,7 @@ If the recursive case doesn't move toward the base case, the function never stop
 
 When writing the recursive case, **assume the recursive call already works** for the smaller input. Don't trace it all the way down in your head. For `sum_list`, assume `sum_list(nums[1:])` correctly returns the sum of the rest. Then the only question is: "given that, how do I get the answer for the whole list?" Add `nums[0]`.
 
-This is the same thinking you'll use for trees: "assume `height(node.left)` and `height(node.right)` are correct. How do I get the height of `node`?"
+This is the same thinking you used for trees: "assume `height(node.left)` and `height(node.right)` are correct. How do I get the height of `node`?"
 
 ## The Call Stack &#x1F4DA;
 
